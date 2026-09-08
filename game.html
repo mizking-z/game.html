@@ -1,1062 +1,782 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>クソ連打！奇跡のたまご🥚</title>
-
-<style>
-
-body {
-    background-color: #222;
-    color: #fff;
-    font-family: sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 20px 10px 40px 10px;
-    user-select: none;
-    overflow-y: auto;
-    transition: background-color 1.5s ease;
-}
-
-#container {
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-h1 {
-    font-size: 24px;
-    color: #ffeb3b;
-    margin-bottom: 10px;
-}
-
-#counter {
-    font-size: 32px;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-#egg-container {
-    position: relative;
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-}
-
-/* =========================
-   開始テロップ
-========================= */
-
-#start-telop {
-    position: absolute;
-    top: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #ffeb3b;
-    font-size: 18px;
-    font-weight: bold;
-    white-space: nowrap;
-    text-shadow: 0 0 8px #ff9800;
-    animation: telopBlink 1.2s infinite;
-    z-index: 5;
-}
-
-@keyframes telopBlink {
-    0%, 100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.35;
-    }
-}
-
-#start-telop.hidden {
-    display: none;
-}
-
-/* =========================
-   卵本体
-========================= */
-
-#egg {
-    font-size: 110px;
-    transition: transform 0.05s ease;
-    display: inline-block;
-    position: relative;
-    z-index: 1;
-}
-
-#egg:active {
-    transform: scale(0.9);
-}
-
-/* =========================
-   ヒビ演出
-========================= */
-
-#egg-cracks {
-    position: absolute;
-    width: 110px;
-    height: 130px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 3;
-}
-
-.crack {
-    position: absolute;
-    width: 4px;
-    height: 0;
-    background: #222;
-    box-shadow: 0 0 2px #fff;
-    transform-origin: top center;
-    opacity: 0;
-    transition:
-        height 0.6s ease,
-        opacity 0.4s ease;
-}
-
-#crack1 {
-    left: 53px;
-    top: 32px;
-    transform: rotate(15deg);
-}
-
-#crack2 {
-    left: 53px;
-    top: 48px;
-    transform: rotate(-35deg);
-}
-
-#crack3 {
-    left: 42px;
-    top: 60px;
-    transform: rotate(55deg);
-}
-
-#crack4 {
-    left: 65px;
-    top: 62px;
-    transform: rotate(-65deg);
-}
-
-#crack5 {
-    left: 50px;
-    top: 75px;
-    transform: rotate(20deg);
-}
-
-#crack6 {
-    left: 37px;
-    top: 82px;
-    transform: rotate(-25deg);
-}
-
-#crack7 {
-    left: 68px;
-    top: 83px;
-    transform: rotate(45deg);
-}
-
-#crack8 {
-    left: 48px;
-    top: 90px;
-    transform: rotate(-70deg);
-}
-
-#crack9 {
-    left: 58px;
-    top: 92px;
-    transform: rotate(75deg);
-}
-
-#crack10 {
-    left: 55px;
-    top: 45px;
-    transform: rotate(5deg);
-}
-
-/* ヒビ表示 */
-
-#egg-cracks.stage-1 #crack1,
-#egg-cracks.stage-2 #crack1,
-#egg-cracks.stage-3 #crack1,
-#egg-cracks.stage-4 #crack1,
-#egg-cracks.stage-5 #crack1,
-#egg-cracks.stage-6 #crack1,
-#egg-cracks.stage-7 #crack1,
-#egg-cracks.stage-8 #crack1,
-#egg-cracks.stage-9 #crack1,
-#egg-cracks.stage-10 #crack1 {
-    height: 35px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-2 #crack2,
-#egg-cracks.stage-3 #crack2,
-#egg-cracks.stage-4 #crack2,
-#egg-cracks.stage-5 #crack2,
-#egg-cracks.stage-6 #crack2,
-#egg-cracks.stage-7 #crack2,
-#egg-cracks.stage-8 #crack2,
-#egg-cracks.stage-9 #crack2,
-#egg-cracks.stage-10 #crack2 {
-    height: 32px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-3 #crack3,
-#egg-cracks.stage-4 #crack3,
-#egg-cracks.stage-5 #crack3,
-#egg-cracks.stage-6 #crack3,
-#egg-cracks.stage-7 #crack3,
-#egg-cracks.stage-8 #crack3,
-#egg-cracks.stage-9 #crack3,
-#egg-cracks.stage-10 #crack3 {
-    height: 38px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-4 #crack4,
-#egg-cracks.stage-5 #crack4,
-#egg-cracks.stage-6 #crack4,
-#egg-cracks.stage-7 #crack4,
-#egg-cracks.stage-8 #crack4,
-#egg-cracks.stage-9 #crack4,
-#egg-cracks.stage-10 #crack4 {
-    height: 35px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-5 #crack5,
-#egg-cracks.stage-6 #crack5,
-#egg-cracks.stage-7 #crack5,
-#egg-cracks.stage-8 #crack5,
-#egg-cracks.stage-9 #crack5,
-#egg-cracks.stage-10 #crack5 {
-    height: 40px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-6 #crack6,
-#egg-cracks.stage-7 #crack6,
-#egg-cracks.stage-8 #crack6,
-#egg-cracks.stage-9 #crack6,
-#egg-cracks.stage-10 #crack6 {
-    height: 38px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-7 #crack7,
-#egg-cracks.stage-8 #crack7,
-#egg-cracks.stage-9 #crack7,
-#egg-cracks.stage-10 #crack7 {
-    height: 42px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-8 #crack8,
-#egg-cracks.stage-9 #crack8,
-#egg-cracks.stage-10 #crack8 {
-    height: 45px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-9 #crack9,
-#egg-cracks.stage-10 #crack9 {
-    height: 50px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-10 #crack10 {
-    height: 70px;
-    opacity: 1;
-}
-
-/* =========================
-   卵の揺れ
-   1000回ごとに激しくなる
-========================= */
-
-#egg-container.shake-1 #egg {
-    animation: eggShake1 0.65s infinite;
-}
-
-#egg-container.shake-2 #egg {
-    animation: eggShake2 0.55s infinite;
-}
-
-#egg-container.shake-3 #egg {
-    animation: eggShake3 0.45s infinite;
-}
-
-#egg-container.shake-4 #egg {
-    animation: eggShake4 0.38s infinite;
-}
-
-#egg-container.shake-5 #egg {
-    animation: eggShake5 0.32s infinite;
-}
-
-#egg-container.shake-6 #egg {
-    animation: eggShake6 0.27s infinite;
-}
-
-#egg-container.shake-7 #egg {
-    animation: eggShake7 0.22s infinite;
-}
-
-#egg-container.shake-8 #egg {
-    animation: eggShake8 0.18s infinite;
-}
-
-#egg-container.shake-9 #egg {
-    animation: eggShake9 0.13s infinite;
-}
-
-#egg-container.shake-10 #egg {
-    animation: eggShake10 0.07s infinite;
-}
-
-@keyframes eggShake1 {
-    0%,100% { transform: rotate(-1deg); }
-    50% { transform: rotate(1deg); }
-}
-
-@keyframes eggShake2 {
-    0%,100% { transform: rotate(-2deg); }
-    50% { transform: rotate(2deg); }
-}
-
-@keyframes eggShake3 {
-    0%,100% { transform: translateX(-2px) rotate(-3deg); }
-    50% { transform: translateX(2px) rotate(3deg); }
-}
-
-@keyframes eggShake4 {
-    0%,100% { transform: translateX(-3px) rotate(-4deg); }
-    50% { transform: translateX(3px) rotate(4deg); }
-}
-
-@keyframes eggShake5 {
-    0%,100% { transform: translateX(-4px) rotate(-5deg); }
-    25% { transform: translateX(4px) rotate(5deg); }
-    50% { transform: translateX(-4px) rotate(-5deg); }
-    75% { transform: translateX(4px) rotate(5deg); }
-}
-
-@keyframes eggShake6 {
-    0%,100% { transform: translate(-5px,0) rotate(-6deg); }
-    50% { transform: translate(5px,0) rotate(6deg); }
-}
-
-@keyframes eggShake7 {
-    0%,100% { transform: translate(-6px,2px) rotate(-7deg); }
-    25% { transform: translate(6px,-2px) rotate(7deg); }
-    50% { transform: translate(-6px,2px) rotate(-7deg); }
-    75% { transform: translate(6px,-2px) rotate(7deg); }
-}
-
-@keyframes eggShake8 {
-    0%,100% { transform: translate(-7px,3px) rotate(-8deg); }
-    25% { transform: translate(7px,-3px) rotate(8deg); }
-    50% { transform: translate(-7px,3px) rotate(-8deg); }
-    75% { transform: translate(7px,-3px) rotate(8deg); }
-}
-
-@keyframes eggShake9 {
-    0%,100% { transform: translate(-9px,3px) rotate(-10deg); }
-    25% { transform: translate(9px,-3px) rotate(10deg); }
-    50% { transform: translate(-9px,3px) rotate(-10deg); }
-    75% { transform: translate(9px,-3px) rotate(10deg); }
-}
-
-@keyframes eggShake10 {
-    0% { transform: translate(-10px,0) rotate(-12deg) scale(1); }
-    20% { transform: translate(10px,-3px) rotate(12deg) scale(1.03); }
-    40% { transform: translate(-10px,3px) rotate(-12deg) scale(1); }
-    60% { transform: translate(10px,-3px) rotate(12deg) scale(1.03); }
-    80% { transform: translate(-10px,3px) rotate(-12deg) scale(1); }
-    100% { transform: translate(0,0) rotate(0deg) scale(1); }
-}
-
-/* =========================
-   メッセージ
-========================= */
-
-#message {
-    min-height: 50px;
-    color: #ffeb3b;
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 10px;
-}
-
-/* =========================
-   モーダル
-========================= */
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.92);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-.modal.active {
-    display: flex;
-    animation: popIn 0.3s ease-out;
-}
-
-@keyframes popIn {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* =========================
-   レア度別生誕演出
-========================= */
-
-#result-modal {
-    overflow: hidden;
-}
-
-#chick-icon {
-    font-size: 130px;
-    margin: 10px 0;
-    filter: drop-shadow(0 0 20px #fff);
-    position: relative;
-    z-index: 5;
-}
-
-/* N */
-
-#result-modal.effect-N {
-    animation: birthN 0.7s ease-out;
-}
-
-@keyframes birthN {
-    0% {
-        opacity: 0;
-        transform: scale(0.7);
-    }
-
-    70% {
-        transform: scale(1.08);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* SR */
-
-#result-modal.effect-SR {
-    background:
-        radial-gradient(
-            circle,
-            rgba(100,220,255,0.35),
-            rgba(0,0,0,0.94) 65%
-        );
-    animation: birthSR 0.9s ease-out;
-}
-
-#result-modal.effect-SR #chick-icon {
-    animation: chickSR 1.2s infinite alternate;
-}
-
-@keyframes birthSR {
-    0% {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-
-    50% {
-        opacity: 1;
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes chickSR {
-    from {
-        filter:
-            drop-shadow(0 0 10px #00ffff)
-            drop-shadow(0 0 20px #fff);
-    }
-
-    to {
-        filter:
-            drop-shadow(0 0 25px #00ffff)
-            drop-shadow(0 0 45px #fff);
-    }
-}
-
-/* SSR */
-
-#result-modal.effect-SSR {
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,215,0,0.5),
-            rgba(255,80,0,0.2),
-            rgba(0,0,0,0.96) 70%
-        );
-    animation: birthSSR 1.1s ease-out;
-}
-
-#result-modal.effect-SSR #chick-icon {
-    animation: chickSSR 0.7s infinite alternate;
-}
-
-@keyframes birthSSR {
-    0% {
-        opacity: 0;
-        transform: scale(0.2) rotate(-15deg);
-    }
-
-    40% {
-        opacity: 1;
-        transform: scale(1.35) rotate(10deg);
-    }
-
-    70% {
-        transform: scale(0.9) rotate(-5deg);
-    }
-
-    100% {
-        transform: scale(1) rotate(0);
-    }
-}
-
-@keyframes chickSSR {
-    from {
-        filter:
-            drop-shadow(0 0 15px #ffd700)
-            drop-shadow(0 0 30px #ff8c00);
-    }
-
-    to {
-        filter:
-            drop-shadow(0 0 35px #ffd700)
-            drop-shadow(0 0 60px #ff4500);
-    }
-}
-
-/* GOD */
-
-#result-modal.effect-GOD {
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,0,255,0.65),
-            rgba(0,255,255,0.35),
-            rgba(255,215,0,0.25),
-            rgba(0,0,0,0.97) 75%
-        );
-    animation: godBirth 1.5s ease-out;
-}
-
-#result-modal.effect-GOD::before {
-    content: "✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨";
-    position: absolute;
-    top: 10%;
-    left: 0;
-    width: 100%;
-    font-size: 30px;
-    letter-spacing: 10px;
-    animation: godStars 1.2s infinite linear;
-}
-
-#result-modal.effect-GOD::after {
-    content: "🌈 ✨ 🌈 ✨ 🌈";
-    position: absolute;
-    bottom: 10%;
-    left: 0;
-    width: 100%;
-    font-size: 28px;
-    letter-spacing: 8px;
-    animation: godStars 1.5s infinite reverse;
-}
-
-#result-modal.effect-GOD #chick-icon {
-    animation: godChick 0.8s infinite alternate;
-}
-
-@keyframes godBirth {
-    0% {
-        opacity: 0;
-        transform: scale(0.1);
-    }
-
-    30% {
-        opacity: 1;
-        transform: scale(1.4);
-    }
-
-    50% {
-        transform: scale(0.9);
-    }
-
-    70% {
-        transform: scale(1.15);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes godChick {
-    0% {
-        transform: scale(1) rotate(-5deg);
-        filter:
-            drop-shadow(0 0 15px #ff00ff)
-            drop-shadow(0 0 25px #00ffff);
-    }
-
-    50% {
-        transform: scale(1.15) rotate(5deg);
-        filter:
-            drop-shadow(0 0 35px #ffff00)
-            drop-shadow(0 0 50px #ff00ff)
-            drop-shadow(0 0 70px #00ffff);
-    }
-
-    100% {
-        transform: scale(1) rotate(-5deg);
-        filter:
-            drop-shadow(0 0 20px #00ffff)
-            drop-shadow(0 0 45px #ff00ff);
-    }
-}
-
-@keyframes godStars {
-    0% {
-        transform: translateX(-20px) rotate(0deg);
-        opacity: 0.4;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateX(20px) rotate(5deg);
-        opacity: 0.4;
-    }
-}
-
-/* =========================
-   レア度文字
-========================= */
-
-.rare-GOD {
-    color: #ff00ff;
-    text-shadow:
-        0 0 15px #00ffff,
-        0 0 30px #ff00ff;
-}
-
-.rare-SSR {
-    color: #ffd700;
-    text-shadow:
-        0 0 10px #ff0000,
-        0 0 20px #ffd700;
-}
-
-.rare-SR {
-    color: #c0c0c0;
-    text-shadow:
-        0 0 5px #00ffff,
-        0 0 12px #ffffff;
-}
-
-.rare-N {
-    color: #ffffff;
-}
-
-/* =========================
-   GODキラキラ
-========================= */
-
-.god-particle {
-    position: fixed;
-    pointer-events: none;
-    z-index: 999;
-    font-size: 25px;
-    animation: godParticle 1.5s ease-out forwards;
-}
-
-@keyframes godParticle {
-    0% {
-        opacity: 1;
-        transform: translate(0,0) scale(0.5) rotate(0deg);
-    }
-
-    100% {
-        opacity: 0;
-        transform:
-            translate(
-                calc((var(--x) - 50) * 1vw),
-                calc((var(--y) - 50) * 1vh)
-            )
-            scale(1.8)
-            rotate(360deg);
-    }
-}
-
-/* =========================
-   ボタン
-========================= */
-
-button {
-    padding: 10px 18px;
-    font-size: 14px;
-    background: #ff4081;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-button:active {
-    opacity: 0.8;
-}
-
-#btn-area {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-#collection-summary {
-    margin-top: 20px;
-    border-top: 1px solid #444;
-    padding-top: 15px;
-}
-
-#game-description {
-    margin-top: 25px;
-    padding: 15px;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 8px;
-    text-align: left;
-    font-size: 13px;
-    line-height: 1.6;
-    color: #ddd;
-}
-
-#game-description h3 {
-    margin-top: 0;
-    margin-bottom: 8px;
-    color: #ffeb3b;
-    font-size: 15px;
-    text-align: center;
-}
-
-#zukan-list {
-    width: 85%;
-    max-height: 55vh;
-    overflow-y: auto;
-    background: #111;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: left;
-    margin: 10px 0 15px 0;
-}
-
-.zukan-item {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #333;
-    padding: 10px 0;
-}
-
-.zukan-item .icon {
-    font-size: 40px;
-    margin-right: 15px;
-    width: 50px;
-    text-align: center;
-}
-
-.zukan-item .info {
-    flex-grow: 1;
-}
-
-.zukan-item .no {
-    font-size: 12px;
-    color: #888;
-    font-weight: bold;
-}
-
-.zukan-item .name {
-    font-weight: bold;
-    font-size: 15px;
-    margin: 2px 0;
-}
-
-.zukan-item .count-tag {
-    font-size: 12px;
-    color: #ffeb3b;
-    font-weight: bold;
-    margin-left: 6px;
-}
-
-.zukan-item .desc {
-    font-size: 12px;
-    color: #ccc;
-    line-height: 1.3;
-}
-
-.zukan-unknown {
-    color: #555;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クソ連打！奇跡のたまご🥚</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px 10px 40px 10px;
+            user-select: none;
+            overflow-y: auto;
+            transition: background-color 1.5s ease;
+        }
+
+        #container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #ffeb3b;
+            margin-bottom: 10px;
+        }
+
+        #counter {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        #egg-container {
+            position: relative;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #egg {
+            font-size: 110px;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+            transform-origin: center center;
+        }
+
+        #egg:active {
+            transform: scale(0.9);
+        }
+
+        /* =========================================
+           卵の揺れ
+        ========================================= */
+
+        #egg.shake-1 {
+            animation: eggShake1 0.45s infinite ease-in-out;
+        }
+
+        #egg.shake-2 {
+            animation: eggShake2 0.35s infinite ease-in-out;
+        }
+
+        #egg.shake-3 {
+            animation: eggShake3 0.25s infinite ease-in-out;
+        }
+
+        #egg.shake-4 {
+            animation: eggShake4 0.18s infinite ease-in-out;
+        }
+
+        #egg.shake-5 {
+            animation: eggShake5 0.12s infinite ease-in-out;
+        }
+
+        @keyframes eggShake1 {
+            0%, 100% {
+                transform: rotate(-2deg) translateX(-1px);
+            }
+            50% {
+                transform: rotate(2deg) translateX(1px);
+            }
+        }
+
+        @keyframes eggShake2 {
+            0%, 100% {
+                transform: rotate(-4deg) translateX(-2px);
+            }
+            50% {
+                transform: rotate(4deg) translateX(2px);
+            }
+        }
+
+        @keyframes eggShake3 {
+            0%, 100% {
+                transform: rotate(-6deg) translateX(-4px);
+            }
+            25% {
+                transform: rotate(5deg) translateX(4px);
+            }
+            50% {
+                transform: rotate(-5deg) translateX(-3px);
+            }
+            75% {
+                transform: rotate(6deg) translateX(3px);
+            }
+        }
+
+        @keyframes eggShake4 {
+            0%, 100% {
+                transform: rotate(-9deg) translateX(-5px);
+            }
+            25% {
+                transform: rotate(8deg) translateX(5px);
+            }
+            50% {
+                transform: rotate(-8deg) translateX(-5px);
+            }
+            75% {
+                transform: rotate(9deg) translateX(5px);
+            }
+        }
+
+        @keyframes eggShake5 {
+            0%, 100% {
+                transform: rotate(-13deg) translateX(-7px) scale(1.02);
+            }
+            20% {
+                transform: rotate(11deg) translateX(7px) scale(1.04);
+            }
+            40% {
+                transform: rotate(-10deg) translateX(-6px) scale(1.02);
+            }
+            60% {
+                transform: rotate(12deg) translateX(6px) scale(1.04);
+            }
+            80% {
+                transform: rotate(-11deg) translateX(-7px) scale(1.02);
+            }
+        }
+
+        /* =========================================
+           開始テロップ
+        ========================================= */
+
+        #start-telop {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            white-space: nowrap;
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow:
+                0 0 5px #000,
+                0 0 10px #000,
+                2px 2px 3px #000;
+            animation: telopFloat 1s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        #start-telop.hidden {
+            display: none;
+        }
+
+        @keyframes telopFloat {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        #message {
+            min-height: 50px;
+            color: #ffeb3b;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        /* =========================================
+           モーダル
+        ========================================= */
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.92);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #chick-icon {
+            font-size: 130px;
+            margin: 10px 0;
+            filter: drop-shadow(0 0 20px #fff);
+            position: relative;
+            z-index: 20;
+        }
+
+        /* =========================================
+           レア度
+        ========================================= */
+
+        .rare-GOD {
+            color: #ff00ff;
+            text-shadow:
+                0 0 10px #ff0000,
+                0 0 20px #ffff00,
+                0 0 30px #00ffff,
+                0 0 40px #ff00ff;
+            animation: godText 0.6s infinite alternate;
+        }
+
+        .rare-SSR {
+            color: #ffd700;
+            text-shadow:
+                0 0 10px #fff,
+                0 0 20px #ffd700,
+                0 0 35px #ff8c00;
+        }
+
+        .rare-SR {
+            color: #c0c0c0;
+            text-shadow:
+                0 0 5px #fff,
+                0 0 15px #00ffff,
+                0 0 25px #0088ff;
+        }
+
+        .rare-N {
+            color: #ffffff;
+        }
+
+        @keyframes godText {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.12);
+            }
+        }
+
+        /* =========================================
+           レア度別 生誕演出
+        ========================================= */
+
+        #rarity-effect {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        /* N */
+        .effect-N {
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(255,255,255,0.10),
+                    transparent 35%
+                );
+        }
+
+        /* SR */
+        .effect-SR {
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(0,200,255,0.30),
+                    transparent 45%
+                );
+            animation: srGlow 1.2s infinite alternate;
+        }
+
+        @keyframes srGlow {
+            from {
+                opacity: 0.55;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* SSR */
+        .effect-SSR {
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(255,215,0,0.45),
+                    transparent 45%
+                );
+            animation: ssrGlow 0.7s infinite alternate;
+        }
+
+        @keyframes ssrGlow {
+            from {
+                opacity: 0.6;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* GOD */
+        .effect-GOD {
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(255,255,255,0.75),
+                    rgba(255,0,255,0.25) 20%,
+                    rgba(0,255,255,0.20) 40%,
+                    transparent 65%
+                );
+            animation: godGlow 0.35s infinite alternate;
+        }
+
+        @keyframes godGlow {
+            0% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.15);
+            }
+        }
+
+        /* =========================================
+           光の粒
+        ========================================= */
+
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px #fff;
+            animation: sparkleFly 1s ease-out forwards;
+        }
+
+        .sparkle.gold {
+            background: #ffd700;
+            box-shadow:
+                0 0 8px #fff,
+                0 0 15px #ffd700;
+        }
+
+        .sparkle.rainbow {
+            background: #fff;
+            box-shadow:
+                0 0 8px #fff,
+                0 0 18px #ff00ff,
+                0 0 28px #00ffff;
+        }
+
+        @keyframes sparkleFly {
+            0% {
+                transform: translate(0,0) scale(0);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(0,0) scale(1);
+            }
+
+            100% {
+                transform:
+                    translate(
+                        var(--x),
+                        var(--y)
+                    )
+                    scale(0.1);
+                opacity: 0;
+            }
+        }
+
+        /* =========================================
+           GOD専用
+        ========================================= */
+
+        #god-title {
+            display: none;
+            position: relative;
+            z-index: 30;
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            background: linear-gradient(
+                90deg,
+                #ff0000,
+                #ffff00,
+                #00ff00,
+                #00ffff,
+                #0088ff,
+                #ff00ff,
+                #ff0000
+            );
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: rainbowText 1.5s linear infinite;
+            text-shadow: 0 0 20px rgba(255,255,255,0.7);
+        }
+
+        #result-modal.god-mode #god-title {
+            display: block;
+        }
+
+        @keyframes rainbowText {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 400% 50%;
+            }
+        }
+
+        /* =========================================
+           ボタン
+        ========================================= */
+
+        button {
+            padding: 10px 18px;
+            font-size: 14px;
+            background: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        button:active {
+            opacity: 0.8;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        #btn-area {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        #collection-summary {
+            margin-top: 20px;
+            border-top: 1px solid #444;
+            padding-top: 15px;
+        }
+
+        #game-description {
+            margin-top: 25px;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        #game-description h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #ffeb3b;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        #zukan-list {
+            width: 85%;
+            max-height: 55vh;
+            overflow-y: auto;
+            background: #111;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            margin: 10px 0 15px 0;
+        }
+
+        .zukan-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding: 10px 0;
+        }
+
+        .zukan-item .icon {
+            font-size: 40px;
+            margin-right: 15px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .zukan-item .info {
+            flex-grow: 1;
+        }
+
+        .zukan-item .no {
+            font-size: 12px;
+            color: #888;
+            font-weight: bold;
+        }
+
+        .zukan-item .name {
+            font-weight: bold;
+            font-size: 15px;
+            margin: 2px 0;
+        }
+
+        .zukan-item .count-tag {
+            font-size: 12px;
+            color: #ffeb3b;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        .zukan-item .desc {
+            font-size: 12px;
+            color: #ccc;
+            line-height: 1.3;
+        }
+
+        .zukan-unknown {
+            color: #555;
+        }
+    </style>
 </head>
 
 <body onclick="initAudioOnce()">
 
 <div id="container">
 
-<h1>クソ連打！奇跡のたまご🥚</h1>
+    <h1>クソ連打！奇跡のたまご🥚</h1>
 
-<div id="counter">
-    TAP: <span id="count">0</span> / 10000
-</div>
-
-<div id="egg-container" onclick="tapEgg()">
-
-    <div id="start-telop">
-        〜 卵をタップしよう 〜
+    <div id="counter">
+        TAP: <span id="count">0</span> / 10000
     </div>
 
-    <div id="egg">🥚</div>
+    <div id="egg-container" onclick="tapEgg()">
 
-    <div id="egg-cracks">
+        <!-- 開始テロップ -->
+        <div id="start-telop">
+            〜 卵をタップしよう 〜
+        </div>
 
-        <div class="crack" id="crack1"></div>
-        <div class="crack" id="crack2"></div>
-        <div class="crack" id="crack3"></div>
-        <div class="crack" id="crack4"></div>
-        <div class="crack" id="crack5"></div>
-        <div class="crack" id="crack6"></div>
-        <div class="crack" id="crack7"></div>
-        <div class="crack" id="crack8"></div>
-        <div class="crack" id="crack9"></div>
-        <div class="crack" id="crack10"></div>
+        <div id="egg">🥚</div>
 
     </div>
 
-</div>
+    <div id="message">
+        画面を叩いて音を鳴らせ！
+    </div>
 
-<div id="message">
-    画面を叩いて音を鳴らせ！
-</div>
+    <!-- リセット＆チート機能ボタン類 -->
+    <div id="btn-area">
 
-<div id="btn-area">
+        <button
+            onclick="addCount(100)"
+            style="background:#555;">
+            [チート機能！] +100タップ
+        </button>
 
-<button
-    onclick="addCount(100)"
-    style="background:#555;"
->
-    [チート機能！] +100タップ
-</button>
+        <button
+            onclick="resetCurrentGame()"
+            style="background:#d97706;">
+            🔄 タップ数をリセット
+        </button>
 
-<button
-    onclick="resetCurrentGame()"
-    style="background:#d97706;"
->
-    🔄 タップ数をリセット
-</button>
+        <button
+            onclick="clearAllSaveData()"
+            style="background:#dc2626;">
+            💥 全データリセット
+        </button>
 
-<button
-    onclick="clearAllSaveData()"
-    style="background:#dc2626;"
->
-    💥 全データリセット
-</button>
+    </div>
 
-</div>
+    <div id="collection-summary">
 
-<div id="collection-summary">
+        <h3>
+            図鑑達成率:
+            <span id="col-count">0</span> / 101
+        </h3>
 
-<h3>
-    図鑑達成率:
-    <span id="col-count">0</span> / 101
-</h3>
+        <button onclick="openZukan()">
+            📖 ひよこ図鑑を見る
+        </button>
 
-<button onclick="openZukan()">
-    📖 ひよこ図鑑を見る
-</button>
+    </div>
 
-</div>
+    <!-- ゲーム説明書き -->
+    <div id="game-description">
 
-<div id="game-description">
+        <h3>💡 あそびかた</h3>
 
-<h3>💡 あそびかた</h3>
+        ・たまごを10,000回タップすると、中からひよこが生まれます！<br>
+        ・誕生したひよこは図鑑にコレクションされていきます。<br>
+        ・同じひよこが被っても図鑑に所持数がカウントされるよ！<br>
+        ・ひよこの種類は全101種類！100種類集めると特別な101番目が…？
 
-・たまごを10,000回タップすると、中からひよこが生まれます！<br>
-・1,000回タップするごとに卵にヒビが入っていきます！<br>
-・1,000回ごとに卵の揺れもどんどん激しくなります！<br>
-・誕生したひよこは図鑑にコレクションされていきます。<br>
-・同じひよこが被っても図鑑に所持数がカウントされるよ！<br>
-・ひよこの種類は全101種類！100種類集めると特別な101番目が…？
+    </div>
 
 </div>
 
-</div>
-
-
-<!-- =========================
+<!-- =========================================
      誕生モーダル
-========================= -->
+========================================= -->
 
 <div id="result-modal" class="modal">
 
-<h1
-    style="
-        color:#ff0;
-        font-size:32px;
-        margin:0;
-        position:relative;
-        z-index:5;
-    "
->
-    🎉 生 誕 🎉
-</h1>
+    <!-- レア度演出用 -->
+    <div id="rarity-effect"></div>
 
-<div
-    id="rarity-label"
-    style="
-        font-size:22px;
-        font-weight:bold;
-        margin-top:5px;
-        position:relative;
-        z-index:5;
-    "
-></div>
+    <!-- GOD専用タイトル -->
+    <div id="god-title">
+        ✨✨ GOD ✨✨
+    </div>
 
-<div id="chick-icon">
-    🐥
+    <h1
+        style="
+            color:#ff0;
+            font-size:32px;
+            margin:0;
+            position:relative;
+            z-index:30;
+        ">
+        🎉 生 誕 🎉
+    </h1>
+
+    <div
+        id="rarity-label"
+        style="
+            font-size:22px;
+            font-weight:bold;
+            margin-top:5px;
+            position:relative;
+            z-index:30;
+        ">
+    </div>
+
+    <div id="chick-icon">
+        🐥
+    </div>
+
+    <h2
+        id="chick-name"
+        style="
+            margin:5px 0;
+            position:relative;
+            z-index:30;
+        ">
+        普通のひよこ
+    </h2>
+
+    <div
+        id="chick-owned-count"
+        style="
+            color:#ffeb3b;
+            font-weight:bold;
+            margin-bottom:8px;
+            position:relative;
+            z-index:30;
+        ">
+    </div>
+
+    <p
+        id="chick-desc"
+        style="
+            color:#ccc;
+            max-width:85%;
+            font-size:14px;
+            line-height:1.4;
+            position:relative;
+            z-index:30;
+        ">
+    </p>
+
+    <button
+        id="next-egg-btn"
+        onclick="resetGame()"
+        style="position:relative; z-index:30;">
+        次のクソ卵を温める
+    </button>
+
 </div>
 
-<h2
-    id="chick-name"
-    style="
-        margin:5px 0;
-        position:relative;
-        z-index:5;
-    "
->
-    普通のひよこ
-</h2>
-
-<div
-    id="chick-owned-count"
-    style="
-        color:#ffeb3b;
-        font-weight:bold;
-        margin-bottom:8px;
-        position:relative;
-        z-index:5;
-    "
-></div>
-
-<p
-    id="chick-desc"
-    style="
-        color:#ccc;
-        max-width:85%;
-        font-size:14px;
-        line-height:1.4;
-        position:relative;
-        z-index:5;
-    "
-></p>
-
-<button
-    id="next-egg-btn"
-    onclick="resetGame()"
-    style="position:relative;z-index:5;"
->
-    次のクソ卵を温める
-</button>
-
-</div>
-
-
-<!-- =========================
-     図鑑
-========================= -->
+<!-- =========================================
+     図鑑一覧モーダル
+========================================= -->
 
 <div id="zukan-modal" class="modal">
 
-<h2 style="margin:0;color:#ffeb3b;">
-    🐥 ひよこ図鑑 🐥
-</h2>
+    <h2
+        style="
+            margin:0;
+            color:#ffeb3b;
+            position:relative;
+            z-index:30;
+        ">
+        🐥 ひよこ図鑑 🐥
+    </h2>
 
-<div
-    id="zukan-status"
-    style="
-        margin-top:5px;
-        color:#aaa;
-        font-weight:bold;
-    "
->
-    集めたひよこ:
-    <span id="zukan-modal-count">0</span>
-    / 101 種類
+    <div
+        id="zukan-status"
+        style="
+            margin-top:5px;
+            color:#aaa;
+            font-weight:bold;
+            position:relative;
+            z-index:30;
+        ">
+        集めたひよこ:
+        <span id="zukan-modal-count">0</span>
+        / 101 種類
+    </div>
+
+    <div id="zukan-list"></div>
+
+    <button
+        onclick="closeZukan()"
+        style="position:relative; z-index:30;">
+        閉じる
+    </button>
+
 </div>
-
-<div id="zukan-list"></div>
-
-<button onclick="closeZukan()">
-    閉じる
-</button>
-
-</div>
-
 
 <script>
 
 let count = 0;
-
 const targetCount = 10000;
 
 let audioCtx = null;
@@ -1064,256 +784,166 @@ let bgmTimer = null;
 let currentBgmStage = -1;
 
 const totalChickCount = 101;
-
 const chickTypes = generateChickDatabase();
 
 let collectionCounts = {};
 
-
-/* =========================
-   ページ読み込み
-========================= */
+/* =========================================
+   起動
+========================================= */
 
 window.onload = function() {
     loadGameData();
 };
 
-
-/* =========================
-   ヒビ＋揺れ演出
-========================= */
-
-function updateEggCracks(currentCount) {
-
-    const cracks =
-        document.getElementById("egg-cracks");
-
-    const eggContainer =
-        document.getElementById("egg-container");
-
-    if (!cracks || !eggContainer) return;
-
-
-    /* ヒビ */
-
-    let stage =
-        Math.floor(currentCount / 1000);
-
-    if (stage > 10) {
-        stage = 10;
-    }
-
-    for (let i = 1; i <= 10; i++) {
-
-        cracks.classList.remove(
-            `stage-${i}`
-        );
-
-    }
-
-    if (stage > 0) {
-
-        cracks.classList.add(
-            `stage-${stage}`
-        );
-
-    }
-
-
-    /* =========================
-       ★ 卵の揺れ
-       1000回ごとに強くする
-    ========================= */
-
-    for (let i = 1; i <= 10; i++) {
-
-        eggContainer.classList.remove(
-            `shake-${i}`
-        );
-
-    }
-
-    if (stage > 0) {
-
-        eggContainer.classList.add(
-            `shake-${stage}`
-        );
-
-    }
-
-}
-
-
-/* =========================
+/* =========================================
    ひよこデータ
-========================= */
+========================================= */
 
 function generateChickDatabase() {
 
     const rawData = [
 
-        { id:1, name:"普通のひよこ", rarity:"N", emoji:"🐥", desc:"どこにでもいるごく普通のひよこ。特に特徴はない。" },
-        { id:2, name:"早起きピヨ", rarity:"N", emoji:"🐥", desc:"毎朝4時に起きて筋トレをしているが体型は全く変わらない。" },
-        { id:3, name:"曖昧なトリ", rarity:"N", emoji:"🐥", desc:"口癖は『まあ知らんけど』で議論をうやむやにするプロ。" },
-        { id:4, name:"深呼吸チキン", rarity:"N", emoji:"🐥", desc:"夜中に自分の翼を見つめて深呼吸するのが毎日の日課。" },
-        { id:5, name:"強打ピヨ", rarity:"N", emoji:"🐥", desc:"キーボードの『Enter』キーだけやたら強く叩くクセがある。" },
-        { id:6, name:"快適なひよこ", rarity:"N", emoji:"🐥", desc:"実は卵の殻の中に小型エアコンを完備して暮らしていた。" },
-        { id:7, name:"ビジネスピヨ", rarity:"N", emoji:"🐥", desc:"鳴き声が『ピヨ』ではなく『ソノ件デスガ』である。" },
-        { id:8, name:"限界バッテリー", rarity:"N", emoji:"🐥", desc:"バッテリー残量が常に3%しかない次世代型の省エネピヨ。" },
-        { id:9, name:"アイデンティティ崩壊", rarity:"N", emoji:"🐥", desc:"連打された衝撃で自分が本当に鶏だったか悩み始めた。" },
-        { id:10, name:"ストイックチキン", rarity:"N", emoji:"🐥", desc:"プロテインを水なしでガブ飲みする驚異の体質の持ち主。" },
+        { id: 1, name: "普通のひよこ", rarity: "N", emoji: "🐥", desc: "どこにでもいるごく普通のひよこ。特に特徴はない。" },
+        { id: 2, name: "早起きピヨ", rarity: "N", emoji: "🐥", desc: "毎朝4時に起きて筋トレをしているが体型は全く変わらない。" },
+        { id: 3, name: "曖昧なトリ", rarity: "N", emoji: "🐥", desc: "口癖は『まあ知らんけど』で議論をうやむやにするプロ。" },
+        { id: 4, name: "深呼吸チキン", rarity: "N", emoji: "🐥", desc: "夜中に自分の翼を見つめて深呼吸するのが毎日の日課。" },
+        { id: 5, name: "強打ピヨ", rarity: "N", emoji: "🐥", desc: "キーボードの『Enter』キーだけやたら強く叩くクセがある。" },
+        { id: 6, name: "快適なひよこ", rarity: "N", emoji: "🐥", desc: "実は卵の殻の中に小型エアコンを完備して暮らしていた。" },
+        { id: 7, name: "ビジネスピヨ", rarity: "N", emoji: "🐥", desc: "鳴き声が『ピヨ』ではなく『ソノ件デスガ』である。" },
+        { id: 8, name: "限界バッテリー", rarity: "N", emoji: "🐥", desc: "バッテリー残量が常に3%しかない次世代型の省エネピヨ。" },
+        { id: 9, name: "アイデンティティ崩壊", rarity: "N", emoji: "🐥", desc: "連打された衝撃で自分が本当に鶏だったか悩み始めた。" },
+        { id: 10, name: "ストイックチキン", rarity: "N", emoji: "🐥", desc: "プロテインを水なしでガブ飲みする驚異の体質の持ち主。" },
+        { id: 11, name: "超高音ピヨ", rarity: "N", emoji: "🐥", desc: "鳴き声の周波数が高すぎてコウモリにしか届かない。" },
+        { id: 12, name: "ドトールトリ", rarity: "N", emoji: "🐥", desc: "休日はカフェでノートPCを開きドヤ顔で何もしない。" },
+        { id: 13, name: "抜け毛コレクター", rarity: "N", emoji: "🐥", desc: "自分の抜け毛を集めて小さなクッションを作ろうとしている。" },
+        { id: 14, name: "こだわりピヨ", rarity: "N", emoji: "🐥", desc: "『ピヨ』の発音にプロ意識を持ち異常なこだわりを見せる。" },
+        { id: 15, name: "シャイなひよこ", rarity: "N", emoji: "🐥", desc: "じっと見つめると照れて自ら卵に戻ろうとする。" },
+        { id: 16, name: "無課金の味方", rarity: "N", emoji: "🐥", desc: "期待されないと逆に燃える天の邪鬼なメンタルの持ち主。" },
+        { id: 17, name: "太平洋スイマー", rarity: "N", emoji: "🐥", desc: "自力で太平洋を泳ぎ渡るという壮大な夢を持っている。" },
+        { id: 18, name: "人情チキン", rarity: "N", emoji: "🐥", desc: "10,000回連打してくれたあなたの指の温もりを生涯忘れない。" },
+        { id: 19, name: "悟りピヨ", rarity: "N", emoji: "🐥", desc: "完全に悟りをひらいておりどんな扱いを受けても動じない。" },
+        { id: 20, name: "打ち切りひよこ", rarity: "N", emoji: "🐥", desc: "生まれた瞬間に『次回作にご期待ください』と言いかけた。" },
+        { id: 21, name: "夜型ピヨ", rarity: "N", emoji: "🐥", desc: "夜の2時に突然部屋の模様替えを始めたくなるタイプ。" },
+        { id: 22, name: "エナドリ依存症", rarity: "N", emoji: "🐥", desc: "翼の代わりにエナジードリンクを持ち歩いている。" },
+        { id: 23, name: "SNSバズ狙い", rarity: "N", emoji: "🐥", desc: "生まれた瞬間の写真をTikTokに投降しようと画策中。" },
+        { id: 24, name: "遅刻魔トリ", rarity: "N", emoji: "🐥", desc: "『あと5分で着く』と連絡してから家を出るタイプ。" },
+        { id: 25, name: "猫かぶりピヨ", rarity: "N", emoji: "🐥", desc: "人前では可愛いが裏では激辛キムチを好んで食べる。" },
+        { id: 26, name: "通販マニア", rarity: "N", emoji: "🐥", desc: "使わない健康器具を部屋に積み上げている。" },
+        { id: 27, name: "腹八分目チキン", rarity: "N", emoji: "🐥", desc: "絶対に食べすぎない徹底した自己管理を行っている。" },
+        { id: 28, name: "語彙力崩壊", rarity: "N", emoji: "🐥", desc: "感動すると『ヤバい』と『エモい』しか言えなくなる。" },
+        { id: 29, name: "ポーカーフェイス", rarity: "N", emoji: "🐥", desc: "何を考えているか身内でも全く読めない謎の存在。" },
+        { id: 30, name: "株式含み損ピヨ", rarity: "N", emoji: "🐥", desc: "裏で株式投資をしており絶望的な含み損に苦しんでいる。" },
+        { id: 31, name: "ポテチ大好き", rarity: "N", emoji: "🐥", desc: "箸を使ってポテトチップスを食べる几帳面な一面がある。" },
+        { id: 32, name: "自称ミニマリスト", rarity: "N", emoji: "🐥", desc: "物を捨てすぎて生活に必要な家具まで失った。" },
+        { id: 33, name: "傘忘れるトリ", rarity: "N", emoji: "🐥", desc: "降水確率10%の日でも必ずビニール傘を買うハメになる。" },
+        { id: 34, name: "自撮り加工勢", rarity: "N", emoji: "🐥", desc: "アプリの加工により原形をとどめていない美男子。" },
+        { id: 35, name: "音読ピヨ", rarity: "N", emoji: "🐥", desc: "漫画を読むときは必ず声に出してセリフを言う。" },
+        { id: 36, name: "筋トレ初心者", rarity: "N", emoji: "🐥", desc: "ダンベルを買ったことで満足してトレーニングを終えた。" },
+        { id: 37, name: "長風呂チキン", rarity: "N", emoji: "🐥", desc: "一度お風呂に入るとなかなか出てこない。" },
+        { id: 38, name: "パスワード忘れる勢", rarity: "N", emoji: "🐥", desc: "パスワード再設定の無限ループに陥っている。" },
+        { id: 39, name: "映画通ぶるピヨ", rarity: "N", emoji: "🐥", desc: "字幕版しか認めない強いこだわりを持っている。" },
+        { id: 40, name: "二度寝の達人", rarity: "N", emoji: "🐥", desc: "目覚まし時計を5分おきに10個セットしている。" },
+        { id: 41, name: "フリマ中毒", rarity: "N", emoji: "🐥", desc: "梱包資材を家に大量にストックしている。" },
+        { id: 42, name: "サウナーピヨ", rarity: "N", emoji: "🐥", desc: "整うことだけを求めて全国の銭湯を巡っている。" },
+        { id: 43, name: "ゲーマーひよこ", rarity: "N", emoji: "🐥", desc: "勝てるまで寝ないつもりが朝を迎えてしまった。" },
+        { id: 44, name: "味痴チキン", rarity: "N", emoji: "🐥", desc: "何を食べても『美味しい』と言ってくれるイイ奴。" },
+        { id: 45, name: "方向音痴ピヨ", rarity: "N", emoji: "🐥", desc: "マップアプリを起動しながら逆方向に進んでいく。" },
+        { id: 46, name: "まとめ買い勢", rarity: "N", emoji: "🐥", desc: "トイレットペーパーを一年分買い溜めしている。" },
+        { id: 47, name: "カラオケ熱唱トリ", rarity: "N", emoji: "🐥", desc: "自分のキーに合わない曲を無理して歌って喉を壊す。" },
+        { id: 48, name: "プロテインソムリエ", rarity: "N", emoji: "🐥", desc: "各メーカーのチョコ味の微妙な違いを語れる。" },
+        { id: 49, name: "SNS垢抜け狙い", rarity: "N", emoji: "🐥", desc: "裏アカウントで毎日ポエムをつぶやいている。" },
+        { id: 50, name: "モバイルバッテリー重装型", rarity: "N", emoji: "🐥", desc: "充電器を3つ常備しているためカバンが超重い。" },
+        { id: 51, name: "衝動買いトリ", rarity: "N", emoji: "🐥", desc: "深夜の通販で買った謎の健康器具に囲まれて寝ている。" },
+        { id: 52, name: "伝説のニートトリ", rarity: "N", emoji: "🐥", desc: "実家の居心地が良すぎて一生飛び立つ気がない。" },
+        { id: 53, name: "形から入るタイプ", rarity: "N", emoji: "🐥", desc: "ジョギングを始めるために最高級ウェアを揃えたが走らない。" },
+        { id: 54, name: "キーボードクラッシャー", rarity: "N", emoji: "🐥", desc: "タイピング音がうるさすぎて周囲から注意されている。" },
+        { id: 55, name: "既読無視ピヨ", rarity: "N", emoji: "🐥", desc: "メッセージを見て満足し返信を忘れるタイプ。" },
+        { id: 56, name: "イヤホン行方不明", rarity: "N", emoji: "🐥", desc: "片方のワイヤレスイヤホンを失くして絶望している。" },
+        { id: 57, name: "自作ポエム作家", rarity: "N", emoji: "🐥", desc: "昔書いたノートを見返してあまりの恥ずかしさに悶絶する。" },
+        { id: 58, name: "ポイントカード長者", rarity: "N", emoji: "🐥", desc: "財布がポイントカードでパンパンに膨らんでいる。" },
+        { id: 59, name: "雨男トリ", rarity: "N", emoji: "🐥", desc: "彼がお出かけする日は例外なく降水確率が上がる。" },
+        { id: 60, name: "洗顔フォーム愛好家", rarity: "N", emoji: "🐥", desc: "泡立てネットで作る泡のキメ細かさに命をかけている。" },
+        { id: 61, name: "バイブレーション勘違い", rarity: "N", emoji: "🐥", desc: "スマホが鳴っていないのにポケットの揺れを感じる。" },
+        { id: 62, name: "ネコ派のトリ", rarity: "N", emoji: "🐥", desc: "トリのくせに猫の動画を毎日5時間見ている。" },
+        { id: 63, name: "カフェイン過剰摂取", rarity: "N", emoji: "🐥", desc: "コーヒーを飲みすぎて目がギンギンになっている。" },
+        { id: 64, name: "アイス中毒", rarity: "N", emoji: "🐥", desc: "真冬でもこたつに入りながらアイスを貪り喰う。" },
+        { id: 65, name: "領収書コレクター", rarity: "N", emoji: "🐥", desc: "経費で落とせるか微妙なレシートを溜め込んでいる。" },
+        { id: 66, name: "前髪こだわり派", rarity: "N", emoji: "🐥", desc: "強風が吹くと前髪を押さえて動かなくなる。" },
+        { id: 67, name: "まとめサイト信者", rarity: "N", emoji: "🐥", desc: "ネットの噂話をすべて真実だと信じ込んでいる。" },
+        { id: 68, name: "寝相最悪チキン", rarity: "N", emoji: "🐥", desc: "朝起きるとベッドから180度回転した位置にいる。" },
+        { id: 69, name: "エスカレーター歩かない", rarity: "N", emoji: "🐥", desc: "安全第一で手すりをしっかり握って立ち止まる優良児。" },
+        { id: 70, name: "深夜ラーメンの誘惑", rarity: "N", emoji: "🐥", desc: "夜中2時の背油ラーメンの誘惑に勝てたことがない。" },
 
-        { id:11, name:"超高音ピヨ", rarity:"N", emoji:"🐥", desc:"鳴き声の周波数が高すぎてコウモリにしか届かない。" },
-        { id:12, name:"ドトールトリ", rarity:"N", emoji:"🐥", desc:"休日はカフェでノートPCを開きドヤ顔で何もしない。" },
-        { id:13, name:"抜け毛コレクター", rarity:"N", emoji:"🐥", desc:"自分の抜け毛を集めて小さなクッションを作ろうとしている。" },
-        { id:14, name:"こだわりピヨ", rarity:"N", emoji:"🐥", desc:"『ピヨ』の発音にプロ意識を持ち異常なこだわりを見せる。" },
-        { id:15, name:"シャイなひよこ", rarity:"N", emoji:"🐥", desc:"じっと見つめると照れて自ら卵に戻ろうとする。" },
-        { id:16, name:"無課金の味方", rarity:"N", emoji:"🐥", desc:"期待されないと逆に燃える天の邪鬼なメンタルの持ち主。" },
-        { id:17, name:"太平洋スイマー", rarity:"N", emoji:"🐥", desc:"自力で太平洋を泳ぎ渡るという壮大な夢を持っている。" },
-        { id:18, name:"人情チキン", rarity:"N", emoji:"🐥", desc:"10,000回連打してくれたあなたの指の温もりを生涯忘れない。" },
-        { id:19, name:"悟りピヨ", rarity:"N", emoji:"🐥", desc:"完全に悟りをひらいておりどんな扱いを受けても動じない。" },
-        { id:20, name:"打ち切りひよこ", rarity:"N", emoji:"🐥", desc:"生まれた瞬間に『次回作にご期待ください』と言いかけた。" },
+        { id: 71, name: "銀河のピヨ", rarity: "SR", emoji: "🐤", desc: "宇宙の真理を解き明かすために生まれたスターチキン。" },
+        { id: 72, name: "漆黒の堕天使", rarity: "SR", emoji: "🐤", desc: "闇のチカラを右翼に封印している厨二病ピヨ。" },
+        { id: 73, name: "メカピヨ1号", rarity: "SR", emoji: "🐤", desc: "超合金で作られたメカ。たまに油漏れを起こす。" },
+        { id: 74, name: "サイバーチキン", rarity: "SR", emoji: "🐤", desc: "電脳世界を駆け巡るハッカー。好きな食べ物はボルト。" },
+        { id: 75, name: "黄金のひよこ", rarity: "SR", emoji: "🐤", desc: "全身が純金でできている。重すぎて飛べない。" },
+        { id: 76, name: "マッチョピヨ", rarity: "SR", emoji: "🐤", desc: "大胸筋をぴくぴく動かして挨拶してくるマッスル。" },
+        { id: 77, name: "超エスパー", rarity: "SR", emoji: "🐤", desc: "スプーンを曲げることができるが伸ばすことはできない。" },
+        { id: 78, name: "社畜ピヨ", rarity: "SR", emoji: "🐤", desc: "残業時間が月200時間を超えて逆にテンションが高い。" },
+        { id: 79, name: "透明ピヨ", rarity: "SR", emoji: "🐤", desc: "光学迷彩をまとっているが普通に足音がうるさい。" },
+        { id: 80, name: "爆音フェニックス", rarity: "SR", emoji: "🐤", desc: "鳴き声が近所迷惑レベルの爆音。重低音が響く。" },
+        { id: 81, name: "ネオ・ピヨ", rarity: "SR", emoji: "🐤", desc: "未来からやってきたターミネーター型ひよこ。" },
+        { id: 82, name: "ダンディチキン", rarity: "SR", emoji: "🐤", desc: "渋い声でブラックコーヒーの深みを語る大人。" },
+        { id: 83, name: "社外取締役", rarity: "SR", emoji: "🐤", desc: "月に一回だけ現れて鋭いアドバイスを残していく。" },
+        { id: 84, name: "ハイパー覚醒", rarity: "SR", emoji: "🐤", desc: "額の第三の目が開眼しかけている超常現象ピヨ。" },
+        { id: 85, name: "虚構のトリ", rarity: "SR", emoji: "🐤", desc: "存在自体が都市伝説とされている幻のひよこ。" },
+        { id: 86, name: "灼熱熱波", rarity: "SR", emoji: "🐤", desc: "周囲の温度を常に3度上昇させる熱い男。" },
+        { id: 87, name: "絶対零度ピヨ", rarity: "SR", emoji: "🐤", desc: "触れたものを凍りつかせるクールな殺し屋。" },
+        { id: 88, name: "タイムトラベラー", rarity: "SR", emoji: "🐤", desc: "明日のおやつを先に食べて怒られた過去を持つ。" },
+        { id: 89, name: "音速のツバサ", rarity: "SR", emoji: "🐤", desc: "マッハ3で移動するため目視することが不可能。" },
+        { id: 90, name: "錬金術師ピヨ", rarity: "SR", emoji: "🐤", desc: "石ころをひよこに変える術を習得した。" },
+        { id: 91, name: "パラレルピヨ", rarity: "SR", emoji: "🐤", desc: "別世界線から迷い込んできたパラレル存在。" },
+        { id: 92, name: "流星のトリ", rarity: "SR", emoji: "🐤", desc: "願い事をかなえてくれるが、一つにつき100円要求する。" },
+        { id: 93, name: "古代遺跡ピヨ", rarity: "SR", emoji: "🐤", desc: "数千年前の壁画に描かれていた伝説のトリ。" },
+        { id: 94, name: "ヴォイドチキン", rarity: "SR", emoji: "🐤", desc: "あらゆるものを吸い込む暗黒のブラックホールを持つ。" },
+        { id: 95, name: "超新星ピヨ", rarity: "SR", emoji: "🐤", desc: "眩しすぎる輝きで周りのひよこを圧倒する。" },
 
-        { id:21, name:"夜型ピヨ", rarity:"N", emoji:"🐥", desc:"夜の2時に突然部屋の模様替えを始めたくなるタイプ。" },
-        { id:22, name:"エナドリ依存症", rarity:"N", emoji:"🐥", desc:"翼の代わりにエナジードリンクを持ち歩いている。" },
-        { id:23, name:"SNSバズ狙い", rarity:"N", emoji:"🐥", desc:"生まれた瞬間の写真をTikTokに投降しようと画策中。" },
-        { id:24, name:"遅刻魔トリ", rarity:"N", emoji:"🐥", desc:"『あと5分で着く』と連絡してから家を出るタイプ。" },
-        { id:25, name:"猫かぶりピヨ", rarity:"N", emoji:"🐥", desc:"人前では可愛いが裏では激辛キムチを好んで食べる。" },
-        { id:26, name:"通販マニア", rarity:"N", emoji:"🐥", desc:"使わない健康器具を部屋に積み上げている。" },
-        { id:27, name:"腹八分目チキン", rarity:"N", emoji:"🐥", desc:"絶対に食べすぎない徹底した自己管理を行っている。" },
-        { id:28, name:"語彙力崩壊", rarity:"N", emoji:"🐥", desc:"感動すると『ヤバい』と『エモい』しか言えなくなる。" },
-        { id:29, name:"ポーカーフェイス", rarity:"N", emoji:"🐥", desc:"何を考えているか身内でも全く読めない謎の存在。" },
-        { id:30, name:"株式含み損ピヨ", rarity:"N", emoji:"🐥", desc:"裏で株式投資をしており絶望的な含み損に苦しんでいる。" },
+        { id: 96, name: "神速の連打王", rarity: "SSR", emoji: "🐥✨", desc: "一秒間に100回タップできる伝説の連打神。" },
+        { id: 97, name: "真・鳳凰ピヨ", rarity: "SSR", emoji: "🐥✨", desc: "何度倒れても卵から蘇る不滅の生命体。" },
+        { id: 98, name: "銀河皇帝ピヨ", rarity: "SSR", emoji: "🐥✨", desc: "全宇宙のひよこを束ねる絶対的支配者。" },
+        { id: 99, name: "全知全能のトリ", rarity: "SSR", emoji: "🐥✨", desc: "この世のすべての知識を網羅した知の化身。" },
+        { id: 100, name: "神聖不死鳥ピヨ・ゴッド", rarity: "SSR", emoji: "🦚", desc: "10,000回の連打に応えて舞い降りた究極の神話生物。" },
 
-        { id:31, name:"ポテチ大好き", rarity:"N", emoji:"🐥", desc:"箸を使ってポテトチップスを食べる几帳面な一面がある。" },
-        { id:32, name:"自称ミニマリスト", rarity:"N", emoji:"🐥", desc:"物を捨てすぎて生活に必要な家具まで失った。" },
-        { id:33, name:"傘忘れるトリ", rarity:"N", emoji:"🐥", desc:"降水確率10%の日でも必ずビニール傘を買うハメになる。" },
-        { id:34, name:"自撮り加工勢", rarity:"N", emoji:"🐥", desc:"アプリの加工により原形をとどめていない美男子。" },
-        { id:35, name:"音読ピヨ", rarity:"N", emoji:"🐥", desc:"漫画を読むときは必ず声に出してセリフを言う。" },
-        { id:36, name:"筋トレ初心者", rarity:"N", emoji:"🐥", desc:"ダンベルを買ったことで満足してトレーニングを終えた。" },
-        { id:37, name:"長風呂チキン", rarity:"N", emoji:"🐥", desc:"一度お風呂に入るとなかなか出てこない。" },
-        { id:38, name:"パスワード忘れる勢", rarity:"N", emoji:"🐥", desc:"パスワード再設定の無限ループに陥っている。" },
-        { id:39, name:"映画通ぶるピヨ", rarity:"N", emoji:"🐥", desc:"字幕版しか認めない強いこだわりを持っている。" },
-        { id:40, name:"二度寝の達人", rarity:"N", emoji:"🐥", desc:"目覚まし時計を5分おきに10個セットしている。" },
-
-        { id:41, name:"フリマ中毒", rarity:"N", emoji:"🐥", desc:"梱包資材を家に大量にストックしている。" },
-        { id:42, name:"サウナーピヨ", rarity:"N", emoji:"🐥", desc:"整うことだけを求めて全国の銭湯を巡っている。" },
-        { id:43, name:"ゲーマーひよこ", rarity:"N", emoji:"🐥", desc:"勝てるまで寝ないつもりが朝を迎えてしまった。" },
-        { id:44, name:"味痴チキン", rarity:"N", emoji:"🐥", desc:"何を食べても『美味しい』と言ってくれるイイ奴。" },
-        { id:45, name:"方向音痴ピヨ", rarity:"N", emoji:"🐥", desc:"マップアプリを起動しながら逆方向に進んでいく。" },
-        { id:46, name:"まとめ買い勢", rarity:"N", emoji:"🐥", desc:"トイレットペーパーを一年分買い溜めしている。" },
-        { id:47, name:"カラオケ熱唱トリ", rarity:"N", emoji:"🐥", desc:"自分のキーに合わない曲を無理して歌って喉を壊す。" },
-        { id:48, name:"プロテインソムリエ", rarity:"N", emoji:"🐥", desc:"各メーカーのチョコ味の微妙な違いを語れる。" },
-        { id:49, name:"SNS垢抜け狙い", rarity:"N", emoji:"🐥", desc:"裏アカウントで毎日ポエムをつぶやいている。" },
-        { id:50, name:"モバイルバッテリー重装型", rarity:"N", emoji:"🐥", desc:"充電器を3つ常備しているためカバンが超重い。" },
-
-        { id:51, name:"衝動買いトリ", rarity:"N", emoji:"🐥", desc:"深夜の通販で買った謎の健康器具に囲まれて寝ている。" },
-        { id:52, name:"伝説のニートトリ", rarity:"N", emoji:"🐥", desc:"実家の居心地が良すぎて一生飛び立つ気がない。" },
-        { id:53, name:"形から入るタイプ", rarity:"N", emoji:"🐥", desc:"ジョギングを始めるために最高級ウェアを揃えたが走らない。" },
-        { id:54, name:"キーボードクラッシャー", rarity:"N", emoji:"🐥", desc:"タイピング音がうるさすぎて周囲から注意されている。" },
-        { id:55, name:"既読無視ピヨ", rarity:"N", emoji:"🐥", desc:"メッセージを見て満足し返信を忘れるタイプ。" },
-        { id:56, name:"イヤホン行方不明", rarity:"N", emoji:"🐥", desc:"片方のワイヤレスイヤホンを失くして絶望している。" },
-        { id:57, name:"自作ポエム作家", rarity:"N", emoji:"🐥", desc:"昔書いたノートを見返してあまりの恥ずかしさに悶絶する。" },
-        { id:58, name:"ポイントカード長者", rarity:"N", emoji:"🐥", desc:"財布がポイントカードでパンパンに膨らんでいる。" },
-        { id:59, name:"雨男トリ", rarity:"N", emoji:"🐥", desc:"彼がお出かけする日は例外なく降水確率が上がる。" },
-        { id:60, name:"洗顔フォーム愛好家", rarity:"N", emoji:"🐥", desc:"泡立てネットで作る泡のキメ細かさに命をかけている。" },
-
-        { id:61, name:"バイブレーション勘違い", rarity:"N", emoji:"🐥", desc:"スマホが鳴っていないのにポケットの揺れを感じる。" },
-        { id:62, name:"ネコ派のトリ", rarity:"N", emoji:"🐥", desc:"トリのくせに猫の動画を毎日5時間見ている。" },
-        { id:63, name:"カフェイン過剰摂取", rarity:"N", emoji:"🐥", desc:"コーヒーを飲みすぎて目がギンギンになっている。" },
-        { id:64, name:"アイス中毒", rarity:"N", emoji:"🐥", desc:"真冬でもこたつに入りながらアイスを貪り喰う。" },
-        { id:65, name:"領収書コレクター", rarity:"N", emoji:"🐥", desc:"経費で落とせるか微妙なレシートを溜め込んでいる。" },
-        { id:66, name:"前髪こだわり派", rarity:"N", emoji:"🐥", desc:"強風が吹くと前髪を押さえて動かなくなる。" },
-        { id:67, name:"まとめサイト信者", rarity:"N", emoji:"🐥", desc:"ネットの噂話をすべて真実だと信じ込んでいる。" },
-        { id:68, name:"寝相最悪チキン", rarity:"N", emoji:"🐥", desc:"朝起きるとベッドから180度回転した位置にいる。" },
-        { id:69, name:"エスカレーター歩かない", rarity:"N", emoji:"🐥", desc:"安全第一で手すりをしっかり握って立ち止まる優良児。" },
-        { id:70, name:"深夜ラーメンの誘惑", rarity:"N", emoji:"🐥", desc:"夜中2時の背油ラーメンの誘惑に勝てたことがない。" },
-
-        { id:71, name:"銀河のピヨ", rarity:"SR", emoji:"🐤", desc:"宇宙の真理を解き明かすために生まれたスターチキン。" },
-        { id:72, name:"漆黒の堕天使", rarity:"SR", emoji:"🐤", desc:"闇のチカラを右翼に封印している厨二病ピヨ。" },
-        { id:73, name:"メカピヨ1号", rarity:"SR", emoji:"🐤", desc:"超合金で作られたメカ。たまに油漏れを起こす。" },
-        { id:74, name:"サイバーチキン", rarity:"SR", emoji:"🐤", desc:"電脳世界を駆け巡るハッカー。好きな食べ物はボルト。" },
-        { id:75, name:"黄金のひよこ", rarity:"SR", emoji:"🐤", desc:"全身が純金でできている。重すぎて飛べない。" },
-        { id:76, name:"マッチョピヨ", rarity:"SR", emoji:"🐤", desc:"大胸筋をぴくぴく動かして挨拶してくるマッスル。" },
-        { id:77, name:"超エスパー", rarity:"SR", emoji:"🐤", desc:"スプーンを曲げることができるが伸ばすことはできない。" },
-        { id:78, name:"社畜ピヨ", rarity:"SR", emoji:"🐤", desc:"残業時間が月200時間を超えて逆にテンションが高い。" },
-        { id:79, name:"透明ピヨ", rarity:"SR", emoji:"🐤", desc:"光学迷彩をまとっているが普通に足音がうるさい。" },
-        { id:80, name:"爆音フェニックス", rarity:"SR", emoji:"🐤", desc:"鳴き声が近所迷惑レベルの爆音。重低音が響く。" },
-
-        { id:81, name:"ネオ・ピヨ", rarity:"SR", emoji:"🐤", desc:"未来からやってきたターミネーター型ひよこ。" },
-        { id:82, name:"ダンディチキン", rarity:"SR", emoji:"🐤", desc:"渋い声でブラックコーヒーの深みを語る大人。" },
-        { id:83, name:"社外取締役", rarity:"SR", emoji:"🐤", desc:"月に一回だけ現れて鋭いアドバイスを残していく。" },
-        { id:84, name:"ハイパー覚醒", rarity:"SR", emoji:"🐤", desc:"額の第三の目が開眼しかけている超常現象ピヨ。" },
-        { id:85, name:"虚構のトリ", rarity:"SR", emoji:"🐤", desc:"存在自体が都市伝説とされている幻のひよこ。" },
-        { id:86, name:"灼熱熱波", rarity:"SR", emoji:"🐤", desc:"周囲の温度を常に3度上昇させる熱い男。" },
-        { id:87, name:"絶対零度ピヨ", rarity:"SR", emoji:"🐤", desc:"触れたものを凍りつかせるクールな殺し屋。" },
-        { id:88, name:"タイムトラベラー", rarity:"SR", emoji:"🐤", desc:"明日のおやつを先に食べて怒られた過去を持つ。" },
-        { id:89, name:"音速のツバサ", rarity:"SR", emoji:"🐤", desc:"マッハ3で移動するため目視することが不可能。" },
-        { id:90, name:"錬金術師ピヨ", rarity:"SR", emoji:"🐤", desc:"石ころをひよこに変える術を習得した。" },
-
-        { id:91, name:"パラレルピヨ", rarity:"SR", emoji:"🐤", desc:"別世界線から迷い込んできたパラレル存在。" },
-        { id:92, name:"流星のトリ", rarity:"SR", emoji:"🐤", desc:"願い事をかなえてくれるが、一つにつき100円要求する。" },
-        { id:93, name:"古代遺跡ピヨ", rarity:"SR", emoji:"🐤", desc:"数千年前の壁画に描かれていた伝説のトリ。" },
-        { id:94, name:"ヴォイドチキン", rarity:"SR", emoji:"🐤", desc:"あらゆるものを吸い込む暗黒のブラックホールを持つ。" },
-        { id:95, name:"超新星ピヨ", rarity:"SR", emoji:"🐤", desc:"眩しすぎる輝きで周りのひよこを圧倒する。" },
-
-        { id:96, name:"神速の連打王", rarity:"SSR", emoji:"🐥✨", desc:"一秒間に100回タップできる伝説の連打神。" },
-        { id:97, name:"真・鳳凰ピヨ", rarity:"SSR", emoji:"🐥✨", desc:"何度倒れても卵から蘇る不滅の生命体。" },
-        { id:98, name:"銀河皇帝ピヨ", rarity:"SSR", emoji:"🐥✨", desc:"全宇宙のひよこを束ねる絶対的支配者。" },
-        { id:99, name:"全知全能のトリ", rarity:"SSR", emoji:"🐥✨", desc:"この世のすべての知識を網羅した知の化身。" },
-        { id:100, name:"神聖不死鳥ピヨ・ゴッド", rarity:"SSR", emoji:"🦚", desc:"10,000回の連打に応えて舞い降りた究極の神話生物。" },
-
-        { id:101, name:"みずきちゃんひよこ", rarity:"GOD", emoji:"👑🐥", desc:"【開発者降臨】このクソゲーをこの世に生み出した偉大なる製作者「みずき」。100匹のひよこを集めし真の勇者にしか姿を見せない伝説の中の存在。" }
+        { id: 101, name: "みずきちゃんひよこ", rarity: "GOD", emoji: "👑🐥", desc: "【開発者降臨】このクソゲーをこの世に生み出した偉大なる製作者「みずき」。100匹のひよこを集めし真の勇者にしか姿を見せない伝説の中の存在。" }
 
     ];
 
     return rawData;
 }
 
-
-/* =========================
-   図鑑
-========================= */
+/* =========================================
+   所持ひよこ数
+========================================= */
 
 function getCollectedTypeCount() {
 
     return Object.keys(collectionCounts)
-        .filter(
-            id => collectionCounts[id] > 0
-        )
+        .filter(id => collectionCounts[id] > 0)
         .length;
 
 }
 
-
 function updateCollectionDisplay() {
 
-    const collectedTypes =
-        getCollectedTypeCount();
+    const collectedTypes = getCollectedTypeCount();
 
-    document.getElementById(
-        "col-count"
-    ).innerText =
-        collectedTypes;
-
-    document.getElementById(
-        "zukan-modal-count"
-    ).innerText =
-        collectedTypes;
+    document.getElementById("col-count").innerText = collectedTypes;
+    document.getElementById("zukan-modal-count").innerText = collectedTypes;
 
 }
 
-
-/* =========================
+/* =========================================
    セーブ
-========================= */
+========================================= */
 
 function saveGameData() {
 
     const saveData = {
         count: count,
-        collectionCounts:
-            collectionCounts
+        collectionCounts: collectionCounts
     };
 
     localStorage.setItem(
@@ -1323,27 +953,22 @@ function saveGameData() {
 
 }
 
-
-/* =========================
+/* =========================================
    ロード
-========================= */
+========================================= */
 
 function loadGameData() {
 
     const dataStr =
-        localStorage.getItem(
-            "kuso_egg_save"
-        );
+        localStorage.getItem("kuso_egg_save");
 
     if (dataStr) {
 
         try {
 
-            const data =
-                JSON.parse(dataStr);
+            const data = JSON.parse(dataStr);
 
-            count =
-                data.count || 0;
+            count = data.count || 0;
 
             if (data.collectionCounts) {
 
@@ -1357,11 +982,9 @@ function loadGameData() {
 
                 collectionCounts = {};
 
-                data.collection.forEach(
-                    id => {
-                        collectionCounts[id] = 1;
-                    }
-                );
+                data.collection.forEach(id => {
+                    collectionCounts[id] = 1;
+                });
 
             }
 
@@ -1369,38 +992,76 @@ function loadGameData() {
 
     }
 
-    document.getElementById(
-        "count"
-    ).innerText = count;
+    document.getElementById("count").innerText = count;
 
     updateCollectionDisplay();
-
-    updateEggCracks(count);
 
     updateMilestoneMessage(
         count - 1,
         count
     );
 
+    updateEggShake();
+
 }
 
+/* =========================================
+   卵の揺れを更新
+========================================= */
 
-/* =========================
-   リセット
-========================= */
+function updateEggShake() {
+
+    const egg =
+        document.getElementById("egg");
+
+    if (!egg) return;
+
+    egg.classList.remove(
+        "shake-1",
+        "shake-2",
+        "shake-3",
+        "shake-4",
+        "shake-5"
+    );
+
+    if (count >= 9000) {
+
+        egg.classList.add("shake-5");
+
+    } else if (count >= 7000) {
+
+        egg.classList.add("shake-4");
+
+    } else if (count >= 5000) {
+
+        egg.classList.add("shake-3");
+
+    } else if (count >= 3000) {
+
+        egg.classList.add("shake-2");
+
+    } else if (count >= 1000) {
+
+        egg.classList.add("shake-1");
+
+    }
+
+}
+
+/* =========================================
+   BGM
+========================================= */
 
 function stopBGM() {
 
     if (bgmTimer) {
 
         clearInterval(bgmTimer);
-
         bgmTimer = null;
 
     }
 
 }
-
 
 function resetCurrentGame() {
 
@@ -1410,37 +1071,27 @@ function resetCurrentGame() {
 
     saveGameData();
 
-    document.getElementById(
-        "count"
-    ).innerText = count;
+    document.getElementById("count").innerText = count;
 
-    document.getElementById(
-        "message"
-    ).innerText =
+    document.getElementById("message").innerText =
         "カウントをリセットしました！";
 
-    document.body.style.backgroundColor =
-        "#222";
-
-    updateEggCracks(0);
+    document.body.style.backgroundColor = "#222";
 
     stopBGM();
 
+    updateEggShake();
+
     if (audioCtx) {
-
         updateBGMStage();
-
     }
 
 }
 
-
 function clearAllSaveData() {
 
     const result =
-        confirm(
-            "本当にリセットしますか？"
-        );
+        confirm("本当にリセットしますか？");
 
     if (!result) return;
 
@@ -1454,36 +1105,28 @@ function clearAllSaveData() {
 
     currentBgmStage = -1;
 
-    document.getElementById(
-        "count"
-    ).innerText = 0;
+    document.getElementById("count").innerText = 0;
 
     updateCollectionDisplay();
 
-    document.getElementById(
-        "message"
-    ).innerText =
+    document.getElementById("message").innerText =
         "全データを初期化しました！";
 
-    document.body.style.backgroundColor =
-        "#222";
-
-    updateEggCracks(0);
+    document.body.style.backgroundColor = "#222";
 
     stopBGM();
 
+    updateEggShake();
+
     if (audioCtx) {
-
         updateBGMStage();
-
     }
 
 }
 
-
-/* =========================
-   オーディオ
-========================= */
+/* =========================================
+   AUDIO
+========================================= */
 
 function initAudioOnce() {
 
@@ -1507,7 +1150,6 @@ function initAudioOnce() {
 
 }
 
-
 function updateBGMStage() {
 
     if (!audioCtx) return;
@@ -1515,16 +1157,15 @@ function updateBGMStage() {
     let newStage =
         Math.floor(count / 1000);
 
-    if (newStage > 9)
+    if (newStage > 9) {
         newStage = 9;
+    }
 
     if (
-        newStage !==
-        currentBgmStage
+        newStage !== currentBgmStage
     ) {
 
-        currentBgmStage =
-            newStage;
+        currentBgmStage = newStage;
 
         startBGMByStage(
             currentBgmStage
@@ -1534,53 +1175,51 @@ function updateBGMStage() {
 
 }
 
-
 const noteFreqs = {
 
-    'C2':65.41,
-    'D2':73.42,
-    'E2':82.41,
-    'F2':87.31,
-    'G2':98.00,
-    'G#2':103.83,
-    'A2':110.00,
-    'B2':123.47,
+    'C2': 65.41,
+    'D2': 73.42,
+    'E2': 82.41,
+    'F2': 87.31,
+    'G2': 98.00,
+    'G#2': 103.83,
+    'A2': 110.00,
+    'B2': 123.47,
 
-    'C3':130.81,
-    'D3':146.83,
-    'Eb3':155.56,
-    'E3':164.81,
-    'F3':174.61,
-    'G3':196.00,
-    'G#3':207.65,
-    'A3':220.00,
-    'B3':246.94,
+    'C3': 130.81,
+    'D3': 146.83,
+    'Eb3': 155.56,
+    'E3': 164.81,
+    'F3': 174.61,
+    'G3': 196.00,
+    'G#3': 207.65,
+    'A3': 220.00,
+    'B3': 246.94,
 
-    'C4':261.63,
-    'D4':293.66,
-    'Eb4':311.13,
-    'E4':329.63,
-    'F4':349.23,
-    'G4':392.00,
-    'G#4':415.30,
-    'A4':440.00,
-    'B4':493.88,
+    'C4': 261.63,
+    'D4': 293.66,
+    'Eb4': 311.13,
+    'E4': 329.63,
+    'F4': 349.23,
+    'G4': 392.00,
+    'G#4': 415.30,
+    'A4': 440.00,
+    'B4': 493.88,
 
-    'C5':523.25,
-    'D5':587.33,
-    'Eb5':622.25,
-    'E5':659.25,
-    'F5':698.46,
-    'G5':783.99,
-    'G#5':830.61,
-    'A5':880.00,
-    'B5':987.77,
+    'C5': 523.25,
+    'D5': 587.33,
+    'Eb5': 622.25,
+    'E5': 659.25,
+    'F5': 698.46,
+    'G5': 783.99,
+    'G#5': 830.61,
+    'A5': 880.00,
+    'B5': 987.77,
 
-    'C6':1046.50,
+    'C6': 1046.50,
+    'R': 0
 
-    'R':0
 };
-
 
 const bgmMelodies = [
 
@@ -1607,23 +1246,18 @@ const bgmMelodies = [
 
 ];
 
-
 const grandSerenadeMelody = [
 
-    "E5","G5","C6","B5",
-    "A5","G5","F5","E5",
-
-    "D5","F5","A5","G5",
-    "F5","E5","D5","C5",
-
-    "A4","C5","E5","D5",
-    "C5","B4","A4","G4",
-
-    "C5","E5","G5","F5",
-    "E5","D5","B4","C5"
+    "E5", "G5", "C6", "B5",
+    "A5", "G5", "F5", "E5",
+    "D5", "F5", "A5", "G5",
+    "F5", "E5", "D5", "C5",
+    "A4", "C5", "E5", "D5",
+    "C5", "B4", "A4", "G4",
+    "C5", "E5", "G5", "F5",
+    "E5", "D5", "B4", "C5"
 
 ];
-
 
 function playSustainedNote(
     freq,
@@ -1632,8 +1266,7 @@ function playSustainedNote(
     gainVal = 0.1
 ) {
 
-    if (!audioCtx || freq === 0)
-        return;
+    if (!audioCtx || freq === 0) return;
 
     let osc =
         audioCtx.createOscillator();
@@ -1664,10 +1297,7 @@ function playSustainedNote(
     );
 
     osc.connect(gain);
-
-    gain.connect(
-        audioCtx.destination
-    );
+    gain.connect(audioCtx.destination);
 
     osc.start();
 
@@ -1676,7 +1306,6 @@ function playSustainedNote(
     );
 
 }
-
 
 function playDrumNoise(duration) {
 
@@ -1734,7 +1363,6 @@ function playDrumNoise(duration) {
 
 }
 
-
 function startBGMByStage(stage) {
 
     stopBGM();
@@ -1761,160 +1389,164 @@ function startBGMByStage(stage) {
 
     let step = 0;
 
-    bgmTimer =
-        setInterval(() => {
+    bgmTimer = setInterval(() => {
 
-            if (!audioCtx) return;
+        if (!audioCtx) return;
 
-            if (stage >= 9) {
+        if (stage >= 9) {
 
-                let noteStr =
-                    grandSerenadeMelody[
-                        step %
-                        grandSerenadeMelody.length
-                    ];
+            let noteStr =
+                grandSerenadeMelody[
+                    step %
+                    grandSerenadeMelody.length
+                ];
 
-                let freq =
-                    noteFreqs[noteStr] || 0;
+            let freq =
+                noteFreqs[noteStr] || 0;
+
+            playSustainedNote(
+                freq,
+                'triangle',
+                0.8,
+                0.14
+            );
+
+            if (freq > 0) {
 
                 playSustainedNote(
-                    freq,
-                    'triangle',
-                    0.8,
-                    0.14
+                    freq * 0.75,
+                    'sawtooth',
+                    0.7,
+                    0.04
                 );
-
-                if (freq > 0) {
-
-                    playSustainedNote(
-                        freq * 0.75,
-                        'sawtooth',
-                        0.7,
-                        0.04
-                    );
-
-                }
-
-                if (step % 2 === 0) {
-
-                    let baseFreq =
-                        freq
-                            ? freq / 2
-                            : noteFreqs['C2'];
-
-                    playSustainedNote(
-                        baseFreq,
-                        'triangle',
-                        1.2,
-                        0.22
-                    );
-
-                }
-
-                if (step % 4 === 0) {
-
-                    playDrumNoise(0.12);
-
-                }
-
-            } else {
-
-                let melodyIdx = 0;
-
-                if (stage >= 3)
-                    melodyIdx = 1;
-
-                if (stage >= 6)
-                    melodyIdx = 2;
-
-                const melody =
-                    bgmMelodies[melodyIdx];
-
-                let noteStr =
-                    melody[
-                        step % melody.length
-                    ];
-
-                let freq =
-                    noteFreqs[noteStr] || 0;
-
-                if (freq > 0) {
-
-                    let osc =
-                        audioCtx.createOscillator();
-
-                    let gain =
-                        audioCtx.createGain();
-
-                    osc.type = 'square';
-
-                    osc.frequency.setValueAtTime(
-                        freq,
-                        audioCtx.currentTime
-                    );
-
-                    gain.gain.setValueAtTime(
-                        0.06,
-                        audioCtx.currentTime
-                    );
-
-                    gain.gain.exponentialRampToValueAtTime(
-                        0.001,
-                        audioCtx.currentTime +
-                        (speed / 1000) * 0.95
-                    );
-
-                    osc.connect(gain);
-
-                    gain.connect(
-                        audioCtx.destination
-                    );
-
-                    osc.start();
-
-                    osc.stop(
-                        audioCtx.currentTime +
-                        speed / 1000
-                    );
-
-                }
-
-                if (
-                    stage >= 2 &&
-                    step % 2 === 0
-                ) {
-
-                    let baseFreq =
-                        freq
-                            ? freq / 2
-                            : noteFreqs['C3'];
-
-                    playSustainedNote(
-                        baseFreq,
-                        'triangle',
-                        (speed * 1.8) / 1000,
-                        0.08
-                    );
-
-                }
-
-                if (
-                    stage >= 4 &&
-                    step % 2 === 1
-                ) {
-
-                    playDrumNoise(0.05);
-
-                }
 
             }
 
-            step++;
+            if (step % 2 === 0) {
 
-        }, speed);
+                let baseFreq =
+                    freq
+                        ? freq / 2
+                        : noteFreqs['C2'];
+
+                playSustainedNote(
+                    baseFreq,
+                    'triangle',
+                    1.2,
+                    0.22
+                );
+
+            }
+
+            if (step % 4 === 0) {
+
+                playDrumNoise(0.12);
+
+            }
+
+        } else {
+
+            let melodyIdx = 0;
+
+            if (stage >= 3) {
+                melodyIdx = 1;
+            }
+
+            if (stage >= 6) {
+                melodyIdx = 2;
+            }
+
+            const melody =
+                bgmMelodies[melodyIdx];
+
+            let noteStr =
+                melody[
+                    step % melody.length
+                ];
+
+            let freq =
+                noteFreqs[noteStr] || 0;
+
+            if (freq > 0) {
+
+                let osc =
+                    audioCtx.createOscillator();
+
+                let gain =
+                    audioCtx.createGain();
+
+                osc.type = 'square';
+
+                osc.frequency.setValueAtTime(
+                    freq,
+                    audioCtx.currentTime
+                );
+
+                gain.gain.setValueAtTime(
+                    0.06,
+                    audioCtx.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.001,
+                    audioCtx.currentTime +
+                    (speed / 1000) * 0.95
+                );
+
+                osc.connect(gain);
+
+                gain.connect(
+                    audioCtx.destination
+                );
+
+                osc.start();
+
+                osc.stop(
+                    audioCtx.currentTime +
+                    speed / 1000
+                );
+
+            }
+
+            if (
+                stage >= 2 &&
+                step % 2 === 0
+            ) {
+
+                let baseFreq =
+                    freq
+                        ? freq / 2
+                        : noteFreqs['C3'];
+
+                playSustainedNote(
+                    baseFreq,
+                    'triangle',
+                    (speed * 1.8) / 1000,
+                    0.08
+                );
+
+            }
+
+            if (
+                stage >= 4 &&
+                step % 2 === 1
+            ) {
+
+                playDrumNoise(0.05);
+
+            }
+
+        }
+
+        step++;
+
+    }, speed);
 
 }
 
+/* =========================================
+   タップ音
+========================================= */
 
 function playTapSound(freq = 400) {
 
@@ -1957,6 +1589,9 @@ function playTapSound(freq = 400) {
 
 }
 
+/* =========================================
+   節目音
+========================================= */
 
 function playMilestoneSound() {
 
@@ -1965,11 +1600,15 @@ function playMilestoneSound() {
     const now =
         audioCtx.currentTime;
 
-    const notes =
-        [523,659,783,1046];
+    const notes = [
+        523,
+        659,
+        783,
+        1046
+    ];
 
     notes.forEach(
-        (freq,index) => {
+        (freq, index) => {
 
             let osc =
                 audioCtx.createOscillator();
@@ -2013,6 +1652,9 @@ function playMilestoneSound() {
 
 }
 
+/* =========================================
+   生誕ファンファーレ
+========================================= */
 
 function playFanfare() {
 
@@ -2021,11 +1663,17 @@ function playFanfare() {
     const now =
         audioCtx.currentTime;
 
-    const notes =
-        [523,659,783,1046,1318,1567];
+    const notes = [
+        523,
+        659,
+        783,
+        1046,
+        1318,
+        1567
+    ];
 
     notes.forEach(
-        (freq,index) => {
+        (freq, index) => {
 
             let osc =
                 audioCtx.createOscillator();
@@ -2069,10 +1717,9 @@ function playFanfare() {
 
 }
 
-
-/* =========================
+/* =========================================
    卵タップ
-========================= */
+========================================= */
 
 function tapEgg() {
 
@@ -2095,28 +1742,28 @@ function tapEgg() {
 
 }
 
-
-/* =========================
+/* =========================================
    カウント追加
-========================= */
+========================================= */
 
 function addCount(num) {
 
-    if (count >= targetCount)
-        return;
+    if (count >= targetCount) return;
 
     const prevCount = count;
 
     count += num;
 
-    if (count > targetCount)
+    if (count > targetCount) {
         count = targetCount;
+    }
 
     document.getElementById(
         "count"
     ).innerText = count;
 
-    updateEggCracks(count);
+    /* 卵の揺れを更新 */
+    updateEggShake();
 
     saveGameData();
 
@@ -2148,10 +1795,9 @@ function addCount(num) {
 
 }
 
-
-/* =========================
-   節目メッセージ
-========================= */
+/* =========================================
+   マイルストーン
+========================================= */
 
 function updateMilestoneMessage(
     prevCount,
@@ -2171,7 +1817,9 @@ function updateMilestoneMessage(
             currentCount >= m
         ) {
 
-            if (milestoneMessages[m]) {
+            if (
+                milestoneMessages[m]
+            ) {
 
                 document.getElementById(
                     "message"
@@ -2190,118 +1838,9 @@ function updateMilestoneMessage(
 
 }
 
-
-/* =========================
-   ★ GODキラキラ生成
-========================= */
-
-function createGodParticles() {
-
-    const symbols = [
-        "✨",
-        "⭐",
-        "🌟",
-        "💫",
-        "👑",
-        "🌈"
-    ];
-
-    for (
-        let i = 0;
-        i < 45;
-        i++
-    ) {
-
-        const particle =
-            document.createElement(
-                "div"
-            );
-
-        particle.className =
-            "god-particle";
-
-        particle.innerText =
-            symbols[
-                Math.floor(
-                    Math.random() *
-                    symbols.length
-                )
-            ];
-
-        particle.style.left =
-            (Math.random() * 100) + "vw";
-
-        particle.style.top =
-            (Math.random() * 100) + "vh";
-
-        particle.style.setProperty(
-            "--x",
-            Math.random() * 100
-        );
-
-        particle.style.setProperty(
-            "--y",
-            Math.random() * 100
-        );
-
-        document.body.appendChild(
-            particle
-        );
-
-        setTimeout(
-            () => {
-                particle.remove();
-            },
-            1600
-        );
-
-    }
-
-}
-
-
-/* =========================
-   レア度別演出
-========================= */
-
-function applyRarityEffect(rarity) {
-
-    const modal =
-        document.getElementById(
-            "result-modal"
-        );
-
-    modal.classList.remove(
-        "effect-N",
-        "effect-SR",
-        "effect-SSR",
-        "effect-GOD"
-    );
-
-    modal.classList.add(
-        `effect-${rarity}`
-    );
-
-
-    /* GODなら大量キラキラ */
-
-    if (rarity === "GOD") {
-
-        createGodParticles();
-
-        setTimeout(
-            createGodParticles,
-            500
-        );
-
-    }
-
-}
-
-
-/* =========================
-   ひよこ誕生
-========================= */
+/* =========================================
+   生誕演出
+========================================= */
 
 function hatchChick() {
 
@@ -2311,7 +1850,6 @@ function hatchChick() {
 
     const currentUniqueCount =
         getCollectedTypeCount();
-
 
     if (
         currentUniqueCount >= 100 &&
@@ -2335,12 +1873,15 @@ function hatchChick() {
 
         let rarityFilter = "N";
 
-        if (rand < 2)
+        if (rand < 2) {
+
             rarityFilter = "SSR";
 
-        else if (rand < 15)
+        } else if (rand < 15) {
+
             rarityFilter = "SR";
 
+        }
 
         let filteredPool =
             availablePool.filter(
@@ -2348,7 +1889,6 @@ function hatchChick() {
                     c.rarity ===
                     rarityFilter
             );
-
 
         if (
             filteredPool.length === 0
@@ -2358,7 +1898,6 @@ function hatchChick() {
                 availablePool;
 
         }
-
 
         chosenChick =
             filteredPool[
@@ -2370,7 +1909,6 @@ function hatchChick() {
 
     }
 
-
     collectionCounts[
         chosenChick.id
     ] =
@@ -2380,54 +1918,48 @@ function hatchChick() {
             ] || 0
         ) + 1;
 
-
     saveGameData();
 
     updateCollectionDisplay();
-
 
     document.getElementById(
         "rarity-label"
     ).innerText =
         `[${chosenChick.rarity}]`;
 
-
     document.getElementById(
         "rarity-label"
     ).className =
         `rare-${chosenChick.rarity}`;
-
 
     document.getElementById(
         "chick-icon"
     ).innerText =
         chosenChick.emoji;
 
-
     document.getElementById(
         "chick-name"
     ).innerText =
         chosenChick.name;
 
-
     document.getElementById(
         "chick-owned-count"
     ).innerText =
-        `所持数: ${collectionCounts[chosenChick.id]} 匹`;
-
+        `所持数: ${
+            collectionCounts[
+                chosenChick.id
+            ]
+        } 匹`;
 
     document.getElementById(
         "chick-desc"
     ).innerText =
         chosenChick.desc;
 
-
-    /* ★ レア度演出 */
-
-    applyRarityEffect(
+    /* レア度演出をセット */
+    setupRarityEffect(
         chosenChick.rarity
     );
-
 
     const nextBtn =
         document.getElementById(
@@ -2442,38 +1974,389 @@ function hatchChick() {
 
     }, 500);
 
-
     document.getElementById(
         "result-modal"
     ).classList.add("active");
 
 }
 
+/* =========================================
+   レア度別演出
+========================================= */
 
-/* =========================
-   次の卵
-========================= */
+function setupRarityEffect(rarity) {
+
+    const modal =
+        document.getElementById(
+            "result-modal"
+        );
+
+    const effect =
+        document.getElementById(
+            "rarity-effect"
+        );
+
+    modal.classList.remove(
+        "god-mode"
+    );
+
+    effect.className = "";
+
+    effect.classList.add(
+        `effect-${rarity}`
+    );
+
+    effect.innerHTML = "";
+
+    /* N */
+    if (rarity === "N") {
+
+        createSparkles(
+            5,
+            "normal"
+        );
+
+    }
+
+    /* SR */
+    else if (rarity === "SR") {
+
+        createSparkles(
+            18,
+            "normal"
+        );
+
+        createSRRings();
+
+    }
+
+    /* SSR */
+    else if (rarity === "SSR") {
+
+        createSparkles(
+            35,
+            "gold"
+        );
+
+        createSSRFlash();
+
+    }
+
+    /* GOD */
+    else if (rarity === "GOD") {
+
+        modal.classList.add(
+            "god-mode"
+        );
+
+        createSparkles(
+            70,
+            "rainbow"
+        );
+
+        createSSRFlash();
+
+        setTimeout(() => {
+
+            createSparkles(
+                70,
+                "rainbow"
+            );
+
+        }, 350);
+
+        setTimeout(() => {
+
+            createSparkles(
+                70,
+                "rainbow"
+            );
+
+        }, 700);
+
+    }
+
+}
+
+/* =========================================
+   キラキラ生成
+========================================= */
+
+function createSparkles(
+    amount,
+    type
+) {
+
+    const effect =
+        document.getElementById(
+            "rarity-effect"
+        );
+
+    for (
+        let i = 0;
+        i < amount;
+        i++
+    ) {
+
+        const sparkle =
+            document.createElement(
+                "div"
+            );
+
+        sparkle.className =
+            "sparkle";
+
+        if (type === "gold") {
+
+            sparkle.classList.add(
+                "gold"
+            );
+
+        }
+
+        if (type === "rainbow") {
+
+            sparkle.classList.add(
+                "rainbow"
+            );
+
+        }
+
+        sparkle.style.left =
+            (50 + (
+                Math.random() * 30 - 15
+            )) + "%";
+
+        sparkle.style.top =
+            (50 + (
+                Math.random() * 20 - 10
+            )) + "%";
+
+        const angle =
+            Math.random() *
+            Math.PI * 2;
+
+        const distance =
+            100 +
+            Math.random() * 250;
+
+        sparkle.style.setProperty(
+            "--x",
+            Math.cos(angle) *
+            distance +
+            "px"
+        );
+
+        sparkle.style.setProperty(
+            "--y",
+            Math.sin(angle) *
+            distance +
+            "px"
+        );
+
+        sparkle.style.animationDelay =
+            Math.random() * 0.4 +
+            "s";
+
+        effect.appendChild(
+            sparkle
+        );
+
+    }
+
+}
+
+/* =========================================
+   SRリング
+========================================= */
+
+function createSRRings() {
+
+    const effect =
+        document.getElementById(
+            "rarity-effect"
+        );
+
+    for (
+        let i = 0;
+        i < 3;
+        i++
+    ) {
+
+        const ring =
+            document.createElement(
+                "div"
+            );
+
+        ring.style.position =
+            "absolute";
+
+        ring.style.left =
+            "50%";
+
+        ring.style.top =
+            "50%";
+
+        ring.style.width =
+            "100px";
+
+        ring.style.height =
+            "100px";
+
+        ring.style.border =
+            "3px solid rgba(0,220,255,0.7)";
+
+        ring.style.borderRadius =
+            "50%";
+
+        ring.style.transform =
+            "translate(-50%, -50%)";
+
+        ring.style.animation =
+            "ringExpand 1.2s ease-out forwards";
+
+        ring.style.animationDelay =
+            (i * 0.25) + "s";
+
+        effect.appendChild(
+            ring
+        );
+
+    }
+
+}
+
+/* =========================================
+   SSR以上の爆発
+========================================= */
+
+function createSSRFlash() {
+
+    const effect =
+        document.getElementById(
+            "rarity-effect"
+        );
+
+    const flash =
+        document.createElement(
+            "div"
+        );
+
+    flash.style.position =
+        "absolute";
+
+    flash.style.left =
+        "50%";
+
+    flash.style.top =
+        "50%";
+
+    flash.style.width =
+        "30px";
+
+    flash.style.height =
+        "30px";
+
+    flash.style.borderRadius =
+        "50%";
+
+    flash.style.background =
+        "#fff";
+
+    flash.style.boxShadow =
+        "0 0 30px #fff, 0 0 60px #ffd700";
+
+    flash.style.transform =
+        "translate(-50%, -50%)";
+
+    flash.style.animation =
+        "flashExpand 0.8s ease-out forwards";
+
+    effect.appendChild(
+        flash
+    );
+
+}
+
+/* 動的アニメーション */
+const dynamicStyle =
+    document.createElement(
+        "style"
+    );
+
+dynamicStyle.innerHTML = `
+
+@keyframes ringExpand {
+
+    0% {
+        width: 50px;
+        height: 50px;
+        opacity: 1;
+    }
+
+    100% {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+    }
+
+}
+
+@keyframes flashExpand {
+
+    0% {
+        width: 20px;
+        height: 20px;
+        opacity: 1;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        width: 700px;
+        height: 700px;
+        opacity: 0;
+    }
+
+}
+
+`;
+
+document.head.appendChild(
+    dynamicStyle
+);
+
+/* =========================================
+   リセット
+========================================= */
 
 function resetGame() {
 
     document.getElementById(
         "result-modal"
     ).classList.remove(
-        "active",
-        "effect-N",
-        "effect-SR",
-        "effect-SSR",
-        "effect-GOD"
+        "active"
     );
+
+    document.getElementById(
+        "result-modal"
+    ).classList.remove(
+        "god-mode"
+    );
+
+    document.getElementById(
+        "rarity-effect"
+    ).innerHTML = "";
 
     resetCurrentGame();
 
 }
 
-
-/* =========================
+/* =========================================
    図鑑
-========================= */
+========================================= */
 
 function openZukan() {
 
@@ -2486,7 +2369,6 @@ function openZukan() {
 
     zukanListEl.innerHTML = "";
 
-
     chickTypes.forEach(
         chick => {
 
@@ -2498,7 +2380,6 @@ function openZukan() {
                     chick.id
                 ] > 0;
 
-
             const item =
                 document.createElement(
                     "div"
@@ -2506,7 +2387,6 @@ function openZukan() {
 
             item.className =
                 "zukan-item";
-
 
             if (isOwned) {
 
@@ -2520,20 +2400,16 @@ function openZukan() {
 
                         <div class="no">
                             No.${chick.id}
-
                             <span class="rare-${chick.rarity}">
                                 [${chick.rarity}]
                             </span>
                         </div>
 
                         <div class="name">
-
                             ${chick.name}
-
                             <span class="count-tag">
                                 x${collectionCounts[chick.id]}
                             </span>
-
                         </div>
 
                         <div class="desc">
@@ -2541,6 +2417,7 @@ function openZukan() {
                         </div>
 
                     </div>
+
                 `;
 
             } else {
@@ -2566,10 +2443,10 @@ function openZukan() {
                         </div>
 
                     </div>
+
                 `;
 
             }
-
 
             zukanListEl.appendChild(
                 item
@@ -2578,26 +2455,25 @@ function openZukan() {
         }
     );
 
-
     document.getElementById(
         "zukan-modal"
     ).classList.add("active");
 
 }
 
-
 function closeZukan() {
 
     document.getElementById(
         "zukan-modal"
-    ).classList.remove("active");
+    ).classList.remove(
+        "active"
+    );
 
 }
 
-
-/* =========================
-   節目メッセージ
-========================= */
+/* =========================================
+   マイルストーンメッセージ
+========================================= */
 
 const milestoneMessages = {
 
@@ -2611,8 +2487,7 @@ const milestoneMessages = {
     800: "800回：まだ8%しか温まっていないという絶望。",
     900: "900回：もうすぐ1000！特に何もないけど！",
 
-    1000: "1000回：自我が目覚めかけたが思いとどまった。卵にもヒビが入った！",
-
+    1000: "1000回：自我が目覚めかけたが思いとどまった。",
     1100: "1100回：そろそろ指を休めても誰も責めない。",
     1200: "1200回：卵があなたの連打速度を採点している。",
     1300: "1300回：指先からかすかに摩擦熱を感じる。",
@@ -2623,8 +2498,7 @@ const milestoneMessages = {
     1800: "1800回：スマホの画面がそろそろ温かくなってきた頃。",
     1900: "1900回：あと100回で2000！休まず叩け！",
 
-    2000: "2000回：指の疲労感＝命の重み。ヒビがさらに広がった！",
-
+    2000: "2000回：指の疲労感＝命の重み。",
     2100: "2100回：卵「もう少し優しく叩いてほしいピヨ」",
     2200: "2200回：爪が画面に当たるカチカチ音が部屋に響く。",
     2300: "2300回：連打のスピードが徐々に上がってきた！",
@@ -2635,8 +2509,7 @@ const milestoneMessages = {
     2800: "2800回：卵「中の居心地が良すぎて出たくない」",
     2900: "2900回：もうすぐ3000！指の限界を突破しろ！",
 
-    3000: "3000回：卵の中で何かが動画を見ている気配。ヒビがさらに増えた！",
-
+    3000: "3000回：卵の中で何かが動画を見ている気配。",
     3100: "3100回：無心。ただひたすらに無心。",
     3200: "3200回：指の皮が少し厚くなった気がする。",
     3300: "3300回：卵「そろそろ起きますかね…」",
@@ -2647,8 +2520,7 @@ const milestoneMessages = {
     3800: "3800回：あなたの指はもはや連打マシンだ。",
     3900: "3900回：あと100回で4000！勢いを殺すな！",
 
-    4000: "4000回：指先から不思議な波動が出始める。卵もかなりヒビだらけだ！",
-
+    4000: "4000回：指先から不思議な波動が出始める。",
     4100: "4100回：卵の中でひよこがストレッチを始めた。",
     4200: "4200回：タップのしすぎで腕の筋肉がアピールしている。",
     4300: "4300回：卵「あと何回叩くつもりですか…？」",
@@ -2659,8 +2531,7 @@ const milestoneMessages = {
     4800: "4800回：卵「この連打、悪くないぞ…」",
     4900: "4900回：あと100回で中間地点！気合を入れ直せ！",
 
-    5000: "5000回：折り返し地点！卵はもうかなりボロボロだ。",
-
+    5000: "5000回：折り返し地点！妙なプレッシャーが漂う。",
     5100: "5100回：後半戦突入！指の限界に挑め！",
     5200: "5200回：卵「外の世界って暑いですか？」",
     5300: "5300回：指の関節が自己主張を深めている。",
@@ -2671,8 +2542,7 @@ const milestoneMessages = {
     5800: "5800回：卵「そろそろ生まれる準備をしようかな…」",
     5900: "5900回：あと100回で6000！休まず進め！",
 
-    6000: "6000回：6割達成！卵からかすかな熱気を感じる。ヒビがさらに広がった！",
-
+    6000: "6000回：6割達成！卵からかすかな熱気を感じる。",
     6100: "6100回：連打によって画面に微小な空間の歪みが発生中。",
     6200: "6200回：卵「外の様子をチラ見しようか迷う」",
     6300: "6300回：あなたの指に謎のオーラが宿り始めている。",
@@ -2683,8 +2553,7 @@ const milestoneMessages = {
     6800: "6800回：指先が覚醒し、自動連打機能が発動しそうだ。",
     6900: "6900回：あと100回で7000！ゾーンに入れ！",
 
-    7000: "7000回達成！卵殻が神々しく光り始めた。もうヒビだらけ！",
-
+    7000: "7000回：7000回達成！卵殻が神々しく光り始めた。",
     7100: "7100回：卵「生まれてからのキャラ付けを考え中…」",
     7200: "7200回：あなたの連打魂が卵に直接注入されている。",
     7300: "7300回：卵の表面にうっすらと『感謝』の文字が浮かんできた。",
@@ -2696,7 +2565,6 @@ const milestoneMessages = {
     7900: "7900回：あと100回で8000！気合を注入しろ！",
 
     8000: "8000回：残り2000回！卵内部で生命の鼓動が激しくなる！",
-
     8100: "8100回：卵「こんなに連打されたのは生まれて初めてです」",
     8200: "8200回：連打の摩擦熱で画面が本格的に温かい。",
     8300: "8300回：中のひよこが最後の毛づくろいを始めた。",
@@ -2707,8 +2575,7 @@ const milestoneMessages = {
     8800: "8800回：ゾロ目！神聖な连打のエネルギーが充満している。",
     8900: "8900回：あと100回で9000！ラストスパート目前！",
 
-    9000: "9000回：ついに9000！卵が限界寸前！大きなヒビが走った！",
-
+    9000: "9000回：ついに9000！最終カウントダウン開始！",
     9100: "9100回：卵「息を整えて…準備完了ピヨ！」",
     9200: "9200回：残り800回！指の全細胞を解き放て！",
     9300: "9300回：連打の衝撃で卵に大きなひび割れが刻まれる！",
@@ -2718,7 +2585,6 @@ const milestoneMessages = {
     9700: "9700回：残り300回！指が千切れても叩き続けろ！",
     9800: "9800回：残り200回！殻が崩壊を始めた！",
     9900: "9900回：あと100回！奇跡の生誕へ向けて連打しろ！！",
-
     10000: "10000回：🎉 誕生の瞬間！おめでとう！！ 🎉"
 
 };
