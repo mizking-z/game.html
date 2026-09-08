@@ -202,7 +202,7 @@
     <h2 id="chick-name" style="margin: 5px 0;">普通のひよこ</h2>
     <div id="chick-owned-count" style="color: #ffeb3b; font-weight: bold; margin-bottom: 8px;"></div>
     <p id="chick-desc" style="color: #ccc; max-width: 85%; font-size: 14px; line-height: 1.4;"></p>
-    <button onclick="resetGame()">次のクソ卵を温める</button>
+    <button id="next-egg-btn" onclick="resetGame()">次のクソ卵を温める</button>
 </div>
 
 <!-- 図鑑一覧モーダル -->
@@ -362,6 +362,13 @@ function loadGameData() {
     updateMilestoneMessage(count - 1, count);
 }
 
+function stopBGM() {
+    if (bgmTimer) {
+        clearInterval(bgmTimer);
+        bgmTimer = null;
+    }
+}
+
 function resetCurrentGame() {
     count = 0;
     currentBgmStage = -1;
@@ -369,10 +376,11 @@ function resetCurrentGame() {
     document.getElementById("count").innerText = count;
     document.getElementById("message").innerText = "カウントをリセットしました！";
     document.body.style.backgroundColor = "#222";
+    stopBGM();
     if (audioCtx) updateBGMStage();
 }
 
-// 全データリセット（確認ダイアログの文言を変更）
+// 全データリセット（安全にBGMとデータを初期化するよう修正）
 function clearAllSaveData() {
     const result = confirm("本当にリセットしますか？");
     if (!result) return;
@@ -385,6 +393,7 @@ function clearAllSaveData() {
     document.getElementById("col-count").innerText = 0;
     document.getElementById("message").innerText = "全データを初期化しました！";
     document.body.style.backgroundColor = "#222";
+    stopBGM();
     if (audioCtx) updateBGMStage();
 }
 
@@ -466,7 +475,7 @@ function playDrumNoise(duration) {
 }
 
 function startBGMByStage(stage) {
-    if (bgmTimer) clearInterval(bgmTimer);
+    stopBGM();
     
     if (stage >= 9) {
         document.body.style.backgroundColor = "#0b1325";
@@ -587,6 +596,8 @@ function tapEgg() {
 }
 
 function addCount(num) {
+    if (count >= targetCount) return; // 既に達成済みの場合はタップ無効
+
     const prevCount = count;
     count += num;
     if (count > targetCount) count = targetCount;
@@ -645,12 +656,18 @@ function hatchChick() {
     collectionCounts[chosenChick.id] = (collectionCounts[chosenChick.id] || 0) + 1;
     saveGameData();
 
+    document.getElementById("col-count").innerText = Object.keys(collectionCounts).length;
     document.getElementById("rarity-label").innerText = `[${chosenChick.rarity}]`;
     document.getElementById("rarity-label").className = `rare-${chosenChick.rarity}`;
     document.getElementById("chick-icon").innerText = chosenChick.emoji;
     document.getElementById("chick-name").innerText = chosenChick.name;
     document.getElementById("chick-owned-count").innerText = `所持数: ${collectionCounts[chosenChick.id]} 匹`;
     document.getElementById("chick-desc").innerText = chosenChick.desc;
+
+    // 連打による誤閉じ防止（0.5秒間ボタンを無効化）
+    const nextBtn = document.getElementById("next-egg-btn");
+    nextBtn.disabled = true;
+    setTimeout(() => { nextBtn.disabled = false; }, 500);
 
     document.getElementById("result-modal").classList.add("active");
 }
