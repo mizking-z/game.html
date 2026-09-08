@@ -23,7 +23,7 @@
         h1 {
             font-size: 20px;
             color: #ffeb3b;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         #counter {
             font-size: 32px;
@@ -141,8 +141,11 @@
     
     <div id="message">無心で叩け…！</div>
 
-    <!-- デバッグ用：100タップスキップボタン -->
-    <button onclick="addCount(100)" style="background:#555; font-size:12px; padding:5px;">[デバッグ] +100タップ</button>
+    <!-- 操作用ボタン類 -->
+    <div style="margin-top: 5px;">
+        <button onclick="addCount(100)" style="background:#555; font-size:12px; padding:5px 10px;">[デバッグ] +100タップ</button>
+        <button onclick="clearSaveData()" style="background:#882222; font-size:12px; padding:5px 10px; margin-left: 5px;">全リセット</button>
+    </div>
 
     <div id="collection-summary">
         <h3>図鑑達成率: <span id="col-count">0</span>/100</h3>
@@ -172,15 +175,19 @@ let count = 0;
 const targetCount = 10000;
 let audioCtx = null;
 let bgmTimer = null;
-let isGrandBGM = false;
+let currentBgmStage = -1;
 
 // 100種類のひよこデータベース生成
 const chickTypes = generateChickDatabase();
 let collection = new Set();
 
+// ロード処理（ページ読み込み時）
+window.onload = function() {
+    loadGameData();
+};
+
 function generateChickDatabase() {
     const list = [];
-    
     const prefixes = [
         "普通の", "光の", "闇の", "虚無の", "黄金の", "マッチョな", "メカ", "社畜", "宇宙", "虚弱な",
         "覚醒した", "たそがれの", "伝説の", "インテリ", "限界", "ニート", "爆音の", "透明な", "ダンディな", "社外取締役"
@@ -234,41 +241,111 @@ function generateChickDatabase() {
     return list;
 }
 
+// セーブ・ロード機能
+function saveGameData() {
+    const saveData = {
+        count: count,
+        collection: Array.from(collection)
+    };
+    localStorage.setItem("kuso_egg_save", JSON.stringify(saveData));
+}
+
+function loadGameData() {
+    const dataStr = localStorage.getItem("kuso_egg_save");
+    if (dataStr) {
+        try {
+            const data = JSON.parse(dataStr);
+            count = data.count || 0;
+            collection = new Set(data.collection || []);
+        } catch(e) {
+            console.error("セーブデータの読み込み失敗", e);
+        }
+    }
+    document.getElementById("count").innerText = count;
+    document.getElementById("col-count").innerText = collection.size;
+    updateMilestoneMessage(count - 1, count);
+}
+
+function clearSaveData() {
+    if (confirm("セーブデータを消去して最初からやり直しますか？")) {
+        localStorage.removeItem("kuso_egg_save");
+        location.reload();
+    }
+}
+
 // Web Audio API
 function initAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        startBGM();
+        updateBGMStage();
     }
 }
 
-// BGM（通常／9000回超えで壮大化）
-function startBGM() {
+// 1000回ごとのBGM制御ロジック
+function updateBGMStage() {
+    if (!audioCtx) return;
+
+    // 0~9000以上で10段階(0~9)のステージ計算
+    let newStage = Math.floor(count / 1000);
+    if (newStage > 9) newStage = 9;
+
+    if (newStage !== currentBgmStage) {
+        currentBgmStage = newStage;
+        startBGMByStage(currentBgmStage);
+    }
+}
+
+function startBGMByStage(stage) {
     if (bgmTimer) clearInterval(bgmTimer);
     
+    // 背景色も9000回で変化
+    if (stage >= 9) {
+        document.body.style.backgroundColor = "#4a0000";
+    } else {
+        document.body.style.backgroundColor = "#222";
+    }
+
+    // 1000回ごとのスケール・テンポデータ
+    const bgmConfigs = [
+        { interval: 500, notes: [261.63, 293.66, 329.63, 349.23], wave: 'triangle' }, // 0~999: 低めのんびり
+        { interval: 450, notes: [293.66, 329.63, 392.00, 440.00], wave: 'triangle' }, // 1000~: 少しテンポアップ
+        { interval: 400, notes: [329.63, 392.00, 440.00, 523.25], wave: 'square' },   // 2000~: ピコピコ感増
+        { interval: 350, notes: [392.00, 440.00, 523.25, 587.33], wave: 'square' },   // 3000~: 軽快
+        { interval: 300, notes: [440.00, 523.25, 587.33, 659.25], wave: 'sawtooth' }, // 4000~: 激しさアップ
+        { interval: 280, notes: [523.25, 587.33, 659.25, 783.99], wave: 'sawtooth' }, // 5000~: ハイスピード
+        { interval: 250, notes: [659.25, 783.99, 880.00, 1046.50], wave: 'square' },  // 6000~: 高音ピコピコ
+        { interval: 220, notes: [523.25, 659.25, 783.99, 1046.50], wave: 'sawtooth' },// 7000~: 疾走感
+        { interval: 200, notes: [587.33, 659.25, 880.00, 1174.66], wave: 'sawtooth' },// 8000~: クライマックス前夜
+    ];
+
     let step = 0;
-    bgmTimer = setInterval(() => {
-        if (!audioCtx) return;
-        
-        if (!isGrandBGM) {
-            const notes = [261.63, 293.66, 329.63, 349.23];
+    
+    if (stage < 9) {
+        const config = bgmConfigs[stage];
+        bgmTimer = setInterval(() => {
+            if (!audioCtx) return;
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+            osc.type = config.wave;
+            osc.frequency.setValueAtTime(config.notes[step % config.notes.length], audioCtx.currentTime);
             gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (config.interval / 1000) * 0.8);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.45);
-        } else {
-            const chords = [
-                [261.63, 329.63, 392.00, 523.25],
-                [220.00, 261.63, 329.63, 440.00],
-                [174.61, 220.00, 261.63, 349.23],
-                [196.00, 246.94, 293.66, 392.00]
-            ];
+            osc.stop(audioCtx.currentTime + (config.interval / 1000));
+            step++;
+        }, config.interval);
+    } else {
+        // 9000回超え：超壮大オーケストラ和音
+        const chords = [
+            [261.63, 329.63, 392.00, 523.25],
+            [220.00, 261.63, 329.63, 440.00],
+            [174.61, 220.00, 261.63, 349.23],
+            [196.00, 246.94, 293.66, 392.00]
+        ];
+        bgmTimer = setInterval(() => {
+            if (!audioCtx) return;
             const currentChord = chords[step % chords.length];
             currentChord.forEach(freq => {
                 let osc = audioCtx.createOscillator();
@@ -282,9 +359,9 @@ function startBGM() {
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.75);
             });
-        }
-        step++;
-    }, isGrandBGM ? 800 : 500);
+            step++;
+        }, 800);
+    }
 }
 
 // タップ音
@@ -350,12 +427,11 @@ function addCount(num) {
     if (count > targetCount) count = targetCount;
     document.getElementById("count").innerText = count;
 
-    // 9000回超えでBGM変化
-    if (count >= 9000 && !isGrandBGM) {
-        isGrandBGM = true;
-        document.body.style.backgroundColor = "#4a0000";
-        startBGM();
-    }
+    // セーブ保存
+    saveGameData();
+
+    // 1000回刻みのBGM変更チェック
+    updateBGMStage();
 
     // メッセージの更新と節目判定
     const isMilestone = updateMilestoneMessage(prevCount, count);
@@ -371,7 +447,7 @@ function addCount(num) {
     }
 }
 
-// 100回ごとのコメント辞書（100回刻みのみ設定）
+// 100回ごとのコメント辞書
 const milestoneMessages = {
     100: "100回：ヒビが入った…？いや、ホコリだった。",
     200: "200回：連打する指に微かな疑問を感じ始める。",
@@ -382,25 +458,25 @@ const milestoneMessages = {
     700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
     800: "800回：まだ8%しか温まっていないという絶望。",
     900: "900回：もうすぐ1000！特に何もないけど！",
-    1000: "1000回：自我が目覚めかけたが思いとどまった。",
+    1000: "1000回：【BGM変化】自我が目覚めかけたが思いとどまった。",
     1100: "1100回：そろそろ指を休めても誰も責めない。",
     1200: "1200回：卵があなたの連打速度を採点している。",
     1300: "1300回：指先からかすかに摩擦熱を感じる。",
     1400: "1400回：特にドラマは起こらない。ひたすら連打だ。",
     1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
-    2000: "2000回：指の疲労感＝命の重み。",
+    2000: "2000回：【BGM変化】指の疲労感＝命の重み。",
     2500: "2500回：四分の一に到達。己との戦いである。",
-    3000: "3000回：卵の中で何かが動画を見ている気配。",
+    3000: "3000回：【BGM変化】卵の中で何かが動画を見ている気配。",
     3500: "3500回：卵「もう少し右上をお願いします」",
-    4000: "4000回：指先から不思議な波動が出始める。",
+    4000: "4000回：【BGM変化】指先から不思議な波動が出始める。",
     4500: "4500回：もうすぐ折り返し！無心で叩け！",
-    5000: "5000回：折り返し地点！背景に妙なプレッシャーが漂う。",
+    5000: "5000回：【BGM変化】折り返し地点！妙なプレッシャーが漂う。",
     5500: "5500回：後半戦。あなたの指はもはや武器だ。",
-    6000: "6000回：ここから先は精神力とタップ力の勝負。",
+    6000: "6000回：【BGM変化】精神力とタップ力の勝負。",
     6500: "6500回：卵の表面がわずかに発光している気がする。",
-    7000: "7000回：卵殻の内部でタンパク質の再配置が完了。",
+    7000: "7000回：【BGM変化】卵殻内部でタンパク質の再配置完了。",
     7500: "7500回：ひよこ「外の空気、美味しいですか？」",
-    8000: "8000回：産声のウォーミングアップが始まった！",
+    8000: "8000回：【BGM変化】産声のウォーミングアップ開始！",
     8500: "8500回：殻の限界値まであと少し！",
     9000: "9000回：【覚醒】世界が震え、BGMが神々しくなる！",
     9100: "9100回：壮大な音楽の中、無心で連打するシュールさ。",
@@ -414,13 +490,12 @@ const milestoneMessages = {
     9900: "9900回：あと100タップ！息を呑め！"
 };
 
-// メッセージ更新処理（100刻みの通過チェック）
+// メッセージ更新処理
 function updateMilestoneMessage(prev, current) {
     const msg = document.getElementById("message");
     const egg = document.getElementById("egg");
     let isHit = false;
 
-    // 100の倍数を跨いだか判定
     const prevHundred = Math.floor(prev / 100);
     const currHundred = Math.floor(current / 100);
 
@@ -428,7 +503,6 @@ function updateMilestoneMessage(prev, current) {
         isHit = true;
     }
 
-    // 現在のカウントから最新の100刻み値を取得
     const activeHundred = currHundred * 100;
 
     if (activeHundred > 0) {
@@ -441,7 +515,6 @@ function updateMilestoneMessage(prev, current) {
         msg.innerText = "無心で叩け…！";
     }
 
-    // 100回以降の卵の見た目回転演出
     if (current >= 100) {
         egg.style.transform = `rotate(${(current % 20) - 10}deg)`;
     }
@@ -461,6 +534,8 @@ function hatchChick() {
     
     const result = pool[Math.floor(Math.random() * pool.length)];
     collection.add(result.id);
+
+    saveGameData(); // 達成データも即セーブ
 
     const modal = document.getElementById("result-modal");
     const rarityLabel = document.getElementById("rarity-label");
@@ -516,12 +591,13 @@ function closeZukan() {
 
 function resetGame() {
     count = 0;
-    isGrandBGM = false;
+    currentBgmStage = -1;
+    saveGameData();
     document.getElementById("count").innerText = count;
     document.getElementById("message").innerText = "無心で叩け…！";
     document.getElementById("result-modal").classList.remove("active");
     document.body.style.backgroundColor = "#222";
-    startBGM();
+    updateBGMStage();
 }
 </script>
 
