@@ -188,7 +188,7 @@
         ・たまごを10,000回タップすると、中からひよこが生まれます！<br>
         ・誕生したひよこは図鑑にコレクションされていきます。<br>
         ・ひよこの種類は全101種類！100種類集めると特別な101番目が…？<br>
-        ・タップ数に応じてノリノリなBGMが加速＆変化！コンプリートを目指そう！
+        ・9000タップからは超壮大なオーケストラ風ラストBGMに変化！コンプリートを目指そう！
     </div>
 </div>
 
@@ -346,24 +346,28 @@ function updateBGMStage() {
     }
 }
 
-// ---- 改良版・ノリノリ8bit BGMシステム ----
+// 音階テーブル (周波数)
 const noteFreqs = {
-    'C3': 130.81, 'D3': 146.83, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
-    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
-    'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
+    'C2': 65.41,  'D2': 73.42,  'E2': 82.41,  'F2': 87.31,  'G2': 98.00,  'G#2': 103.83, 'A2': 110.00, 'B2': 123.47,
+    'C3': 130.81, 'D3': 146.83, 'Eb3': 155.56, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00,  'G#3': 207.65, 'A3': 220.00, 'B3': 246.94,
+    'C4': 261.63, 'D4': 293.66, 'Eb4': 311.13, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00,  'G#4': 415.30, 'A4': 440.00, 'B4': 493.88,
+    'C5': 523.25, 'D5': 587.33, 'Eb5': 622.25, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99,  'G#5': 830.61, 'A5': 880.00, 'B5': 987.77,
     'C6': 1046.50, 'R': 0
 };
 
-// メロディの定義（ピコピコ感あふれるメロディライン）
+// 通常メロディ (Stage 0 ~ 8)
 const bgmMelodies = [
-    // Stage 0-2 (のんびりポップ)
     ["C4","E4","G4","E4", "D4","F4","A4","F4", "E4","G4","B4","G4", "C5","G4","E4","C4"],
-    // Stage 3-5 (ノリノリなテンポ)
     ["C4","C4","G4","G4", "A4","A4","G4","R",  "F4","F4","E4","E4", "D4","D4","C4","R"],
-    // Stage 6-8 (アップテンポ＆軽快)
-    ["E4","G4","C5","E5", "D5","B4","G4","D4", "C5","E4","A4","C5", "B4","G4","E4","G4"],
-    // Stage 9 (激しいラストスパート・ヒーロー風)
-    ["C5","E5","G5","C6", "B5","G5","E5","G5", "A5","C6","A5","F5", "G5","E5","C5","D5"]
+    ["E4","G4","C5","E5", "D5","B4","G4","D4", "C5","E4","A4","C5", "B4","G4","E4","G4"]
+];
+
+// 9000タップ〜 超壮大なオーケストラ風ラストバトルメロディ
+const epicMelody = [
+    "C4", "Eb4", "G4", "C5", "B4", "G4", "Eb4", "G4",
+    "Ab4", "C5", "Eb5", "Ab5", "G5", "Eb5", "C5", "G4",
+    "F4", "Ab4", "C5", "F5", "Eb5", "C5", "Ab4", "C5",
+    "G4", "B4", "D5", "G5", "G5", "F5", "Eb5", "D5"
 ];
 
 function play8bitNote(freq, type, duration, gainVal = 0.08) {
@@ -373,7 +377,7 @@ function play8bitNote(freq, type, duration, gainVal = 0.08) {
     osc.type = type;
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
     gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration * 0.9);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration * 0.95);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     osc.start();
@@ -391,7 +395,7 @@ function playDrumNoise(duration) {
     let noise = audioCtx.createBufferSource();
     noise.buffer = buffer;
     let gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
     noise.connect(gain);
     gain.connect(audioCtx.destination);
@@ -401,41 +405,62 @@ function playDrumNoise(duration) {
 function startBGMByStage(stage) {
     if (bgmTimer) clearInterval(bgmTimer);
     
+    // 9000タップ以降は背景を漆黒×深紅の荘厳な配色に変更
     if (stage >= 9) {
-        document.body.style.backgroundColor = "#4a0000";
+        document.body.style.backgroundColor = "#2b0000";
     } else {
         document.body.style.backgroundColor = "#222";
     }
 
-    // ステージが上がるとテンポ(ms)が速くなる
-    let speed = Math.max(120, 260 - stage * 15); 
+    let speed = Math.max(110, 260 - stage * 15); 
     let step = 0;
-
-    let melodyIdx = 0;
-    if (stage >= 3) melodyIdx = 1;
-    if (stage >= 6) melodyIdx = 2;
-    if (stage >= 9) melodyIdx = 3;
-
-    const melody = bgmMelodies[melodyIdx];
 
     bgmTimer = setInterval(() => {
         if (!audioCtx) return;
 
-        let noteStr = melody[step % melody.length];
-        let freq = noteFreqs[noteStr] || 0;
+        if (stage >= 9) {
+            // === 9000タップ〜 壮大なオーケストラBGM演奏処理 ===
+            let noteStr = epicMelody[step % epicMelody.length];
+            let freq = noteFreqs[noteStr] || 0;
 
-        // 主メロディ (矩形波 square でピコピコ感)
-        play8bitNote(freq, 'square', speed / 1000, 0.06);
+            // ① 主メロディ：Sawtooth（鋸波）でブラス/ストリングスのような伸びやかな音
+            play8bitNote(freq, 'sawtooth', speed / 1000, 0.1);
 
-        // ステージ2以上でベース音追加 (三角波 triangle)
-        if (stage >= 2 && step % 2 === 0) {
-            let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
-            play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.08);
-        }
+            // ② ハーモニー（3度上または5度上を重ねて劇的な響きに）
+            if (freq > 0) {
+                play8bitNote(freq * 1.25, 'sawtooth', speed / 1000, 0.04);
+            }
 
-        // ステージ4以上で裏打ちドラム音追加
-        if (stage >= 4 && step % 2 === 1) {
-            playDrumNoise(0.05);
+            // ③ 重低音ベース (Bass)
+            if (step % 2 === 0) {
+                let baseFreq = freq ? freq / 2 : noteFreqs['C2'];
+                play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.15);
+            }
+
+            // ④ パーカッション（力強いリズム音）
+            if (step % 2 === 1) {
+                playDrumNoise(0.08);
+            }
+        } else {
+            // === Stage 0 ~ 8 通常のBGM処理 ===
+            let melodyIdx = 0;
+            if (stage >= 3) melodyIdx = 1;
+            if (stage >= 6) melodyIdx = 2;
+
+            const melody = bgmMelodies[melodyIdx];
+            let noteStr = melody[step % melody.length];
+            let freq = noteFreqs[noteStr] || 0;
+
+            play8bitNote(freq, 'square', speed / 1000, 0.06);
+
+            if (stage >= 2 && step % 2 === 0) {
+                let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
+                play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.08);
+            }
+
+            if (stage >= 4 && step % 2 === 1) {
+                playDrumNoise(0.05);
+            }
         }
 
         step++;
@@ -549,7 +574,7 @@ const milestoneMessages = {
     7500: "7500回：ひよこ「外の空気、美味しいですか？」",
     8000: "8000回：産声のウォーミングアップ開始！",
     8500: "8500回：殻の限界値まであと少し！",
-    9000: "9000回：世界が震え、音楽が神々しくなる！",
+    9000: "9000回：世界が震え、BGMが神々しいオーケストラへと変貌する！",
     9100: "9100回：壮大な音楽の中、無心で連打するシュールさ。",
     9200: "9200回：神々しいBGMが指の疲れを癒してくれる（嘘）。",
     9300: "9300回：伝説のひよこが目を覚ましつつある！",
@@ -597,7 +622,6 @@ function hatchChick() {
     
     let result;
 
-    // もしNo.1〜100がすべて集まっていて、101番目を未所持なら確実に「みずきちゃんひよこ」が誕生！
     let normalCollectedCount = 0;
     for (let i = 1; i <= 100; i++) {
         if (collection.has(i)) normalCollectedCount++;
@@ -606,7 +630,6 @@ function hatchChick() {
     if (normalCollectedCount >= 100 && !collection.has(101)) {
         result = chickTypes.find(c => c.id === 101);
     } else {
-        // 通常の抽選 (No.1〜100)
         const rand = Math.random() * 100;
         let pool = [];
         if (rand < 5) pool = chickTypes.filter(c => c.rarity === "SSR" && c.id <= 100);
