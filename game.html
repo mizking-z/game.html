@@ -36,6 +36,10 @@ h1 {
     margin: 10px 0;
 }
 
+/* =========================
+   卵エリア
+========================= */
+
 #egg-container {
     position: relative;
     height: 200px;
@@ -94,191 +98,6 @@ h1 {
 }
 
 /* =========================
-   ヒビ演出
-========================= */
-
-#egg-cracks {
-    position: absolute;
-    width: 110px;
-    height: 130px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 3;
-}
-
-.crack {
-    position: absolute;
-    width: 4px;
-    height: 0;
-    background: #222;
-    box-shadow: 0 0 2px #fff;
-    transform-origin: top center;
-    opacity: 0;
-    transition:
-        height 0.6s ease,
-        opacity 0.4s ease;
-}
-
-#crack1 {
-    left: 53px;
-    top: 32px;
-    transform: rotate(15deg);
-}
-
-#crack2 {
-    left: 53px;
-    top: 48px;
-    transform: rotate(-35deg);
-}
-
-#crack3 {
-    left: 42px;
-    top: 60px;
-    transform: rotate(55deg);
-}
-
-#crack4 {
-    left: 65px;
-    top: 62px;
-    transform: rotate(-65deg);
-}
-
-#crack5 {
-    left: 50px;
-    top: 75px;
-    transform: rotate(20deg);
-}
-
-#crack6 {
-    left: 37px;
-    top: 82px;
-    transform: rotate(-25deg);
-}
-
-#crack7 {
-    left: 68px;
-    top: 83px;
-    transform: rotate(45deg);
-}
-
-#crack8 {
-    left: 48px;
-    top: 90px;
-    transform: rotate(-70deg);
-}
-
-#crack9 {
-    left: 58px;
-    top: 92px;
-    transform: rotate(75deg);
-}
-
-#crack10 {
-    left: 55px;
-    top: 45px;
-    transform: rotate(5deg);
-}
-
-/* ヒビ表示 */
-
-#egg-cracks.stage-1 #crack1,
-#egg-cracks.stage-2 #crack1,
-#egg-cracks.stage-3 #crack1,
-#egg-cracks.stage-4 #crack1,
-#egg-cracks.stage-5 #crack1,
-#egg-cracks.stage-6 #crack1,
-#egg-cracks.stage-7 #crack1,
-#egg-cracks.stage-8 #crack1,
-#egg-cracks.stage-9 #crack1,
-#egg-cracks.stage-10 #crack1 {
-    height: 35px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-2 #crack2,
-#egg-cracks.stage-3 #crack2,
-#egg-cracks.stage-4 #crack2,
-#egg-cracks.stage-5 #crack2,
-#egg-cracks.stage-6 #crack2,
-#egg-cracks.stage-7 #crack2,
-#egg-cracks.stage-8 #crack2,
-#egg-cracks.stage-9 #crack2,
-#egg-cracks.stage-10 #crack2 {
-    height: 32px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-3 #crack3,
-#egg-cracks.stage-4 #crack3,
-#egg-cracks.stage-5 #crack3,
-#egg-cracks.stage-6 #crack3,
-#egg-cracks.stage-7 #crack3,
-#egg-cracks.stage-8 #crack3,
-#egg-cracks.stage-9 #crack3,
-#egg-cracks.stage-10 #crack3 {
-    height: 38px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-4 #crack4,
-#egg-cracks.stage-5 #crack4,
-#egg-cracks.stage-6 #crack4,
-#egg-cracks.stage-7 #crack4,
-#egg-cracks.stage-8 #crack4,
-#egg-cracks.stage-9 #crack4,
-#egg-cracks.stage-10 #crack4 {
-    height: 35px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-5 #crack5,
-#egg-cracks.stage-6 #crack5,
-#egg-cracks.stage-7 #crack5,
-#egg-cracks.stage-8 #crack5,
-#egg-cracks.stage-9 #crack5,
-#egg-cracks.stage-10 #crack5 {
-    height: 40px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-6 #crack6,
-#egg-cracks.stage-7 #crack6,
-#egg-cracks.stage-8 #crack6,
-#egg-cracks.stage-9 #crack6,
-#egg-cracks.stage-10 #crack6 {
-    height: 38px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-7 #crack7,
-#egg-cracks.stage-8 #crack7,
-#egg-cracks.stage-9 #crack7,
-#egg-cracks.stage-10 #crack7 {
-    height: 42px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-8 #crack8,
-#egg-cracks.stage-9 #crack8,
-#egg-cracks.stage-10 #crack8 {
-    height: 45px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-9 #crack9,
-#egg-cracks.stage-10 #crack9 {
-    height: 50px;
-    opacity: 1;
-}
-
-#egg-cracks.stage-10 #crack10 {
-    height: 70px;
-    opacity: 1;
-}
-
-/* =========================
    卵の揺れ
    1000回ごとに激しくなる
 ========================= */
@@ -334,55 +153,131 @@ h1 {
 }
 
 @keyframes eggShake3 {
-    0%,100% { transform: translateX(-2px) rotate(-3deg); }
-    50% { transform: translateX(2px) rotate(3deg); }
+    0%,100% {
+        transform: translateX(-2px) rotate(-3deg);
+    }
+
+    50% {
+        transform: translateX(2px) rotate(3deg);
+    }
 }
 
 @keyframes eggShake4 {
-    0%,100% { transform: translateX(-3px) rotate(-4deg); }
-    50% { transform: translateX(3px) rotate(4deg); }
+    0%,100% {
+        transform: translateX(-3px) rotate(-4deg);
+    }
+
+    50% {
+        transform: translateX(3px) rotate(4deg);
+    }
 }
 
 @keyframes eggShake5 {
-    0%,100% { transform: translateX(-4px) rotate(-5deg); }
-    25% { transform: translateX(4px) rotate(5deg); }
-    50% { transform: translateX(-4px) rotate(-5deg); }
-    75% { transform: translateX(4px) rotate(5deg); }
+    0%,100% {
+        transform: translateX(-4px) rotate(-5deg);
+    }
+
+    25% {
+        transform: translateX(4px) rotate(5deg);
+    }
+
+    50% {
+        transform: translateX(-4px) rotate(-5deg);
+    }
+
+    75% {
+        transform: translateX(4px) rotate(5deg);
+    }
 }
 
 @keyframes eggShake6 {
-    0%,100% { transform: translate(-5px,0) rotate(-6deg); }
-    50% { transform: translate(5px,0) rotate(6deg); }
+    0%,100% {
+        transform: translate(-5px,0) rotate(-6deg);
+    }
+
+    50% {
+        transform: translate(5px,0) rotate(6deg);
+    }
 }
 
 @keyframes eggShake7 {
-    0%,100% { transform: translate(-6px,2px) rotate(-7deg); }
-    25% { transform: translate(6px,-2px) rotate(7deg); }
-    50% { transform: translate(-6px,2px) rotate(-7deg); }
-    75% { transform: translate(6px,-2px) rotate(7deg); }
+    0%,100% {
+        transform: translate(-6px,2px) rotate(-7deg);
+    }
+
+    25% {
+        transform: translate(6px,-2px) rotate(7deg);
+    }
+
+    50% {
+        transform: translate(-6px,2px) rotate(-7deg);
+    }
+
+    75% {
+        transform: translate(6px,-2px) rotate(7deg);
+    }
 }
 
 @keyframes eggShake8 {
-    0%,100% { transform: translate(-7px,3px) rotate(-8deg); }
-    25% { transform: translate(7px,-3px) rotate(8deg); }
-    50% { transform: translate(-7px,3px) rotate(-8deg); }
-    75% { transform: translate(7px,-3px) rotate(8deg); }
+    0%,100% {
+        transform: translate(-7px,3px) rotate(-8deg);
+    }
+
+    25% {
+        transform: translate(7px,-3px) rotate(8deg);
+    }
+
+    50% {
+        transform: translate(-7px,3px) rotate(-8deg);
+    }
+
+    75% {
+        transform: translate(7px,-3px) rotate(8deg);
+    }
 }
 
 @keyframes eggShake9 {
-    0%,100% { transform: translate(-9px,3px) rotate(-10deg); }
-    25% { transform: translate(9px,-3px) rotate(10deg); }
-    50% { transform: translate(-9px,3px) rotate(-10deg); }
-    75% { transform: translate(9px,-3px) rotate(10deg); }
+    0%,100% {
+        transform: translate(-9px,3px) rotate(-10deg);
+    }
+
+    25% {
+        transform: translate(9px,-3px) rotate(10deg);
+    }
+
+    50% {
+        transform: translate(-9px,3px) rotate(-10deg);
+    }
+
+    75% {
+        transform: translate(9px,-3px) rotate(10deg);
+    }
 }
 
 @keyframes eggShake10 {
-    0% { transform: translate(-10px,0) rotate(-12deg) scale(1); }
-    20% { transform: translate(10px,-3px) rotate(12deg) scale(1.03); }
-    40% { transform: translate(-10px,3px) rotate(-12deg) scale(1); }
-    60% { transform: translate(10px,-3px) rotate(12deg) scale(1.03); }
-    80% { transform: translate(-10px,3px) rotate(-12deg) scale(1); }
-    100% { transform: translate(0,0) rotate(0deg) scale(1); }
+    0% {
+        transform: translate(-10px,0) rotate(-12deg) scale(1);
+    }
+
+    20% {
+        transform: translate(10px,-3px) rotate(12deg) scale(1.03);
+    }
+
+    40% {
+        transform: translate(-10px,3px) rotate(-12deg) scale(1);
+    }
+
+    60% {
+        transform: translate(10px,-3px) rotate(12deg) scale(1.03);
+    }
+
+    80% {
+        transform: translate(-10px,3px) rotate(-12deg) scale(1);
+    }
+
+    100% {
+        transform: translate(0,0) rotate(0deg) scale(1);
+    }
 }
 
 /* =========================
@@ -452,7 +347,9 @@ h1 {
     z-index: 5;
 }
 
-/* N */
+/* =========================
+   N
+========================= */
 
 #result-modal.effect-N {
     animation: birthN 0.7s ease-out;
@@ -474,7 +371,9 @@ h1 {
     }
 }
 
-/* SR */
+/* =========================
+   SR
+========================= */
 
 #result-modal.effect-SR {
     background:
@@ -483,6 +382,7 @@ h1 {
             rgba(100,220,255,0.35),
             rgba(0,0,0,0.94) 65%
         );
+
     animation: birthSR 0.9s ease-out;
 }
 
@@ -520,7 +420,9 @@ h1 {
     }
 }
 
-/* SSR */
+/* =========================
+   SSR
+========================= */
 
 #result-modal.effect-SSR {
     background:
@@ -528,19 +430,20 @@ h1 {
             circle,
             rgba(255,215,0,0.5),
             rgba(255,80,0,0.2),
-            rgba(0,0,0,0.96) 70%
+            rgba(0,0,0,0.96)
         );
-    animation: birthSSR 1.1s ease-out;
+
+    animation: birthSSR 1.2s ease-out;
 }
 
 #result-modal.effect-SSR #chick-icon {
-    animation: chickSSR 0.7s infinite alternate;
+    animation: chickSSR 0.8s infinite alternate;
 }
 
 @keyframes birthSSR {
     0% {
         opacity: 0;
-        transform: scale(0.2) rotate(-15deg);
+        transform: scale(0.2) rotate(-20deg);
     }
 
     40% {
@@ -553,81 +456,81 @@ h1 {
     }
 
     100% {
-        transform: scale(1) rotate(0);
+        transform: scale(1) rotate(0deg);
     }
 }
 
 @keyframes chickSSR {
     from {
         filter:
-            drop-shadow(0 0 15px #ffd700)
-            drop-shadow(0 0 30px #ff8c00);
+            drop-shadow(0 0 10px #ffd700)
+            drop-shadow(0 0 25px #ff8c00)
+            drop-shadow(0 0 40px #fff);
+        transform: scale(1);
     }
 
     to {
         filter:
-            drop-shadow(0 0 35px #ffd700)
-            drop-shadow(0 0 60px #ff4500);
+            drop-shadow(0 0 25px #ffd700)
+            drop-shadow(0 0 50px #ff8c00)
+            drop-shadow(0 0 70px #fff);
+        transform: scale(1.12);
     }
 }
 
-/* GOD */
+/* =========================
+   結果画面
+========================= */
 
-#result-modal.effect-GOD {
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,0,255,0.65),
-            rgba(0,255,255,0.35),
-            rgba(255,215,0,0.25),
-            rgba(0,0,0,0.97) 75%
-        );
-    animation: godBirth 1.5s ease-out;
+#rarity {
+    font-size: 42px;
+    font-weight: bold;
+    margin: 5px 0;
 }
 
-#result-modal.effect-GOD::before {
-    content: "✨ ⭐ ✨ ⭐ ✨ ⭐ ✨ ⭐ ✨";
-    position: absolute;
-    top: 10%;
-    left: 0;
-    width: 100%;
-    font-size: 30px;
-    letter-spacing: 10px;
-    animation: godStars 1.2s infinite linear;
+#result-text {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 20px;
 }
 
-#result-modal.effect-GOD::after {
-    content: "🌈 ✨ 🌈 ✨ 🌈";
-    position: absolute;
-    bottom: 10%;
-    left: 0;
-    width: 100%;
-    font-size: 28px;
-    letter-spacing: 8px;
-    animation: godStars 1.5s infinite reverse;
+#result-count {
+    font-size: 16px;
+    margin: 10px 0 20px;
 }
 
-#result-modal.effect-GOD #chick-icon {
-    animation: godChick 0.8s infinite alternate;
+#close-button {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 10px;
+    background: #ffeb3b;
+    color: #222;
+    cursor: pointer;
 }
 
-@keyframes godBirth {
+#close-button:active {
+    transform: scale(0.95);
+}
+
+/* =========================
+   節目メッセージ
+========================= */
+
+.milestone {
+    animation: milestonePop 0.4s ease-out;
+}
+
+@keyframes milestonePop {
     0% {
+        transform: scale(0.7);
         opacity: 0;
-        transform: scale(0.1);
-    }
-
-    30% {
-        opacity: 1;
-        transform: scale(1.4);
-    }
-
-    50% {
-        transform: scale(0.9);
     }
 
     70% {
         transform: scale(1.15);
+        opacity: 1;
     }
 
     100% {
@@ -635,420 +538,63 @@ h1 {
     }
 }
 
-@keyframes godChick {
-    0% {
-        transform: scale(1) rotate(-5deg);
-        filter:
-            drop-shadow(0 0 15px #ff00ff)
-            drop-shadow(0 0 25px #00ffff);
-    }
-
-    50% {
-        transform: scale(1.15) rotate(5deg);
-        filter:
-            drop-shadow(0 0 35px #ffff00)
-            drop-shadow(0 0 50px #ff00ff)
-            drop-shadow(0 0 70px #00ffff);
-    }
-
-    100% {
-        transform: scale(1) rotate(-5deg);
-        filter:
-            drop-shadow(0 0 20px #00ffff)
-            drop-shadow(0 0 45px #ff00ff);
-    }
-}
-
-@keyframes godStars {
-    0% {
-        transform: translateX(-20px) rotate(0deg);
-        opacity: 0.4;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateX(20px) rotate(5deg);
-        opacity: 0.4;
-    }
-}
-
-/* =========================
-   レア度文字
-========================= */
-
-.rare-GOD {
-    color: #ff00ff;
-    text-shadow:
-        0 0 15px #00ffff,
-        0 0 30px #ff00ff;
-}
-
-.rare-SSR {
-    color: #ffd700;
-    text-shadow:
-        0 0 10px #ff0000,
-        0 0 20px #ffd700;
-}
-
-.rare-SR {
-    color: #c0c0c0;
-    text-shadow:
-        0 0 5px #00ffff,
-        0 0 12px #ffffff;
-}
-
-.rare-N {
-    color: #ffffff;
-}
-
-/* =========================
-   GODキラキラ
-========================= */
-
-.god-particle {
-    position: fixed;
-    pointer-events: none;
-    z-index: 999;
-    font-size: 25px;
-    animation: godParticle 1.5s ease-out forwards;
-}
-
-@keyframes godParticle {
-    0% {
-        opacity: 1;
-        transform: translate(0,0) scale(0.5) rotate(0deg);
-    }
-
-    100% {
-        opacity: 0;
-        transform:
-            translate(
-                calc((var(--x) - 50) * 1vw),
-                calc((var(--y) - 50) * 1vh)
-            )
-            scale(1.8)
-            rotate(360deg);
-    }
-}
-
-/* =========================
-   ボタン
-========================= */
-
-button {
-    padding: 10px 18px;
-    font-size: 14px;
-    background: #ff4081;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-button:active {
-    opacity: 0.8;
-}
-
-#btn-area {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-#collection-summary {
-    margin-top: 20px;
-    border-top: 1px solid #444;
-    padding-top: 15px;
-}
-
-#game-description {
-    margin-top: 25px;
-    padding: 15px;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 8px;
-    text-align: left;
-    font-size: 13px;
-    line-height: 1.6;
-    color: #ddd;
-}
-
-#game-description h3 {
-    margin-top: 0;
-    margin-bottom: 8px;
-    color: #ffeb3b;
-    font-size: 15px;
-    text-align: center;
-}
-
-#zukan-list {
-    width: 85%;
-    max-height: 55vh;
-    overflow-y: auto;
-    background: #111;
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: left;
-    margin: 10px 0 15px 0;
-}
-
-.zukan-item {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #333;
-    padding: 10px 0;
-}
-
-.zukan-item .icon {
-    font-size: 40px;
-    margin-right: 15px;
-    width: 50px;
-    text-align: center;
-}
-
-.zukan-item .info {
-    flex-grow: 1;
-}
-
-.zukan-item .no {
-    font-size: 12px;
-    color: #888;
-    font-weight: bold;
-}
-
-.zukan-item .name {
-    font-weight: bold;
-    font-size: 15px;
-    margin: 2px 0;
-}
-
-.zukan-item .count-tag {
-    font-size: 12px;
-    color: #ffeb3b;
-    font-weight: bold;
-    margin-left: 6px;
-}
-
-.zukan-item .desc {
-    font-size: 12px;
-    color: #ccc;
-    line-height: 1.3;
-}
-
-.zukan-unknown {
-    color: #555;
-}
-
 </style>
 </head>
 
-<body onclick="initAudioOnce()">
+<body>
 
 <div id="container">
 
-<h1>クソ連打！奇跡のたまご🥚</h1>
+    <h1>クソ連打！奇跡のたまご🥚</h1>
 
-<div id="counter">
-    TAP: <span id="count">0</span> / 10000
-</div>
-
-<div id="egg-container" onclick="tapEgg()">
-
-    <div id="start-telop">
-        〜 卵をタップしよう 〜
+    <div id="counter">
+        0回
     </div>
 
-    <div id="egg">🥚</div>
+    <div id="egg-container">
 
-    <div id="egg-cracks">
+        <div id="start-telop">
+            〜卵をタップしよう〜
+        </div>
 
-        <div class="crack" id="crack1"></div>
-        <div class="crack" id="crack2"></div>
-        <div class="crack" id="crack3"></div>
-        <div class="crack" id="crack4"></div>
-        <div class="crack" id="crack5"></div>
-        <div class="crack" id="crack6"></div>
-        <div class="crack" id="crack7"></div>
-        <div class="crack" id="crack8"></div>
-        <div class="crack" id="crack9"></div>
-        <div class="crack" id="crack10"></div>
+        <div id="egg">
+            🥚
+        </div>
 
     </div>
 
-</div>
-
-<div id="message">
-    画面を叩いて音を鳴らせ！
-</div>
-
-<div id="btn-area">
-
-<button
-    onclick="addCount(100)"
-    style="background:#555;"
->
-    [チート機能！] +100タップ
-</button>
-
-<button
-    onclick="resetCurrentGame()"
-    style="background:#d97706;"
->
-    🔄 タップ数をリセット
-</button>
-
-<button
-    onclick="clearAllSaveData()"
-    style="background:#dc2626;"
->
-    💥 全データリセット
-</button>
-
-</div>
-
-<div id="collection-summary">
-
-<h3>
-    図鑑達成率:
-    <span id="col-count">0</span> / 101
-</h3>
-
-<button onclick="openZukan()">
-    📖 ひよこ図鑑を見る
-</button>
-
-</div>
-
-<div id="game-description">
-
-<h3>💡 あそびかた</h3>
-
-・たまごを10,000回タップすると、中からひよこが生まれます！<br>
-・1,000回タップするごとに卵にヒビが入っていきます！<br>
-・1,000回ごとに卵の揺れもどんどん激しくなります！<br>
-・誕生したひよこは図鑑にコレクションされていきます。<br>
-・同じひよこが被っても図鑑に所持数がカウントされるよ！<br>
-・ひよこの種類は全101種類！100種類集めると特別な101番目が…？
-
-</div>
+    <div id="message">
+        卵をひたすらタップしてください。
+    </div>
 
 </div>
 
 
 <!-- =========================
-     誕生モーダル
+     結果モーダル
 ========================= -->
 
 <div id="result-modal" class="modal">
 
-<h1
-    style="
-        color:#ff0;
-        font-size:32px;
-        margin:0;
-        position:relative;
-        z-index:5;
-    "
->
-    🎉 生 誕 🎉
-</h1>
+    <div id="chick-icon">
+        🐣
+    </div>
 
-<div
-    id="rarity-label"
-    style="
-        font-size:22px;
-        font-weight:bold;
-        margin-top:5px;
-        position:relative;
-        z-index:5;
-    "
-></div>
+    <div id="rarity">
+        N
+    </div>
 
-<div id="chick-icon">
-    🐥
-</div>
+    <div id="result-text">
+        ひよこが生まれました！
+    </div>
 
-<h2
-    id="chick-name"
-    style="
-        margin:5px 0;
-        position:relative;
-        z-index:5;
-    "
->
-    普通のひよこ
-</h2>
+    <div id="result-count">
+        10000回タップ達成！
+    </div>
 
-<div
-    id="chick-owned-count"
-    style="
-        color:#ffeb3b;
-        font-weight:bold;
-        margin-bottom:8px;
-        position:relative;
-        z-index:5;
-    "
-></div>
-
-<p
-    id="chick-desc"
-    style="
-        color:#ccc;
-        max-width:85%;
-        font-size:14px;
-        line-height:1.4;
-        position:relative;
-        z-index:5;
-    "
-></p>
-
-<button
-    id="next-egg-btn"
-    onclick="resetGame()"
-    style="position:relative;z-index:5;"
->
-    次のクソ卵を温める
-</button>
-
-</div>
-
-
-<!-- =========================
-     図鑑
-========================= -->
-
-<div id="zukan-modal" class="modal">
-
-<h2 style="margin:0;color:#ffeb3b;">
-    🐥 ひよこ図鑑 🐥
-</h2>
-
-<div
-    id="zukan-status"
-    style="
-        margin-top:5px;
-        color:#aaa;
-        font-weight:bold;
-    "
->
-    集めたひよこ:
-    <span id="zukan-modal-count">0</span>
-    / 101 種類
-</div>
-
-<div id="zukan-list"></div>
-
-<button onclick="closeZukan()">
-    閉じる
-</button>
+    <button id="close-button">
+        閉じる
+    </button>
 
 </div>
 
@@ -1057,1095 +603,77 @@ button:active {
 
 let count = 0;
 
-const targetCount = 10000;
-
-let audioCtx = null;
-let bgmTimer = null;
-let currentBgmStage = -1;
-
-const totalChickCount = 101;
-
-const chickTypes = generateChickDatabase();
-
-let collectionCounts = {};
-
-
-/* =========================
-   ページ読み込み
-========================= */
-
-window.onload = function() {
-    loadGameData();
-};
-
-
-/* =========================
-   ヒビ＋揺れ演出
-========================= */
-
-function updateEggCracks(currentCount) {
-
-    const cracks =
-        document.getElementById("egg-cracks");
-
-    const eggContainer =
-        document.getElementById("egg-container");
-
-    if (!cracks || !eggContainer) return;
-
-
-    /* ヒビ */
-
-    let stage =
-        Math.floor(currentCount / 1000);
-
-    if (stage > 10) {
-        stage = 10;
-    }
-
-    for (let i = 1; i <= 10; i++) {
-
-        cracks.classList.remove(
-            `stage-${i}`
-        );
-
-    }
-
-    if (stage > 0) {
-
-        cracks.classList.add(
-            `stage-${stage}`
-        );
-
-    }
-
-
-    /* =========================
-       ★ 卵の揺れ
-       1000回ごとに強くする
-    ========================= */
-
-    for (let i = 1; i <= 10; i++) {
-
-        eggContainer.classList.remove(
-            `shake-${i}`
-        );
-
-    }
-
-    if (stage > 0) {
-
-        eggContainer.classList.add(
-            `shake-${stage}`
-        );
-
-    }
-
-}
-
-
-/* =========================
-   ひよこデータ
-========================= */
-
-function generateChickDatabase() {
-
-    const rawData = [
-
-        { id:1, name:"普通のひよこ", rarity:"N", emoji:"🐥", desc:"どこにでもいるごく普通のひよこ。特に特徴はない。" },
-        { id:2, name:"早起きピヨ", rarity:"N", emoji:"🐥", desc:"毎朝4時に起きて筋トレをしているが体型は全く変わらない。" },
-        { id:3, name:"曖昧なトリ", rarity:"N", emoji:"🐥", desc:"口癖は『まあ知らんけど』で議論をうやむやにするプロ。" },
-        { id:4, name:"深呼吸チキン", rarity:"N", emoji:"🐥", desc:"夜中に自分の翼を見つめて深呼吸するのが毎日の日課。" },
-        { id:5, name:"強打ピヨ", rarity:"N", emoji:"🐥", desc:"キーボードの『Enter』キーだけやたら強く叩くクセがある。" },
-        { id:6, name:"快適なひよこ", rarity:"N", emoji:"🐥", desc:"実は卵の殻の中に小型エアコンを完備して暮らしていた。" },
-        { id:7, name:"ビジネスピヨ", rarity:"N", emoji:"🐥", desc:"鳴き声が『ピヨ』ではなく『ソノ件デスガ』である。" },
-        { id:8, name:"限界バッテリー", rarity:"N", emoji:"🐥", desc:"バッテリー残量が常に3%しかない次世代型の省エネピヨ。" },
-        { id:9, name:"アイデンティティ崩壊", rarity:"N", emoji:"🐥", desc:"連打された衝撃で自分が本当に鶏だったか悩み始めた。" },
-        { id:10, name:"ストイックチキン", rarity:"N", emoji:"🐥", desc:"プロテインを水なしでガブ飲みする驚異の体質の持ち主。" },
-
-        { id:11, name:"超高音ピヨ", rarity:"N", emoji:"🐥", desc:"鳴き声の周波数が高すぎてコウモリにしか届かない。" },
-        { id:12, name:"ドトールトリ", rarity:"N", emoji:"🐥", desc:"休日はカフェでノートPCを開きドヤ顔で何もしない。" },
-        { id:13, name:"抜け毛コレクター", rarity:"N", emoji:"🐥", desc:"自分の抜け毛を集めて小さなクッションを作ろうとしている。" },
-        { id:14, name:"こだわりピヨ", rarity:"N", emoji:"🐥", desc:"『ピヨ』の発音にプロ意識を持ち異常なこだわりを見せる。" },
-        { id:15, name:"シャイなひよこ", rarity:"N", emoji:"🐥", desc:"じっと見つめると照れて自ら卵に戻ろうとする。" },
-        { id:16, name:"無課金の味方", rarity:"N", emoji:"🐥", desc:"期待されないと逆に燃える天の邪鬼なメンタルの持ち主。" },
-        { id:17, name:"太平洋スイマー", rarity:"N", emoji:"🐥", desc:"自力で太平洋を泳ぎ渡るという壮大な夢を持っている。" },
-        { id:18, name:"人情チキン", rarity:"N", emoji:"🐥", desc:"10,000回連打してくれたあなたの指の温もりを生涯忘れない。" },
-        { id:19, name:"悟りピヨ", rarity:"N", emoji:"🐥", desc:"完全に悟りをひらいておりどんな扱いを受けても動じない。" },
-        { id:20, name:"打ち切りひよこ", rarity:"N", emoji:"🐥", desc:"生まれた瞬間に『次回作にご期待ください』と言いかけた。" },
-
-        { id:21, name:"夜型ピヨ", rarity:"N", emoji:"🐥", desc:"夜の2時に突然部屋の模様替えを始めたくなるタイプ。" },
-        { id:22, name:"エナドリ依存症", rarity:"N", emoji:"🐥", desc:"翼の代わりにエナジードリンクを持ち歩いている。" },
-        { id:23, name:"SNSバズ狙い", rarity:"N", emoji:"🐥", desc:"生まれた瞬間の写真をTikTokに投降しようと画策中。" },
-        { id:24, name:"遅刻魔トリ", rarity:"N", emoji:"🐥", desc:"『あと5分で着く』と連絡してから家を出るタイプ。" },
-        { id:25, name:"猫かぶりピヨ", rarity:"N", emoji:"🐥", desc:"人前では可愛いが裏では激辛キムチを好んで食べる。" },
-        { id:26, name:"通販マニア", rarity:"N", emoji:"🐥", desc:"使わない健康器具を部屋に積み上げている。" },
-        { id:27, name:"腹八分目チキン", rarity:"N", emoji:"🐥", desc:"絶対に食べすぎない徹底した自己管理を行っている。" },
-        { id:28, name:"語彙力崩壊", rarity:"N", emoji:"🐥", desc:"感動すると『ヤバい』と『エモい』しか言えなくなる。" },
-        { id:29, name:"ポーカーフェイス", rarity:"N", emoji:"🐥", desc:"何を考えているか身内でも全く読めない謎の存在。" },
-        { id:30, name:"株式含み損ピヨ", rarity:"N", emoji:"🐥", desc:"裏で株式投資をしており絶望的な含み損に苦しんでいる。" },
-
-        { id:31, name:"ポテチ大好き", rarity:"N", emoji:"🐥", desc:"箸を使ってポテトチップスを食べる几帳面な一面がある。" },
-        { id:32, name:"自称ミニマリスト", rarity:"N", emoji:"🐥", desc:"物を捨てすぎて生活に必要な家具まで失った。" },
-        { id:33, name:"傘忘れるトリ", rarity:"N", emoji:"🐥", desc:"降水確率10%の日でも必ずビニール傘を買うハメになる。" },
-        { id:34, name:"自撮り加工勢", rarity:"N", emoji:"🐥", desc:"アプリの加工により原形をとどめていない美男子。" },
-        { id:35, name:"音読ピヨ", rarity:"N", emoji:"🐥", desc:"漫画を読むときは必ず声に出してセリフを言う。" },
-        { id:36, name:"筋トレ初心者", rarity:"N", emoji:"🐥", desc:"ダンベルを買ったことで満足してトレーニングを終えた。" },
-        { id:37, name:"長風呂チキン", rarity:"N", emoji:"🐥", desc:"一度お風呂に入るとなかなか出てこない。" },
-        { id:38, name:"パスワード忘れる勢", rarity:"N", emoji:"🐥", desc:"パスワード再設定の無限ループに陥っている。" },
-        { id:39, name:"映画通ぶるピヨ", rarity:"N", emoji:"🐥", desc:"字幕版しか認めない強いこだわりを持っている。" },
-        { id:40, name:"二度寝の達人", rarity:"N", emoji:"🐥", desc:"目覚まし時計を5分おきに10個セットしている。" },
-
-        { id:41, name:"フリマ中毒", rarity:"N", emoji:"🐥", desc:"梱包資材を家に大量にストックしている。" },
-        { id:42, name:"サウナーピヨ", rarity:"N", emoji:"🐥", desc:"整うことだけを求めて全国の銭湯を巡っている。" },
-        { id:43, name:"ゲーマーひよこ", rarity:"N", emoji:"🐥", desc:"勝てるまで寝ないつもりが朝を迎えてしまった。" },
-        { id:44, name:"味痴チキン", rarity:"N", emoji:"🐥", desc:"何を食べても『美味しい』と言ってくれるイイ奴。" },
-        { id:45, name:"方向音痴ピヨ", rarity:"N", emoji:"🐥", desc:"マップアプリを起動しながら逆方向に進んでいく。" },
-        { id:46, name:"まとめ買い勢", rarity:"N", emoji:"🐥", desc:"トイレットペーパーを一年分買い溜めしている。" },
-        { id:47, name:"カラオケ熱唱トリ", rarity:"N", emoji:"🐥", desc:"自分のキーに合わない曲を無理して歌って喉を壊す。" },
-        { id:48, name:"プロテインソムリエ", rarity:"N", emoji:"🐥", desc:"各メーカーのチョコ味の微妙な違いを語れる。" },
-        { id:49, name:"SNS垢抜け狙い", rarity:"N", emoji:"🐥", desc:"裏アカウントで毎日ポエムをつぶやいている。" },
-        { id:50, name:"モバイルバッテリー重装型", rarity:"N", emoji:"🐥", desc:"充電器を3つ常備しているためカバンが超重い。" },
-
-        { id:51, name:"衝動買いトリ", rarity:"N", emoji:"🐥", desc:"深夜の通販で買った謎の健康器具に囲まれて寝ている。" },
-        { id:52, name:"伝説のニートトリ", rarity:"N", emoji:"🐥", desc:"実家の居心地が良すぎて一生飛び立つ気がない。" },
-        { id:53, name:"形から入るタイプ", rarity:"N", emoji:"🐥", desc:"ジョギングを始めるために最高級ウェアを揃えたが走らない。" },
-        { id:54, name:"キーボードクラッシャー", rarity:"N", emoji:"🐥", desc:"タイピング音がうるさすぎて周囲から注意されている。" },
-        { id:55, name:"既読無視ピヨ", rarity:"N", emoji:"🐥", desc:"メッセージを見て満足し返信を忘れるタイプ。" },
-        { id:56, name:"イヤホン行方不明", rarity:"N", emoji:"🐥", desc:"片方のワイヤレスイヤホンを失くして絶望している。" },
-        { id:57, name:"自作ポエム作家", rarity:"N", emoji:"🐥", desc:"昔書いたノートを見返してあまりの恥ずかしさに悶絶する。" },
-        { id:58, name:"ポイントカード長者", rarity:"N", emoji:"🐥", desc:"財布がポイントカードでパンパンに膨らんでいる。" },
-        { id:59, name:"雨男トリ", rarity:"N", emoji:"🐥", desc:"彼がお出かけする日は例外なく降水確率が上がる。" },
-        { id:60, name:"洗顔フォーム愛好家", rarity:"N", emoji:"🐥", desc:"泡立てネットで作る泡のキメ細かさに命をかけている。" },
-
-        { id:61, name:"バイブレーション勘違い", rarity:"N", emoji:"🐥", desc:"スマホが鳴っていないのにポケットの揺れを感じる。" },
-        { id:62, name:"ネコ派のトリ", rarity:"N", emoji:"🐥", desc:"トリのくせに猫の動画を毎日5時間見ている。" },
-        { id:63, name:"カフェイン過剰摂取", rarity:"N", emoji:"🐥", desc:"コーヒーを飲みすぎて目がギンギンになっている。" },
-        { id:64, name:"アイス中毒", rarity:"N", emoji:"🐥", desc:"真冬でもこたつに入りながらアイスを貪り喰う。" },
-        { id:65, name:"領収書コレクター", rarity:"N", emoji:"🐥", desc:"経費で落とせるか微妙なレシートを溜め込んでいる。" },
-        { id:66, name:"前髪こだわり派", rarity:"N", emoji:"🐥", desc:"強風が吹くと前髪を押さえて動かなくなる。" },
-        { id:67, name:"まとめサイト信者", rarity:"N", emoji:"🐥", desc:"ネットの噂話をすべて真実だと信じ込んでいる。" },
-        { id:68, name:"寝相最悪チキン", rarity:"N", emoji:"🐥", desc:"朝起きるとベッドから180度回転した位置にいる。" },
-        { id:69, name:"エスカレーター歩かない", rarity:"N", emoji:"🐥", desc:"安全第一で手すりをしっかり握って立ち止まる優良児。" },
-        { id:70, name:"深夜ラーメンの誘惑", rarity:"N", emoji:"🐥", desc:"夜中2時の背油ラーメンの誘惑に勝てたことがない。" },
-
-        { id:71, name:"銀河のピヨ", rarity:"SR", emoji:"🐤", desc:"宇宙の真理を解き明かすために生まれたスターチキン。" },
-        { id:72, name:"漆黒の堕天使", rarity:"SR", emoji:"🐤", desc:"闇のチカラを右翼に封印している厨二病ピヨ。" },
-        { id:73, name:"メカピヨ1号", rarity:"SR", emoji:"🐤", desc:"超合金で作られたメカ。たまに油漏れを起こす。" },
-        { id:74, name:"サイバーチキン", rarity:"SR", emoji:"🐤", desc:"電脳世界を駆け巡るハッカー。好きな食べ物はボルト。" },
-        { id:75, name:"黄金のひよこ", rarity:"SR", emoji:"🐤", desc:"全身が純金でできている。重すぎて飛べない。" },
-        { id:76, name:"マッチョピヨ", rarity:"SR", emoji:"🐤", desc:"大胸筋をぴくぴく動かして挨拶してくるマッスル。" },
-        { id:77, name:"超エスパー", rarity:"SR", emoji:"🐤", desc:"スプーンを曲げることができるが伸ばすことはできない。" },
-        { id:78, name:"社畜ピヨ", rarity:"SR", emoji:"🐤", desc:"残業時間が月200時間を超えて逆にテンションが高い。" },
-        { id:79, name:"透明ピヨ", rarity:"SR", emoji:"🐤", desc:"光学迷彩をまとっているが普通に足音がうるさい。" },
-        { id:80, name:"爆音フェニックス", rarity:"SR", emoji:"🐤", desc:"鳴き声が近所迷惑レベルの爆音。重低音が響く。" },
-
-        { id:81, name:"ネオ・ピヨ", rarity:"SR", emoji:"🐤", desc:"未来からやってきたターミネーター型ひよこ。" },
-        { id:82, name:"ダンディチキン", rarity:"SR", emoji:"🐤", desc:"渋い声でブラックコーヒーの深みを語る大人。" },
-        { id:83, name:"社外取締役", rarity:"SR", emoji:"🐤", desc:"月に一回だけ現れて鋭いアドバイスを残していく。" },
-        { id:84, name:"ハイパー覚醒", rarity:"SR", emoji:"🐤", desc:"額の第三の目が開眼しかけている超常現象ピヨ。" },
-        { id:85, name:"虚構のトリ", rarity:"SR", emoji:"🐤", desc:"存在自体が都市伝説とされている幻のひよこ。" },
-        { id:86, name:"灼熱熱波", rarity:"SR", emoji:"🐤", desc:"周囲の温度を常に3度上昇させる熱い男。" },
-        { id:87, name:"絶対零度ピヨ", rarity:"SR", emoji:"🐤", desc:"触れたものを凍りつかせるクールな殺し屋。" },
-        { id:88, name:"タイムトラベラー", rarity:"SR", emoji:"🐤", desc:"明日のおやつを先に食べて怒られた過去を持つ。" },
-        { id:89, name:"音速のツバサ", rarity:"SR", emoji:"🐤", desc:"マッハ3で移動するため目視することが不可能。" },
-        { id:90, name:"錬金術師ピヨ", rarity:"SR", emoji:"🐤", desc:"石ころをひよこに変える術を習得した。" },
-
-        { id:91, name:"パラレルピヨ", rarity:"SR", emoji:"🐤", desc:"別世界線から迷い込んできたパラレル存在。" },
-        { id:92, name:"流星のトリ", rarity:"SR", emoji:"🐤", desc:"願い事をかなえてくれるが、一つにつき100円要求する。" },
-        { id:93, name:"古代遺跡ピヨ", rarity:"SR", emoji:"🐤", desc:"数千年前の壁画に描かれていた伝説のトリ。" },
-        { id:94, name:"ヴォイドチキン", rarity:"SR", emoji:"🐤", desc:"あらゆるものを吸い込む暗黒のブラックホールを持つ。" },
-        { id:95, name:"超新星ピヨ", rarity:"SR", emoji:"🐤", desc:"眩しすぎる輝きで周りのひよこを圧倒する。" },
-
-        { id:96, name:"神速の連打王", rarity:"SSR", emoji:"🐥✨", desc:"一秒間に100回タップできる伝説の連打神。" },
-        { id:97, name:"真・鳳凰ピヨ", rarity:"SSR", emoji:"🐥✨", desc:"何度倒れても卵から蘇る不滅の生命体。" },
-        { id:98, name:"銀河皇帝ピヨ", rarity:"SSR", emoji:"🐥✨", desc:"全宇宙のひよこを束ねる絶対的支配者。" },
-        { id:99, name:"全知全能のトリ", rarity:"SSR", emoji:"🐥✨", desc:"この世のすべての知識を網羅した知の化身。" },
-        { id:100, name:"神聖不死鳥ピヨ・ゴッド", rarity:"SSR", emoji:"🦚", desc:"10,000回の連打に応えて舞い降りた究極の神話生物。" },
-
-        { id:101, name:"みずきちゃんひよこ", rarity:"GOD", emoji:"👑🐥", desc:"【開発者降臨】このクソゲーをこの世に生み出した偉大なる製作者「みずき」。100匹のひよこを集めし真の勇者にしか姿を見せない伝説の中の存在。" }
-
-    ];
-
-    return rawData;
-}
-
-
-/* =========================
-   図鑑
-========================= */
-
-function getCollectedTypeCount() {
-
-    return Object.keys(collectionCounts)
-        .filter(
-            id => collectionCounts[id] > 0
-        )
-        .length;
-
-}
-
-
-function updateCollectionDisplay() {
-
-    const collectedTypes =
-        getCollectedTypeCount();
-
-    document.getElementById(
-        "col-count"
-    ).innerText =
-        collectedTypes;
-
-    document.getElementById(
-        "zukan-modal-count"
-    ).innerText =
-        collectedTypes;
-
-}
-
-
-/* =========================
-   セーブ
-========================= */
-
-function saveGameData() {
-
-    const saveData = {
-        count: count,
-        collectionCounts:
-            collectionCounts
-    };
-
-    localStorage.setItem(
-        "kuso_egg_save",
-        JSON.stringify(saveData)
-    );
-
-}
-
-
-/* =========================
-   ロード
-========================= */
-
-function loadGameData() {
-
-    const dataStr =
-        localStorage.getItem(
-            "kuso_egg_save"
-        );
-
-    if (dataStr) {
-
-        try {
-
-            const data =
-                JSON.parse(dataStr);
-
-            count =
-                data.count || 0;
-
-            if (data.collectionCounts) {
-
-                collectionCounts =
-                    data.collectionCounts;
-
-            } else if (
-                data.collection &&
-                Array.isArray(data.collection)
-            ) {
-
-                collectionCounts = {};
-
-                data.collection.forEach(
-                    id => {
-                        collectionCounts[id] = 1;
-                    }
-                );
-
-            }
-
-        } catch(e) {}
-
-    }
-
-    document.getElementById(
-        "count"
-    ).innerText = count;
-
-    updateCollectionDisplay();
-
-    updateEggCracks(count);
-
-    updateMilestoneMessage(
-        count - 1,
-        count
-    );
-
-}
-
-
-/* =========================
-   リセット
-========================= */
-
-function stopBGM() {
-
-    if (bgmTimer) {
-
-        clearInterval(bgmTimer);
-
-        bgmTimer = null;
-
-    }
-
-}
-
-
-function resetCurrentGame() {
-
-    count = 0;
-
-    currentBgmStage = -1;
-
-    saveGameData();
-
-    document.getElementById(
-        "count"
-    ).innerText = count;
-
-    document.getElementById(
-        "message"
-    ).innerText =
-        "カウントをリセットしました！";
-
-    document.body.style.backgroundColor =
-        "#222";
-
-    updateEggCracks(0);
-
-    stopBGM();
-
-    if (audioCtx) {
-
-        updateBGMStage();
-
-    }
-
-}
-
-
-function clearAllSaveData() {
-
-    const result =
-        confirm(
-            "本当にリセットしますか？"
-        );
-
-    if (!result) return;
-
-    localStorage.removeItem(
-        "kuso_egg_save"
-    );
-
-    count = 0;
-
-    collectionCounts = {};
-
-    currentBgmStage = -1;
-
-    document.getElementById(
-        "count"
-    ).innerText = 0;
-
-    updateCollectionDisplay();
-
-    document.getElementById(
-        "message"
-    ).innerText =
-        "全データを初期化しました！";
-
-    document.body.style.backgroundColor =
-        "#222";
-
-    updateEggCracks(0);
-
-    stopBGM();
-
-    if (audioCtx) {
-
-        updateBGMStage();
-
-    }
-
-}
-
-
-/* =========================
-   オーディオ
-========================= */
-
-function initAudioOnce() {
-
-    if (!audioCtx) {
-
-        audioCtx =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-
-        updateBGMStage();
-
-    } else if (
-        audioCtx.state === 'suspended'
-    ) {
-
-        audioCtx.resume();
-
-    }
-
-}
-
-
-function updateBGMStage() {
-
-    if (!audioCtx) return;
-
-    let newStage =
-        Math.floor(count / 1000);
-
-    if (newStage > 9)
-        newStage = 9;
-
-    if (
-        newStage !==
-        currentBgmStage
-    ) {
-
-        currentBgmStage =
-            newStage;
-
-        startBGMByStage(
-            currentBgmStage
-        );
-
-    }
-
-}
-
-
-const noteFreqs = {
-
-    'C2':65.41,
-    'D2':73.42,
-    'E2':82.41,
-    'F2':87.31,
-    'G2':98.00,
-    'G#2':103.83,
-    'A2':110.00,
-    'B2':123.47,
-
-    'C3':130.81,
-    'D3':146.83,
-    'Eb3':155.56,
-    'E3':164.81,
-    'F3':174.61,
-    'G3':196.00,
-    'G#3':207.65,
-    'A3':220.00,
-    'B3':246.94,
-
-    'C4':261.63,
-    'D4':293.66,
-    'Eb4':311.13,
-    'E4':329.63,
-    'F4':349.23,
-    'G4':392.00,
-    'G#4':415.30,
-    'A4':440.00,
-    'B4':493.88,
-
-    'C5':523.25,
-    'D5':587.33,
-    'Eb5':622.25,
-    'E5':659.25,
-    'F5':698.46,
-    'G5':783.99,
-    'G#5':830.61,
-    'A5':880.00,
-    'B5':987.77,
-
-    'C6':1046.50,
-
-    'R':0
-};
-
-
-const bgmMelodies = [
-
-    [
-        "C4","E4","G4","E4",
-        "D4","F4","A4","F4",
-        "E4","G4","B4","G4",
-        "C5","G4","E4","C4"
-    ],
-
-    [
-        "C4","C4","G4","G4",
-        "A4","A4","G4","R",
-        "F4","F4","E4","E4",
-        "D4","D4","C4","R"
-    ],
-
-    [
-        "E4","G4","C5","E5",
-        "D5","B4","G4","D4",
-        "C5","E4","A4","C5",
-        "B4","G4","E4","G4"
-    ]
-
-];
-
-
-const grandSerenadeMelody = [
-
-    "E5","G5","C6","B5",
-    "A5","G5","F5","E5",
-
-    "D5","F5","A5","G5",
-    "F5","E5","D5","C5",
-
-    "A4","C5","E5","D5",
-    "C5","B4","A4","G4",
-
-    "C5","E5","G5","F5",
-    "E5","D5","B4","C5"
-
-];
-
-
-function playSustainedNote(
-    freq,
-    type,
-    duration,
-    gainVal = 0.1
-) {
-
-    if (!audioCtx || freq === 0)
-        return;
-
-    let osc =
-        audioCtx.createOscillator();
-
-    let gain =
-        audioCtx.createGain();
-
-    osc.type = type;
-
-    osc.frequency.setValueAtTime(
-        freq,
-        audioCtx.currentTime
-    );
-
-    gain.gain.setValueAtTime(
-        0.001,
-        audioCtx.currentTime
-    );
-
-    gain.gain.linearRampToValueAtTime(
-        gainVal,
-        audioCtx.currentTime + 0.1
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        audioCtx.currentTime + duration
-    );
-
-    osc.connect(gain);
-
-    gain.connect(
-        audioCtx.destination
-    );
-
-    osc.start();
-
-    osc.stop(
-        audioCtx.currentTime + duration
-    );
-
-}
-
-
-function playDrumNoise(duration) {
-
-    if (!audioCtx) return;
-
-    let bufferSize =
-        audioCtx.sampleRate * duration;
-
-    let buffer =
-        audioCtx.createBuffer(
-            1,
-            bufferSize,
-            audioCtx.sampleRate
-        );
-
-    let data =
-        buffer.getChannelData(0);
-
-    for (
-        let i = 0;
-        i < bufferSize;
-        i++
-    ) {
-
-        data[i] =
-            Math.random() * 2 - 1;
-
-    }
-
-    let noise =
-        audioCtx.createBufferSource();
-
-    noise.buffer = buffer;
-
-    let gain =
-        audioCtx.createGain();
-
-    gain.gain.setValueAtTime(
-        0.02,
-        audioCtx.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        audioCtx.currentTime + duration
-    );
-
-    noise.connect(gain);
-
-    gain.connect(
-        audioCtx.destination
-    );
-
-    noise.start();
-
-}
-
-
-function startBGMByStage(stage) {
-
-    stopBGM();
-
-    if (stage >= 9) {
-
-        document.body.style.backgroundColor =
-            "#0b1325";
-
-    } else {
-
-        document.body.style.backgroundColor =
-            "#222";
-
-    }
-
-    let speed =
-        (stage >= 9)
-            ? 480
-            : Math.max(
-                120,
-                260 - stage * 15
-            );
-
-    let step = 0;
-
-    bgmTimer =
-        setInterval(() => {
-
-            if (!audioCtx) return;
-
-            if (stage >= 9) {
-
-                let noteStr =
-                    grandSerenadeMelody[
-                        step %
-                        grandSerenadeMelody.length
-                    ];
-
-                let freq =
-                    noteFreqs[noteStr] || 0;
-
-                playSustainedNote(
-                    freq,
-                    'triangle',
-                    0.8,
-                    0.14
-                );
-
-                if (freq > 0) {
-
-                    playSustainedNote(
-                        freq * 0.75,
-                        'sawtooth',
-                        0.7,
-                        0.04
-                    );
-
-                }
-
-                if (step % 2 === 0) {
-
-                    let baseFreq =
-                        freq
-                            ? freq / 2
-                            : noteFreqs['C2'];
-
-                    playSustainedNote(
-                        baseFreq,
-                        'triangle',
-                        1.2,
-                        0.22
-                    );
-
-                }
-
-                if (step % 4 === 0) {
-
-                    playDrumNoise(0.12);
-
-                }
-
-            } else {
-
-                let melodyIdx = 0;
-
-                if (stage >= 3)
-                    melodyIdx = 1;
-
-                if (stage >= 6)
-                    melodyIdx = 2;
-
-                const melody =
-                    bgmMelodies[melodyIdx];
-
-                let noteStr =
-                    melody[
-                        step % melody.length
-                    ];
-
-                let freq =
-                    noteFreqs[noteStr] || 0;
-
-                if (freq > 0) {
-
-                    let osc =
-                        audioCtx.createOscillator();
-
-                    let gain =
-                        audioCtx.createGain();
-
-                    osc.type = 'square';
-
-                    osc.frequency.setValueAtTime(
-                        freq,
-                        audioCtx.currentTime
-                    );
-
-                    gain.gain.setValueAtTime(
-                        0.06,
-                        audioCtx.currentTime
-                    );
-
-                    gain.gain.exponentialRampToValueAtTime(
-                        0.001,
-                        audioCtx.currentTime +
-                        (speed / 1000) * 0.95
-                    );
-
-                    osc.connect(gain);
-
-                    gain.connect(
-                        audioCtx.destination
-                    );
-
-                    osc.start();
-
-                    osc.stop(
-                        audioCtx.currentTime +
-                        speed / 1000
-                    );
-
-                }
-
-                if (
-                    stage >= 2 &&
-                    step % 2 === 0
-                ) {
-
-                    let baseFreq =
-                        freq
-                            ? freq / 2
-                            : noteFreqs['C3'];
-
-                    playSustainedNote(
-                        baseFreq,
-                        'triangle',
-                        (speed * 1.8) / 1000,
-                        0.08
-                    );
-
-                }
-
-                if (
-                    stage >= 4 &&
-                    step % 2 === 1
-                ) {
-
-                    playDrumNoise(0.05);
-
-                }
-
-            }
-
-            step++;
-
-        }, speed);
-
-}
-
-
-function playTapSound(freq = 400) {
-
-    if (!audioCtx) return;
-
-    let osc =
-        audioCtx.createOscillator();
-
-    let gain =
-        audioCtx.createGain();
-
-    osc.type = 'square';
-
-    osc.frequency.setValueAtTime(
-        freq,
-        audioCtx.currentTime
-    );
-
-    gain.gain.setValueAtTime(
-        0.06,
-        audioCtx.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.01,
-        audioCtx.currentTime + 0.05
-    );
-
-    osc.connect(gain);
-
-    gain.connect(
-        audioCtx.destination
-    );
-
-    osc.start();
-
-    osc.stop(
-        audioCtx.currentTime + 0.05
-    );
-
-}
-
-
-function playMilestoneSound() {
-
-    if (!audioCtx) return;
-
-    const now =
-        audioCtx.currentTime;
-
-    const notes =
-        [523,659,783,1046];
-
-    notes.forEach(
-        (freq,index) => {
-
-            let osc =
-                audioCtx.createOscillator();
-
-            let gain =
-                audioCtx.createGain();
-
-            osc.type = 'triangle';
-
-            osc.frequency.setValueAtTime(
-                freq,
-                now + index * 0.07
-            );
-
-            gain.gain.setValueAtTime(
-                0.12,
-                now + index * 0.07
-            );
-
-            gain.gain.exponentialRampToValueAtTime(
-                0.001,
-                now + index * 0.07 + 0.2
-            );
-
-            osc.connect(gain);
-
-            gain.connect(
-                audioCtx.destination
-            );
-
-            osc.start(
-                now + index * 0.07
-            );
-
-            osc.stop(
-                now + index * 0.07 + 0.22
-            );
-
-        }
-    );
-
-}
-
-
-function playFanfare() {
-
-    if (!audioCtx) return;
-
-    const now =
-        audioCtx.currentTime;
-
-    const notes =
-        [523,659,783,1046,1318,1567];
-
-    notes.forEach(
-        (freq,index) => {
-
-            let osc =
-                audioCtx.createOscillator();
-
-            let gain =
-                audioCtx.createGain();
-
-            osc.type = 'triangle';
-
-            osc.frequency.setValueAtTime(
-                freq,
-                now + index * 0.1
-            );
-
-            gain.gain.setValueAtTime(
-                0.2,
-                now + index * 0.1
-            );
-
-            gain.gain.exponentialRampToValueAtTime(
-                0.001,
-                now + index * 0.1 + 0.5
-            );
-
-            osc.connect(gain);
-
-            gain.connect(
-                audioCtx.destination
-            );
-
-            osc.start(
-                now + index * 0.1
-            );
-
-            osc.stop(
-                now + index * 0.1 + 0.55
-            );
-
-        }
-    );
-
-}
+const egg = document.getElementById("egg");
+const eggContainer = document.getElementById("egg-container");
+const counter = document.getElementById("counter");
+const message = document.getElementById("message");
+const startTelop = document.getElementById("start-telop");
+
+const resultModal = document.getElementById("result-modal");
+const chickIcon = document.getElementById("chick-icon");
+const rarity = document.getElementById("rarity");
+const resultText = document.getElementById("result-text");
+const resultCount = document.getElementById("result-count");
+const closeButton = document.getElementById("close-button");
 
 
 /* =========================
    卵タップ
 ========================= */
 
-function tapEgg() {
+eggContainer.addEventListener("click", function() {
 
-    initAudioOnce();
+    count++;
 
-    const telop =
-        document.getElementById(
-            "start-telop"
-        );
-
-    if (telop) {
-
-        telop.classList.add(
-            "hidden"
-        );
-
+    /* 開始テロップを消す */
+    if (count === 1) {
+        startTelop.classList.add("hidden");
     }
 
-    addCount(1);
+    counter.textContent = count + "回";
 
-}
+    updateShake();
+
+    milestoneMessage();
+
+    /* 10000回でひよこ誕生 */
+    if (count === 10000) {
+        setTimeout(function() {
+            showResult();
+        }, 300);
+    }
+
+});
 
 
 /* =========================
-   カウント追加
+   卵の揺れ
 ========================= */
 
-function addCount(num) {
+function updateShake() {
 
-    if (count >= targetCount)
-        return;
+    eggContainer.classList.remove(
+        "shake-1",
+        "shake-2",
+        "shake-3",
+        "shake-4",
+        "shake-5",
+        "shake-6",
+        "shake-7",
+        "shake-8",
+        "shake-9",
+        "shake-10"
+    );
 
-    const prevCount = count;
+    let stage = Math.floor(count / 1000);
 
-    count += num;
-
-    if (count > targetCount)
-        count = targetCount;
-
-    document.getElementById(
-        "count"
-    ).innerText = count;
-
-    updateEggCracks(count);
-
-    saveGameData();
-
-    updateBGMStage();
-
-    const isMilestone =
-        updateMilestoneMessage(
-            prevCount,
-            count
-        );
-
-    if (isMilestone) {
-
-        playMilestoneSound();
-
-    } else {
-
-        playTapSound(
-            300 + (count % 200)
-        );
-
+    if (stage > 10) {
+        stage = 10;
     }
 
-    if (count >= targetCount) {
-
-        hatchChick();
-
+    if (stage >= 1) {
+        eggContainer.classList.add("shake-" + stage);
     }
-
 }
 
 
@@ -2153,575 +681,143 @@ function addCount(num) {
    節目メッセージ
 ========================= */
 
-function updateMilestoneMessage(
-    prevCount,
-    currentCount
-) {
+function milestoneMessage() {
 
-    let milestoneHit = false;
+    let text = "";
 
-    for (
-        let m = 100;
-        m <= 10000;
-        m += 100
-    ) {
-
-        if (
-            prevCount < m &&
-            currentCount >= m
-        ) {
-
-            if (milestoneMessages[m]) {
-
-                document.getElementById(
-                    "message"
-                ).innerText =
-                    milestoneMessages[m];
-
-                milestoneHit = true;
-
-            }
-
-        }
-
+    if (count === 10) {
+        text = "10回……。まだ何も起きません。";
     }
 
-    return milestoneHit;
+    else if (count === 50) {
+        text = "50回！卵はまだ元気です。";
+    }
 
+    else if (count === 100) {
+        text = "100回！！そろそろ何か起きる……？";
+    }
+
+    else if (count === 200) {
+        text = "200回。あなたは何をしているんですか？";
+    }
+
+    else if (count === 500) {
+        text = "500回！？まだ続けるんですか？";
+    }
+
+    else if (count === 1000) {
+        text = "1000回達成！！卵が少し揺れ始めました。";
+    }
+
+    else if (count === 2000) {
+        text = "2000回……。卵の揺れが強くなっています。";
+    }
+
+    else if (count === 3000) {
+        text = "3000回！！何かがおかしい。";
+    }
+
+    else if (count === 5000) {
+        text = "5000回！！！！半分です。";
+    }
+
+    else if (count === 7000) {
+        text = "7000回……。もう後戻りできません。";
+    }
+
+    else if (count === 9000) {
+        text = "9000回！！！もうすぐです！！！";
+    }
+
+    else if (count === 9999) {
+        text = "9999回！！！！！！！！";
+    }
+
+    else if (count === 10000) {
+        text = "奇跡が起きました。";
+    }
+
+    if (text !== "") {
+
+        message.textContent = text;
+
+        message.classList.remove("milestone");
+
+        void message.offsetWidth;
+
+        message.classList.add("milestone");
+    }
 }
 
 
 /* =========================
-   ★ GODキラキラ生成
+   結果表示
 ========================= */
 
-function createGodParticles() {
+function showResult() {
 
-    const symbols = [
-        "✨",
-        "⭐",
-        "🌟",
-        "💫",
-        "👑",
-        "🌈"
-    ];
-
-    for (
-        let i = 0;
-        i < 45;
-        i++
-    ) {
-
-        const particle =
-            document.createElement(
-                "div"
-            );
-
-        particle.className =
-            "god-particle";
-
-        particle.innerText =
-            symbols[
-                Math.floor(
-                    Math.random() *
-                    symbols.length
-                )
-            ];
-
-        particle.style.left =
-            (Math.random() * 100) + "vw";
-
-        particle.style.top =
-            (Math.random() * 100) + "vh";
-
-        particle.style.setProperty(
-            "--x",
-            Math.random() * 100
-        );
-
-        particle.style.setProperty(
-            "--y",
-            Math.random() * 100
-        );
-
-        document.body.appendChild(
-            particle
-        );
-
-        setTimeout(
-            () => {
-                particle.remove();
-            },
-            1600
-        );
-
-    }
-
-}
-
-
-/* =========================
-   レア度別演出
-========================= */
-
-function applyRarityEffect(rarity) {
-
-    const modal =
-        document.getElementById(
-            "result-modal"
-        );
-
-    modal.classList.remove(
+    resultModal.classList.remove(
         "effect-N",
         "effect-SR",
-        "effect-SSR",
-        "effect-GOD"
+        "effect-SSR"
     );
 
-    modal.classList.add(
-        `effect-${rarity}`
-    );
+    /*
+     * 今回は10000回達成時なのでSSR
+     */
 
+    const selectedRarity = "SSR";
 
-    /* GODなら大量キラキラ */
+    rarity.textContent = selectedRarity;
+    resultText.textContent = "奇跡のひよこが誕生しました！！！";
+    resultCount.textContent = "10000回タップ達成！";
 
-    if (rarity === "GOD") {
+    chickIcon.textContent = "🐣";
 
-        createGodParticles();
+    resultModal.classList.add("active");
+    resultModal.classList.add("effect-SSR");
 
-        setTimeout(
-            createGodParticles,
-            500
-        );
-
-    }
-
+    document.body.style.backgroundColor = "#4a2600";
 }
 
 
 /* =========================
-   ひよこ誕生
+   結果画面を閉じる
 ========================= */
 
-function hatchChick() {
+closeButton.addEventListener("click", function() {
 
-    playFanfare();
-
-    let chosenChick = null;
-
-    const currentUniqueCount =
-        getCollectedTypeCount();
-
-
-    if (
-        currentUniqueCount >= 100 &&
-        !collectionCounts[101]
-    ) {
-
-        chosenChick =
-            chickTypes.find(
-                c => c.id === 101
-            );
-
-    } else {
-
-        const availablePool =
-            chickTypes.filter(
-                c => c.id !== 101
-            );
-
-        const rand =
-            Math.random() * 100;
-
-        let rarityFilter = "N";
-
-        if (rand < 2)
-            rarityFilter = "SSR";
-
-        else if (rand < 15)
-            rarityFilter = "SR";
-
-
-        let filteredPool =
-            availablePool.filter(
-                c =>
-                    c.rarity ===
-                    rarityFilter
-            );
-
-
-        if (
-            filteredPool.length === 0
-        ) {
-
-            filteredPool =
-                availablePool;
-
-        }
-
-
-        chosenChick =
-            filteredPool[
-                Math.floor(
-                    Math.random() *
-                    filteredPool.length
-                )
-            ];
-
-    }
-
-
-    collectionCounts[
-        chosenChick.id
-    ] =
-        (
-            collectionCounts[
-                chosenChick.id
-            ] || 0
-        ) + 1;
-
-
-    saveGameData();
-
-    updateCollectionDisplay();
-
-
-    document.getElementById(
-        "rarity-label"
-    ).innerText =
-        `[${chosenChick.rarity}]`;
-
-
-    document.getElementById(
-        "rarity-label"
-    ).className =
-        `rare-${chosenChick.rarity}`;
-
-
-    document.getElementById(
-        "chick-icon"
-    ).innerText =
-        chosenChick.emoji;
-
-
-    document.getElementById(
-        "chick-name"
-    ).innerText =
-        chosenChick.name;
-
-
-    document.getElementById(
-        "chick-owned-count"
-    ).innerText =
-        `所持数: ${collectionCounts[chosenChick.id]} 匹`;
-
-
-    document.getElementById(
-        "chick-desc"
-    ).innerText =
-        chosenChick.desc;
-
-
-    /* ★ レア度演出 */
-
-    applyRarityEffect(
-        chosenChick.rarity
-    );
-
-
-    const nextBtn =
-        document.getElementById(
-            "next-egg-btn"
-        );
-
-    nextBtn.disabled = true;
-
-    setTimeout(() => {
-
-        nextBtn.disabled = false;
-
-    }, 500);
-
-
-    document.getElementById(
-        "result-modal"
-    ).classList.add("active");
-
-}
-
-
-/* =========================
-   次の卵
-========================= */
-
-function resetGame() {
-
-    document.getElementById(
-        "result-modal"
-    ).classList.remove(
+    resultModal.classList.remove(
         "active",
         "effect-N",
         "effect-SR",
-        "effect-SSR",
-        "effect-GOD"
+        "effect-SSR"
     );
 
-    resetCurrentGame();
+    document.body.style.backgroundColor = "#222";
 
-}
+});
 
 
 /* =========================
-   図鑑
+   モーダル外クリック
 ========================= */
 
-function openZukan() {
+resultModal.addEventListener("click", function(e) {
 
-    updateCollectionDisplay();
+    if (e.target === resultModal) {
 
-    const zukanListEl =
-        document.getElementById(
-            "zukan-list"
+        resultModal.classList.remove(
+            "active",
+            "effect-N",
+            "effect-SR",
+            "effect-SSR"
         );
 
-    zukanListEl.innerHTML = "";
+        document.body.style.backgroundColor = "#222";
+    }
 
-
-    chickTypes.forEach(
-        chick => {
-
-            const isOwned =
-                !!collectionCounts[
-                    chick.id
-                ] &&
-                collectionCounts[
-                    chick.id
-                ] > 0;
-
-
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-            item.className =
-                "zukan-item";
-
-
-            if (isOwned) {
-
-                item.innerHTML = `
-
-                    <div class="icon">
-                        ${chick.emoji}
-                    </div>
-
-                    <div class="info">
-
-                        <div class="no">
-                            No.${chick.id}
-
-                            <span class="rare-${chick.rarity}">
-                                [${chick.rarity}]
-                            </span>
-                        </div>
-
-                        <div class="name">
-
-                            ${chick.name}
-
-                            <span class="count-tag">
-                                x${collectionCounts[chick.id]}
-                            </span>
-
-                        </div>
-
-                        <div class="desc">
-                            ${chick.desc}
-                        </div>
-
-                    </div>
-                `;
-
-            } else {
-
-                item.innerHTML = `
-
-                    <div class="icon zukan-unknown">
-                        ❓
-                    </div>
-
-                    <div class="info zukan-unknown">
-
-                        <div class="no">
-                            No.${chick.id} [???]
-                        </div>
-
-                        <div class="name">
-                            ？？？？？
-                        </div>
-
-                        <div class="desc">
-                            まだ発見されていません
-                        </div>
-
-                    </div>
-                `;
-
-            }
-
-
-            zukanListEl.appendChild(
-                item
-            );
-
-        }
-    );
-
-
-    document.getElementById(
-        "zukan-modal"
-    ).classList.add("active");
-
-}
-
-
-function closeZukan() {
-
-    document.getElementById(
-        "zukan-modal"
-    ).classList.remove("active");
-
-}
-
-
-/* =========================
-   節目メッセージ
-========================= */
-
-const milestoneMessages = {
-
-    100: "100回：ヒビが入った…？いや、ホコリだった。",
-    200: "200回：連打する指に微かな疑問を感じ始める。",
-    300: "300回：卵の奥から小さく『無駄だよ』と聞こえた気がした。",
-    400: "400回：画面の脂汚れが気になり出す頃合い。",
-    500: "500回：卵「あ、そこ気持ちいいです」",
-    600: "600回：指の関節が自己主張を始めてきた。",
-    700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
-    800: "800回：まだ8%しか温まっていないという絶望。",
-    900: "900回：もうすぐ1000！特に何もないけど！",
-
-    1000: "1000回：自我が目覚めかけたが思いとどまった。卵にもヒビが入った！",
-
-    1100: "1100回：そろそろ指を休めても誰も責めない。",
-    1200: "1200回：卵があなたの連打速度を採点している。",
-    1300: "1300回：指先からかすかに摩擦熱を感じる。",
-    1400: "1400回：特にドラマは起こらない。ひたすら連打だ。",
-    1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
-    1600: "1600回：卵の表面にうっすらと手形がつきそうだ。",
-    1700: "1700回：中のひよこがあなたの連打リズムに合わせて踊っている。",
-    1800: "1800回：スマホの画面がそろそろ温かくなってきた頃。",
-    1900: "1900回：あと100回で2000！休まず叩け！",
-
-    2000: "2000回：指の疲労感＝命の重み。ヒビがさらに広がった！",
-
-    2100: "2100回：卵「もう少し優しく叩いてほしいピヨ」",
-    2200: "2200回：爪が画面に当たるカチカチ音が部屋に響く。",
-    2300: "2300回：連打のスピードが徐々に上がってきた！",
-    2400: "2400回：卵の強度が心配になるレベルの連打。",
-    2500: "2500回：四分の一に到達。己との戦いである。",
-    2600: "2600回：ゲシュタルト崩壊を起こしそうな卵の形。",
-    2700: "2700回：連打の手が勝手に動き始める領域。",
-    2800: "2800回：卵「中の居心地が良すぎて出たくない」",
-    2900: "2900回：もうすぐ3000！指の限界を突破しろ！",
-
-    3000: "3000回：卵の中で何かが動画を見ている気配。ヒビがさらに増えた！",
-
-    3100: "3100回：無心。ただひたすらに無心。",
-    3200: "3200回：指の皮が少し厚くなった気がする。",
-    3300: "3300回：卵「そろそろ起きますかね…」",
-    3400: "3400回：連打の衝撃波で周囲の空気が揺れる。",
-    3500: "3500回：卵「もう少し右上をお願いします」",
-    3600: "3600回：卵殻の硬度がダイヤモンドに近づいている。",
-    3700: "3700回：連打のリズムが現代音楽として成立し始める。",
-    3800: "3800回：あなたの指はもはや連打マシンだ。",
-    3900: "3900回：あと100回で4000！勢いを殺すな！",
-
-    4000: "4000回：指先から不思議な波動が出始める。卵もかなりヒビだらけだ！",
-
-    4100: "4100回：卵の中でひよこがストレッチを始めた。",
-    4200: "4200回：タップのしすぎで腕の筋肉がアピールしている。",
-    4300: "4300回：卵「あと何回叩くつもりですか…？」",
-    4400: "4400回：連打の残像が見え始めている。",
-    4500: "4500回：もうすぐ折り返し！無心で叩け！",
-    4600: "4600回：卵の表面から未知のエネルギーが漏れ出している！",
-    4700: "4700回：連打の振動で部屋の家具が少し揺れた気がする。",
-    4800: "4800回：卵「この連打、悪くないぞ…」",
-    4900: "4900回：あと100回で中間地点！気合を入れ直せ！",
-
-    5000: "5000回：折り返し地点！卵はもうかなりボロボロだ。",
-
-    5100: "5100回：後半戦突入！指の限界に挑め！",
-    5200: "5200回：卵「外の世界って暑いですか？」",
-    5300: "5300回：指の関節が自己主張を深めている。",
-    5400: "5400回：卵「今の一撃、なかなか響きましたね」",
-    5500: "5500回：指の疲労が一周回って気持ちよくなってきた。",
-    5600: "5600回：卵が連打を心地よい振動として受け入れ始めた。",
-    5700: "5700回：連打の速度が音速を超えかけている（嘘）。",
-    5800: "5800回：卵「そろそろ生まれる準備をしようかな…」",
-    5900: "5900回：あと100回で6000！休まず進め！",
-
-    6000: "6000回：6割達成！卵からかすかな熱気を感じる。ヒビがさらに広がった！",
-
-    6100: "6100回：連打によって画面に微小な空間の歪みが発生中。",
-    6200: "6200回：卵「外の様子をチラ見しようか迷う」",
-    6300: "6300回：あなたの指に謎のオーラが宿り始めている。",
-    6400: "6400回：卵がリズムに合わせて縦揺れし始めた！",
-    6500: "6500回：目標まであと3500！まだまだいける！",
-    6600: "6600回：卵「その強さ、絶妙です」",
-    6700: "6700回：連打の音に近所のひよこが反応している。",
-    6800: "6800回：指先が覚醒し、自動連打機能が発動しそうだ。",
-    6900: "6900回：あと100回で7000！ゾーンに入れ！",
-
-    7000: "7000回達成！卵殻が神々しく光り始めた。もうヒビだらけ！",
-
-    7100: "7100回：卵「生まれてからのキャラ付けを考え中…」",
-    7200: "7200回：あなたの連打魂が卵に直接注入されている。",
-    7300: "7300回：卵の表面にうっすらと『感謝』の文字が浮かんできた。",
-    7400: "7400回：連打の反動で地球が微かに自転を早めた気がする。",
-    7500: "7500回：全体の4分3を突破！ラストスパートだ！",
-    7600: "7600回：卵「そろそろ殻を破るタイミングを計ります」",
-    7700: "7700回：ラッキーセブン！何かが起きる予感（何もない）。",
-    7800: "7800回：指の感覚が完全に消失し、悟りの境界へ。",
-    7900: "7900回：あと100回で8000！気合を注入しろ！",
-
-    8000: "8000回：残り2000回！卵内部で生命の鼓動が激しくなる！",
-
-    8100: "8100回：卵「こんなに連打されたのは生まれて初めてです」",
-    8200: "8200回：連打の摩擦熱で画面が本格的に温かい。",
-    8300: "8300回：中のひよこが最後の毛づくろいを始めた。",
-    8400: "8400回：卵殻の硬度が限界を迎えようとしている！",
-    8500: "8500回：ゴールがはっきりと見えてきた！突き進め！",
-    8600: "8600回：卵「もうすぐお会いできますね…！」",
-    8700: "8700回：連打のリズムが伝説のファンファーレに聞こえてきた。",
-    8800: "8800回：ゾロ目！神聖な连打のエネルギーが充満している。",
-    8900: "8900回：あと100回で9000！ラストスパート目前！",
-
-    9000: "9000回：ついに9000！卵が限界寸前！大きなヒビが走った！",
-
-    9100: "9100回：卵「息を整えて…準備完了ピヨ！」",
-    9200: "9200回：残り800回！指の全細胞を解き放て！",
-    9300: "9300回：連打の衝撃で卵に大きなひび割れが刻まれる！",
-    9400: "9400回：卵「光が見えてきた…！」",
-    9500: "9500回：残り500回！伝説の瞬間はすぐそこだ！",
-    9600: "9600回：卵内部から強い光が溢れ出している！",
-    9700: "9700回：残り300回！指が千切れても叩き続けろ！",
-    9800: "9800回：残り200回！殻が崩壊を始めた！",
-    9900: "9900回：あと100回！奇跡の生誕へ向けて連打しろ！！",
-
-    10000: "10000回：🎉 誕生の瞬間！おめでとう！！ 🎉"
-
-};
+});
 
 </script>
 
