@@ -26,7 +26,7 @@
         }
         #egg-container {
             position: relative;
-            height: 250px;
+            height: 220px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -47,7 +47,8 @@
             font-weight: bold;
             margin-top: 10px;
         }
-        #result-modal {
+        /* モーダル共通スタイル */
+        .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -57,40 +58,64 @@
             align-items: center;
             z-index: 100;
         }
-        #result-modal.active {
+        .modal.active {
             display: flex;
-            animation: popIn 0.5s ease-out;
+            animation: popIn 0.3s ease-out;
         }
         @keyframes popIn {
-            0% { transform: scale(0); }
-            80% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
         #chick-icon {
-            font-size: 150px;
-            margin: 20px 0;
+            font-size: 130px;
+            margin: 10px 0;
             filter: drop-shadow(0 0 20px #fff);
         }
         .rare-SSR { color: #ffd700; text-shadow: 0 0 10px #ff0000; }
         .rare-SR { color: #c0c0c0; }
         .rare-N { color: #ffffff; }
+        
         button {
             padding: 10px 20px;
-            font-size: 18px;
+            font-size: 16px;
             background: #ff4081;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 10px;
         }
-        #collection {
+
+        /* 図鑑エリア */
+        #collection-summary {
             margin-top: 20px;
             border-top: 1px solid #444;
             padding-top: 10px;
-            max-height: 150px;
-            overflow-y: auto;
         }
+        
+        /* 図鑑モーダル内のリスト */
+        #zukan-list {
+            width: 85%;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: #111;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            margin: 15px 0;
+        }
+        .zukan-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding: 8px 0;
+        }
+        .zukan-item .icon { font-size: 40px; margin-right: 15px; width: 50px; text-align: center; }
+        .zukan-item .info { flex-grow: 1; }
+        .zukan-item .name { font-weight: bold; font-size: 16px; }
+        .zukan-item .desc { font-size: 12px; color: #aaa; margin-top: 3px; }
+        .zukan-unknown { color: #555; }
     </style>
 </head>
 <body>
@@ -105,33 +130,38 @@
     
     <div id="message">タップして命を吹き込め…</div>
 
-    <!-- デバッグ用：1000タップスキップボタン（開発時に便利） -->
+    <!-- デバッグ用：1000タップスキップボタン -->
     <button onclick="addCount(1000)" style="background:#555; font-size:12px; padding:5px;">[デバッグ] +1000タップ</button>
 
-    <div id="collection">
-        <h3>図鑑 (<span id="col-count">0</span>/100)</h3>
-        <div id="col-list">まだ何も生まれていません</div>
+    <div id="collection-summary">
+        <h3>図鑑達成率: <span id="col-count">0</span>/100</h3>
+        <button onclick="openZukan()">📖 図鑑を見る</button>
     </div>
 </div>
 
 <!-- 誕生モーダル（10000回達成時） -->
-<div id="result-modal">
-    <h1 style="color:#ff0; font-size: 36px;">🎉 生 誕 🎉</h1>
-    <div id="rarity-label" style="font-size: 24px; font-weight: bold;"></div>
+<div id="result-modal" class="modal">
+    <h1 style="color:#ff0; font-size: 32px; margin: 0;">🎉 生 誕 🎉</h1>
+    <div id="rarity-label" style="font-size: 22px; font-weight: bold; margin-top: 5px;"></div>
     <div id="chick-icon">🐥</div>
     <h2 id="chick-name" style="margin: 5px 0;">普通のひよこ</h2>
-    <p id="chick-desc" style="color: #ccc; max-width: 80%;"></p>
+    <p id="chick-desc" style="color: #ccc; max-width: 80%; font-size: 14px;"></p>
     <button onclick="resetGame()">次の卵を温める</button>
+</div>
+
+<!-- 図鑑一覧モーダル -->
+<div id="zukan-modal" class="modal">
+    <h2 style="margin: 0; color: #ffeb3b;">🐥 ひよこ図鑑 🐥</h2>
+    <div id="zukan-list"></div>
+    <button onclick="closeZukan()">閉じる</button>
 </div>
 
 <script>
 let count = 0;
 const targetCount = 10000;
 let audioCtx = null;
-let bgmOscillator = null;
 
 // ひよこ図鑑データ（全100種類を生成するロジック）
-const rareRanks = ["N", "SR", "SSR"];
 const chickTypes = generateChickDatabase();
 let collection = new Set();
 
@@ -148,7 +178,7 @@ function generateChickDatabase() {
         let emoji = "🐥";
         if (rarity === "SR") emoji = "🐤";
         if (rarity === "SSR") emoji = "🐥✨";
-        if (i === 100) emoji = "🦚"; // 100番目は特別
+        if (i === 100) emoji = "🦚";
 
         list.push({
             id: i,
@@ -161,7 +191,7 @@ function generateChickDatabase() {
     return list;
 }
 
-// 簡易Web Audio API（BGM & SE用）
+// 簡易Web Audio API（音源）
 function initAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -169,9 +199,9 @@ function initAudio() {
     }
 }
 
-// 簡単なループBGM（なんとも言えないシュールな音）
+// BGM（ループ音）
 function startBGM() {
-    const notes = [261.63, 293.66, 329.63, 349.23]; // C4, D4, E4, F4
+    const notes = [261.63, 293.66, 329.63, 349.23];
     let step = 0;
     setInterval(() => {
         if (!audioCtx) return;
@@ -189,7 +219,7 @@ function startBGM() {
     }, 500);
 }
 
-// タップ音
+// 通常タップ音
 function playTapSound(freq = 400) {
     if (!audioCtx) return;
     let osc = audioCtx.createOscillator();
@@ -203,11 +233,30 @@ function playTapSound(freq = 400) {
     osc.stop(audioCtx.currentTime + 0.05);
 }
 
+// 節目の特別効果音（ピロリン♪）
+function playMilestoneSound() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+    notes.forEach((freq, index) => {
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + index * 0.08);
+        gain.gain.setValueAtTime(0.15, now + index * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + index * 0.08);
+        osc.stop(now + index * 0.08 + 0.25);
+    });
+}
+
 // 生誕ファンファーレ
 function playFanfare() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    const notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach((freq, index) => {
         let osc = audioCtx.createOscillator();
         let gain = audioCtx.createGain();
@@ -228,54 +277,68 @@ function tapEgg() {
 }
 
 function addCount(num) {
+    const prevCount = count;
     count += num;
     if (count > targetCount) count = targetCount;
     document.getElementById("count").innerText = count;
 
-    playTapSound(300 + (count % 200));
-    checkMilestones();
+    // 節目チェック
+    const isMilestone = checkMilestones(prevCount, count);
+    
+    if (isMilestone) {
+        playMilestoneSound();
+    } else {
+        playTapSound(300 + (count % 200));
+    }
 
     if (count >= targetCount) {
         hatchChick();
     }
 }
 
-// 節目ごとのシュール演出
-function checkMilestones() {
+// 節目判定とテキスト変更
+function checkMilestones(prev, current) {
+    const milestones = [10, 50, 100, 200, 500, 1000, 2000, 5000, 8000, 9999];
     const msg = document.getElementById("message");
     const egg = document.getElementById("egg");
+    let hit = false;
 
-    if (count === 10) msg.innerText = "10回：少し温かくなってきた気がする。";
-    if (count === 50) msg.innerText = "50回：気のせいだった。まだただの卵だ。";
-    if (count === 100) { msg.innerText = "100回：ヒビが入った…？いや、ホコリだった。"; egg.style.transform = "rotate(5deg)"; }
-    if (count === 200) msg.innerText = "200回：画面をタップする作業に疑問を感じ始める頃。";
-    if (count === 500) { msg.innerText = "500回：卵「あ、そこ気持ちいいです」"; }
-    if (count === 1000) { msg.innerText = "1000回：自我が芽生え始めている。"; document.body.style.backgroundColor = "#1a2421"; }
-    if (count === 2000) msg.innerText = "2000回：指の疲労感＝命の重み。";
-    if (count === 5000) { msg.innerText = "5000回：折り返し地点。背景が妙な威圧感を放ち始める。"; document.body.style.backgroundColor = "#331a24"; }
-    if (count === 8000) msg.innerText = "8000回：もうすぐ産まれる！がんばれ！";
-    if (count === 9999) msg.innerText = "9999回：ラスト１タップ！！！";
+    for (let m of milestones) {
+        if (prev < m && current >= m) {
+            hit = true;
+            break;
+        }
+    }
+
+    if (current >= 10 && current < 50) msg.innerText = "10回：少し温かくなってきた気がする。";
+    if (current >= 50 && current < 100) msg.innerText = "50回：気のせいだった。まだただの卵だ。";
+    if (current >= 100 && current < 200) { msg.innerText = "100回：ヒビが入った…？いや、ホコリだった。"; egg.style.transform = "rotate(5deg)"; }
+    if (current >= 200 && current < 500) msg.innerText = "200回：画面をタップする作業に疑問を感じ始める頃。";
+    if (current >= 500 && current < 1000) { msg.innerText = "500回：卵「あ、そこ気持ちいいです」"; }
+    if (current >= 1000 && current < 2000) { msg.innerText = "1000回：自我が芽生え始めている。"; document.body.style.backgroundColor = "#1a2421"; }
+    if (current >= 2000 && current < 5000) msg.innerText = "2000回：指の疲労感＝命の重み。";
+    if (current >= 5000 && current < 8000) { msg.innerText = "5000回：折り返し地点。背景が妙な威圧感を放ち始める。"; document.body.style.backgroundColor = "#331a24"; }
+    if (current >= 8000 && current < 9999) msg.innerText = "8000回：もうすぐ産まれる！がんばれ！";
+    if (current >= 9999) msg.innerText = "9999回：ラスト１タップ！！！";
+
+    return hit;
 }
 
 // 誕生処理
 function hatchChick() {
     playFanfare();
     
-    // 確率でガチャ判定（SSR: 5%, SR: 25%, N: 70%）
+    // ガチャ判定（SSR: 5%, SR: 25%, N: 70%）
     const rand = Math.random() * 100;
     let pool = [];
-    if (rand < 5) {
-        pool = chickTypes.filter(c => c.rarity === "SSR");
-    } else if (rand < 30) {
-        pool = chickTypes.filter(c => c.rarity === "SR");
-    } else {
-        pool = chickTypes.filter(c => c.rarity === "N");
-    }
+    if (rand < 5) pool = chickTypes.filter(c => c.rarity === "SSR");
+    else if (rand < 30) pool = chickTypes.filter(c => c.rarity === "SR");
+    else pool = chickTypes.filter(c => c.rarity === "N");
     
     const result = pool[Math.floor(Math.random() * pool.length)];
     collection.add(result.id);
 
-    // モーダル表示
+    // 誕生画面表示
     const modal = document.getElementById("result-modal");
     const rarityLabel = document.getElementById("rarity-label");
     rarityLabel.innerText = `【 ${result.rarity} 】`;
@@ -286,16 +349,44 @@ function hatchChick() {
     document.getElementById("chick-desc").innerText = result.desc;
     
     modal.classList.add("active");
-    updateCollectionDisplay();
+    document.getElementById("col-count").innerText = collection.size;
 }
 
-function updateCollectionDisplay() {
-    document.getElementById("col-count").innerText = collection.size;
-    const list = document.getElementById("col-list");
-    list.innerHTML = Array.from(collection).map(id => {
-        const item = chickTypes.find(c => c.id === id);
-        return `<span>[No.${item.id} ${item.name}] </span>`;
-    }).join("");
+// 図鑑を表示
+function openZukan() {
+    const list = document.getElementById("zukan-list");
+    list.innerHTML = "";
+
+    chickTypes.forEach(chick => {
+        const isDiscovered = collection.has(chick.id);
+        const item = document.createElement("div");
+        item.className = "zukan-item";
+
+        if (isDiscovered) {
+            item.innerHTML = `
+                <div class="icon">${chick.emoji}</div>
+                <div class="info">
+                    <div class="name <span class='rare-${chick.rarity}'>[${chick.rarity}] ${chick.name}</div>
+                    <div class="desc">${chick.desc}</div>
+                </div>
+            `;
+        } else {
+            item.innerHTML = `
+                <div class="icon zukan-unknown">❓</div>
+                <div class="info zukan-unknown">
+                    <div class="name">No.${chick.id} 未発見</div>
+                    <div class="desc">10,000回タップして孵化させよう</div>
+                </div>
+            `;
+        }
+        list.appendChild(item);
+    });
+
+    document.getElementById("zukan-modal").classList.add("active");
+}
+
+function closeZukan() {
+    document.getElementById("zukan-modal").classList.remove("active");
 }
 
 function resetGame() {
