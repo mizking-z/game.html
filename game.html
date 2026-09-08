@@ -154,6 +154,7 @@
         .zukan-item .info { flex-grow: 1; }
         .zukan-item .no { font-size: 12px; color: #888; font-weight: bold; }
         .zukan-item .name { font-weight: bold; font-size: 15px; margin: 2px 0; }
+        .zukan-item .count-tag { font-size: 12px; color: #ffeb3b; font-weight: bold; margin-left: 6px; }
         .zukan-item .desc { font-size: 12px; color: #ccc; line-height: 1.3; }
         .zukan-unknown { color: #555; }
     </style>
@@ -187,6 +188,7 @@
         <h3>💡 あそびかた</h3>
         ・たまごを10,000回タップすると、中からひよこが生まれます！<br>
         ・誕生したひよこは図鑑にコレクションされていきます。<br>
+        ・同じひよこが被っても図鑑に所持数がカウントされるよ！<br>
         ・ひよこの種類は全101種類！100種類集めると特別な101番目が…？<br>
         ・9000タップからは超壮大なオーケストラ風ラストBGMに変化！コンプリートを目指そう！
     </div>
@@ -198,6 +200,7 @@
     <div id="rarity-label" style="font-size: 22px; font-weight: bold; margin-top: 5px;"></div>
     <div id="chick-icon">🐥</div>
     <h2 id="chick-name" style="margin: 5px 0;">普通のひよこ</h2>
+    <div id="chick-owned-count" style="color: #ffeb3b; font-weight: bold; margin-bottom: 8px;"></div>
     <p id="chick-desc" style="color: #ccc; max-width: 85%; font-size: 14px; line-height: 1.4;"></p>
     <button onclick="resetGame()">次のクソ卵を温める</button>
 </div>
@@ -205,7 +208,7 @@
 <!-- 図鑑一覧モーダル -->
 <div id="zukan-modal" class="modal">
     <h2 style="margin: 0; color: #ffeb3b;">🐥 ひよこ図鑑 🐥</h2>
-    <div id="zukan-status" style="margin-top: 5px; color: #aaa; font-weight: bold;">集めたひよこ: <span id="zukan-modal-count">0</span> / 101 匹</div>
+    <div id="zukan-status" style="margin-top: 5px; color: #aaa; font-weight: bold;">集めたひよこ: <span id="zukan-modal-count">0</span> / 101 種類</div>
     <div id="zukan-list"></div>
     <button onclick="closeZukan()">閉じる</button>
 </div>
@@ -219,7 +222,9 @@ let currentBgmStage = -1;
 
 const totalChickCount = 101;
 const chickTypes = generateChickDatabase();
-let collection = new Set();
+
+// 所持数を保持するオブジェクト { id: count }
+let collectionCounts = {};
 
 window.onload = function() {
     loadGameData();
@@ -285,7 +290,7 @@ function generateChickDatabase() {
 }
 
 function saveGameData() {
-    const saveData = { count: count, collection: Array.from(collection) };
+    const saveData = { count: count, collectionCounts: collectionCounts };
     localStorage.setItem("kuso_egg_save", JSON.stringify(saveData));
 }
 
@@ -295,11 +300,21 @@ function loadGameData() {
         try {
             const data = JSON.parse(dataStr);
             count = data.count || 0;
-            collection = new Set(data.collection || []);
+            
+            // 旧データ(配列)と新データ(オブジェクト)の両方に対応
+            if (data.collectionCounts) {
+                collectionCounts = data.collectionCounts;
+            } else if (data.collection && Array.isArray(data.collection)) {
+                collectionCounts = {};
+                data.collection.forEach(id => {
+                    collectionCounts[id] = 1;
+                });
+            }
         } catch(e) {}
     }
+    
     document.getElementById("count").innerText = count;
-    document.getElementById("col-count").innerText = collection.size;
+    document.getElementById("col-count").innerText = Object.keys(collectionCounts).length;
     updateMilestoneMessage(count - 1, count);
 }
 
@@ -316,7 +331,7 @@ function resetCurrentGame() {
 function clearAllSaveData() {
     localStorage.removeItem("kuso_egg_save");
     count = 0;
-    collection.clear();
+    collectionCounts = {};
     currentBgmStage = -1;
     document.getElementById("count").innerText = 0;
     document.getElementById("col-count").innerText = 0;
@@ -346,7 +361,6 @@ function updateBGMStage() {
     }
 }
 
-// 音階テーブル (周波数)
 const noteFreqs = {
     'C2': 65.41,  'D2': 73.42,  'E2': 82.41,  'F2': 87.31,  'G2': 98.00,  'G#2': 103.83, 'A2': 110.00, 'B2': 123.47,
     'C3': 130.81, 'D3': 146.83, 'Eb3': 155.56, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00,  'G#3': 207.65, 'A3': 220.00, 'B3': 246.94,
@@ -355,14 +369,12 @@ const noteFreqs = {
     'C6': 1046.50, 'R': 0
 };
 
-// 通常メロディ (Stage 0 ~ 8)
 const bgmMelodies = [
     ["C4","E4","G4","E4", "D4","F4","A4","F4", "E4","G4","B4","G4", "C5","G4","E4","C4"],
     ["C4","C4","G4","G4", "A4","A4","G4","R",  "F4","F4","E4","E4", "D4","D4","C4","R"],
     ["E4","G4","C5","E5", "D5","B4","G4","D4", "C5","E4","A4","C5", "B4","G4","E4","G4"]
 ];
 
-// 9000タップ〜 超壮大なオーケストラ風ラストバトルメロディ
 const epicMelody = [
     "C4", "Eb4", "G4", "C5", "B4", "G4", "Eb4", "G4",
     "Ab4", "C5", "Eb5", "Ab5", "G5", "Eb5", "C5", "G4",
@@ -405,7 +417,6 @@ function playDrumNoise(duration) {
 function startBGMByStage(stage) {
     if (bgmTimer) clearInterval(bgmTimer);
     
-    // 9000タップ以降は背景を漆黒×深紅の荘厳な配色に変更
     if (stage >= 9) {
         document.body.style.backgroundColor = "#2b0000";
     } else {
@@ -419,30 +430,18 @@ function startBGMByStage(stage) {
         if (!audioCtx) return;
 
         if (stage >= 9) {
-            // === 9000タップ〜 壮大なオーケストラBGM演奏処理 ===
             let noteStr = epicMelody[step % epicMelody.length];
             let freq = noteFreqs[noteStr] || 0;
 
-            // ① 主メロディ：Sawtooth（鋸波）でブラス/ストリングスのような伸びやかな音
             play8bitNote(freq, 'sawtooth', speed / 1000, 0.1);
+            if (freq > 0) play8bitNote(freq * 1.25, 'sawtooth', speed / 1000, 0.04);
 
-            // ② ハーモニー（3度上または5度上を重ねて劇的な響きに）
-            if (freq > 0) {
-                play8bitNote(freq * 1.25, 'sawtooth', speed / 1000, 0.04);
-            }
-
-            // ③ 重低音ベース (Bass)
             if (step % 2 === 0) {
                 let baseFreq = freq ? freq / 2 : noteFreqs['C2'];
                 play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.15);
             }
-
-            // ④ パーカッション（力強いリズム音）
-            if (step % 2 === 1) {
-                playDrumNoise(0.08);
-            }
+            if (step % 2 === 1) playDrumNoise(0.08);
         } else {
-            // === Stage 0 ~ 8 通常のBGM処理 ===
             let melodyIdx = 0;
             if (stage >= 3) melodyIdx = 1;
             if (stage >= 6) melodyIdx = 2;
@@ -457,10 +456,7 @@ function startBGMByStage(stage) {
                 let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
                 play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.08);
             }
-
-            if (stage >= 4 && step % 2 === 1) {
-                playDrumNoise(0.05);
-            }
+            if (stage >= 4 && step % 2 === 1) playDrumNoise(0.05);
         }
 
         step++;
@@ -622,12 +618,14 @@ function hatchChick() {
     
     let result;
 
+    // Normal（No.1〜100）の解放数を数える
     let normalCollectedCount = 0;
     for (let i = 1; i <= 100; i++) {
-        if (collection.has(i)) normalCollectedCount++;
+        if (collectionCounts[i] && collectionCounts[i] > 0) normalCollectedCount++;
     }
 
-    if (normalCollectedCount >= 100 && !collection.has(101)) {
+    // 100種類コンプかつ101未持なら確定でみずきちゃんひよこ
+    if (normalCollectedCount >= 100 && !collectionCounts[101]) {
         result = chickTypes.find(c => c.id === 101);
     } else {
         const rand = Math.random() * 100;
@@ -639,8 +637,16 @@ function hatchChick() {
         result = pool[Math.floor(Math.random() * pool.length)];
     }
 
-    collection.add(result.id);
+    // カウントの加算
+    if (!collectionCounts[result.id]) {
+        collectionCounts[result.id] = 1;
+    } else {
+        collectionCounts[result.id]++;
+    }
+
     saveGameData();
+
+    const currentOwned = collectionCounts[result.id];
 
     const modal = document.getElementById("result-modal");
     const rarityLabel = document.getElementById("rarity-label");
@@ -649,29 +655,34 @@ function hatchChick() {
     
     document.getElementById("chick-icon").innerText = result.emoji;
     document.getElementById("chick-name").innerText = result.name;
+    document.getElementById("chick-owned-count").innerText = `（通算 ${currentOwned} 匹目！）`;
     document.getElementById("chick-desc").innerText = result.desc;
     
     modal.classList.add("active");
-    document.getElementById("col-count").innerText = collection.size;
+    document.getElementById("col-count").innerText = Object.keys(collectionCounts).length;
 }
 
 function openZukan() {
     const list = document.getElementById("zukan-list");
     list.innerHTML = "";
 
-    document.getElementById("zukan-modal-count").innerText = collection.size;
+    const discoveredCount = Object.keys(collectionCounts).length;
+    document.getElementById("zukan-modal-count").innerText = discoveredCount;
 
     chickTypes.forEach(chick => {
-        const isDiscovered = collection.has(chick.id);
+        const owned = collectionCounts[chick.id] || 0;
         const item = document.createElement("div");
         item.className = "zukan-item";
 
-        if (isDiscovered) {
+        if (owned > 0) {
             item.innerHTML = `
                 <div class="icon">${chick.emoji}</div>
                 <div class="info">
                     <div class="no">No.${chick.id}</div>
-                    <div class="name rare-${chick.rarity}">[${chick.rarity}] ${chick.name}</div>
+                    <div class="name rare-${chick.rarity}">
+                        [${chick.rarity}] ${chick.name}
+                        <span class="count-tag">（${owned}匹）</span>
+                    </div>
                     <div class="desc">${chick.desc}</div>
                 </div>
             `;
