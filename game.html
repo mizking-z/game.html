@@ -11,9 +11,9 @@
             font-family: sans-serif;
             text-align: center;
             margin: 0;
-            padding: 20px 10px 40px 10px; /* 下部に少し余裕を持たせました */
+            padding: 20px 10px 40px 10px;
             user-select: none;
-            overflow-y: auto; /* 縦スクロールを有効化 */
+            overflow-y: auto;
             transition: background-color 1s ease;
         }
         #container {
@@ -80,6 +80,7 @@
             margin: 10px 0;
             filter: drop-shadow(0 0 20px #fff);
         }
+        .rare-GOD { color: #ff00ff; text-shadow: 0 0 15px #00ffff; }
         .rare-SSR { color: #ffd700; text-shadow: 0 0 10px #ff0000; }
         .rare-SR { color: #c0c0c0; text-shadow: 0 0 5px #00ffff; }
         .rare-N { color: #ffffff; }
@@ -113,7 +114,6 @@
             padding-top: 15px;
         }
 
-        /* ゲームの説明書きエリア */
         #game-description {
             margin-top: 25px;
             padding: 15px;
@@ -178,7 +178,7 @@
     </div>
 
     <div id="collection-summary">
-        <h3>図鑑達成率: <span id="col-count">0</span>/100</h3>
+        <h3>図鑑達成率: <span id="col-count">0</span>/101</h3>
         <button onclick="openZukan()">📖 ひよこ図鑑を見る</button>
     </div>
 
@@ -187,8 +187,8 @@
         <h3>💡 あそびかた</h3>
         ・たまごを10,000回タップすると、中からひよこが生まれます！<br>
         ・誕生したひよこは図鑑にコレクションされていきます。<br>
-        ・ひよこの種類は全部で100種類！珍しいひよこ（SR / SSR）もいるぞ！<br>
-        ・タップ数に応じてBGMがどんどん変化していきます。コンプリートを目指して叩きまくろう！
+        ・ひよこの種類は全101種類！100種類集めると特別な101番目が…？<br>
+        ・タップ数に応じてノリノリなBGMが加速＆変化！コンプリートを目指そう！
     </div>
 </div>
 
@@ -205,7 +205,7 @@
 <!-- 図鑑一覧モーダル -->
 <div id="zukan-modal" class="modal">
     <h2 style="margin: 0; color: #ffeb3b;">🐥 ひよこ図鑑 🐥</h2>
-    <div id="zukan-status" style="margin-top: 5px; color: #aaa; font-weight: bold;">集めたひよこ: <span id="zukan-modal-count">0</span> / 100 匹</div>
+    <div id="zukan-status" style="margin-top: 5px; color: #aaa; font-weight: bold;">集めたひよこ: <span id="zukan-modal-count">0</span> / 101 匹</div>
     <div id="zukan-list"></div>
     <button onclick="closeZukan()">閉じる</button>
 </div>
@@ -217,6 +217,7 @@ let audioCtx = null;
 let bgmTimer = null;
 let currentBgmStage = -1;
 
+const totalChickCount = 101;
 const chickTypes = generateChickDatabase();
 let collection = new Set();
 
@@ -270,6 +271,16 @@ function generateChickDatabase() {
 
         list.push({ id: i, name: name, rarity: rarity, emoji: emoji, desc: trait });
     }
+
+    // 101番目：みずきちゃんひよこ（製作者）
+    list.push({
+        id: 101,
+        name: "みずきちゃんひよこ",
+        rarity: "GOD",
+        emoji: "👑🐥",
+        desc: "【開発者降臨】このクソゲーをこの世に生み出した偉大なる製作者「みずき」。100匹のひよこを集めし真の勇者にしか姿を見せない伝説の中の存在。"
+    });
+
     return list;
 }
 
@@ -335,6 +346,58 @@ function updateBGMStage() {
     }
 }
 
+// ---- 改良版・ノリノリ8bit BGMシステム ----
+const noteFreqs = {
+    'C3': 130.81, 'D3': 146.83, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
+    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
+    'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
+    'C6': 1046.50, 'R': 0
+};
+
+// メロディの定義（ピコピコ感あふれるメロディライン）
+const bgmMelodies = [
+    // Stage 0-2 (のんびりポップ)
+    ["C4","E4","G4","E4", "D4","F4","A4","F4", "E4","G4","B4","G4", "C5","G4","E4","C4"],
+    // Stage 3-5 (ノリノリなテンポ)
+    ["C4","C4","G4","G4", "A4","A4","G4","R",  "F4","F4","E4","E4", "D4","D4","C4","R"],
+    // Stage 6-8 (アップテンポ＆軽快)
+    ["E4","G4","C5","E5", "D5","B4","G4","D4", "C5","E4","A4","C5", "B4","G4","E4","G4"],
+    // Stage 9 (激しいラストスパート・ヒーロー風)
+    ["C5","E5","G5","C6", "B5","G5","E5","G5", "A5","C6","A5","F5", "G5","E5","C5","D5"]
+];
+
+function play8bitNote(freq, type, duration, gainVal = 0.08) {
+    if (!audioCtx || freq === 0) return;
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration * 0.9);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+}
+
+function playDrumNoise(duration) {
+    if (!audioCtx) return;
+    let bufferSize = audioCtx.sampleRate * duration;
+    let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    let data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+    let noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    let gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    noise.connect(gain);
+    gain.connect(audioCtx.destination);
+    noise.start();
+}
+
 function startBGMByStage(stage) {
     if (bgmTimer) clearInterval(bgmTimer);
     
@@ -344,69 +407,48 @@ function startBGMByStage(stage) {
         document.body.style.backgroundColor = "#222";
     }
 
-    const bgmConfigs = [
-        { interval: 500, notes: [130, 146, 164, 174], wave: 'sine' },
-        { interval: 450, notes: [220, 246, 261, 293], wave: 'triangle' },
-        { interval: 400, notes: [329, 349, 392, 440], wave: 'square' },
-        { interval: 350, notes: [440, 493, 523, 587], wave: 'square' },
-        { interval: 300, notes: [523, 587, 659, 698], wave: 'sawtooth' },
-        { interval: 250, notes: [659, 698, 783, 880], wave: 'sawtooth' },
-        { interval: 200, notes: [783, 880, 987, 1046], wave: 'square' },
-        { interval: 170, notes: [880, 987, 1046, 1174], wave: 'sawtooth' },
-        { interval: 140, notes: [1046, 1174, 1318, 1396], wave: 'sawtooth' },
-    ];
-
+    // ステージが上がるとテンポ(ms)が速くなる
+    let speed = Math.max(120, 260 - stage * 15); 
     let step = 0;
-    
-    if (stage < 9) {
-        const config = bgmConfigs[stage];
-        bgmTimer = setInterval(() => {
-            if (!audioCtx) return;
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = config.wave;
-            osc.frequency.setValueAtTime(config.notes[step % config.notes.length], audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.10, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (config.interval / 1000) * 0.8);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + (config.interval / 1000));
-            step++;
-        }, config.interval);
-    } else {
-        const chords = [
-            [261, 329, 392, 523],
-            [220, 261, 329, 440],
-            [174, 220, 261, 349],
-            [196, 246, 293, 392]
-        ];
-        bgmTimer = setInterval(() => {
-            if (!audioCtx) return;
-            const currentChord = chords[step % chords.length];
-            currentChord.forEach(freq => {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.7);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.75);
-            });
-            step++;
-        }, 800);
-    }
+
+    let melodyIdx = 0;
+    if (stage >= 3) melodyIdx = 1;
+    if (stage >= 6) melodyIdx = 2;
+    if (stage >= 9) melodyIdx = 3;
+
+    const melody = bgmMelodies[melodyIdx];
+
+    bgmTimer = setInterval(() => {
+        if (!audioCtx) return;
+
+        let noteStr = melody[step % melody.length];
+        let freq = noteFreqs[noteStr] || 0;
+
+        // 主メロディ (矩形波 square でピコピコ感)
+        play8bitNote(freq, 'square', speed / 1000, 0.06);
+
+        // ステージ2以上でベース音追加 (三角波 triangle)
+        if (stage >= 2 && step % 2 === 0) {
+            let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
+            play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.08);
+        }
+
+        // ステージ4以上で裏打ちドラム音追加
+        if (stage >= 4 && step % 2 === 1) {
+            playDrumNoise(0.05);
+        }
+
+        step++;
+    }, speed);
 }
 
 function playTapSound(freq = 400) {
     if (!audioCtx) return;
     let osc = audioCtx.createOscillator();
     let gain = audioCtx.createGain();
+    osc.type = 'square';
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
@@ -421,7 +463,7 @@ function playMilestoneSound() {
     notes.forEach((freq, index) => {
         let osc = audioCtx.createOscillator();
         let gain = audioCtx.createGain();
-        osc.type = 'sine';
+        osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, now + index * 0.07);
         gain.gain.setValueAtTime(0.12, now + index * 0.07);
         gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.07 + 0.2);
@@ -553,15 +595,28 @@ function updateMilestoneMessage(prev, current) {
 function hatchChick() {
     playFanfare();
     
-    const rand = Math.random() * 100;
-    let pool = [];
-    if (rand < 5) pool = chickTypes.filter(c => c.rarity === "SSR");
-    else if (rand < 30) pool = chickTypes.filter(c => c.rarity === "SR");
-    else pool = chickTypes.filter(c => c.rarity === "N");
-    
-    const result = pool[Math.floor(Math.random() * pool.length)];
-    collection.add(result.id);
+    let result;
 
+    // もしNo.1〜100がすべて集まっていて、101番目を未所持なら確実に「みずきちゃんひよこ」が誕生！
+    let normalCollectedCount = 0;
+    for (let i = 1; i <= 100; i++) {
+        if (collection.has(i)) normalCollectedCount++;
+    }
+
+    if (normalCollectedCount >= 100 && !collection.has(101)) {
+        result = chickTypes.find(c => c.id === 101);
+    } else {
+        // 通常の抽選 (No.1〜100)
+        const rand = Math.random() * 100;
+        let pool = [];
+        if (rand < 5) pool = chickTypes.filter(c => c.rarity === "SSR" && c.id <= 100);
+        else if (rand < 30) pool = chickTypes.filter(c => c.rarity === "SR" && c.id <= 100);
+        else pool = chickTypes.filter(c => c.rarity === "N" && c.id <= 100);
+        
+        result = pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    collection.add(result.id);
     saveGameData();
 
     const modal = document.getElementById("result-modal");
@@ -581,7 +636,6 @@ function openZukan() {
     const list = document.getElementById("zukan-list");
     list.innerHTML = "";
 
-    // 図鑑モーダル内の所持数を更新
     document.getElementById("zukan-modal-count").innerText = collection.size;
 
     chickTypes.forEach(chick => {
@@ -599,12 +653,13 @@ function openZukan() {
                 </div>
             `;
         } else {
+            let reqText = chick.id === 101 ? "No.1〜100コンプリートで解放！" : "10,000回タップして孵化させよう";
             item.innerHTML = `
                 <div class="icon zukan-unknown">❓</div>
                 <div class="info zukan-unknown">
                     <div class="no">No.${chick.id}</div>
                     <div class="name">未発見のひよこ</div>
-                    <div class="desc">10,000回タップして孵化させよう</div>
+                    <div class="desc">${reqText}</div>
                 </div>
             `;
         }
