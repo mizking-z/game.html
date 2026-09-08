@@ -14,7 +14,7 @@
             padding: 20px 10px 40px 10px;
             user-select: none;
             overflow-y: auto;
-            transition: background-color 1s ease;
+            transition: background-color 1.5s ease;
         }
         #container {
             max-width: 500px;
@@ -190,7 +190,7 @@
         ・誕生したひよこは図鑑にコレクションされていきます。<br>
         ・同じひよこが被っても図鑑に所持数がカウントされるよ！<br>
         ・ひよこの種類は全101種類！100種類集めると特別な101番目が…？<br>
-        ・9000タップからは壮大なセレナード（夜想曲）風BGMに変化！コンプリートを目指そう！
+        ・9000タップからはゆったり重厚な超壮大セレナード（夜想曲）BGMへ変化！
     </div>
 </div>
 
@@ -369,22 +369,26 @@ const bgmMelodies = [
     ["E4","G4","C5","E5", "D5","B4","G4","D4", "C5","E4","A4","C5", "B4","G4","E4","G4"]
 ];
 
-// 🎻 9000タップ〜 壮大なセレナード（夜想曲）風メロディ
-const serenadeMelody = [
+// 🎻 9000タップ〜 超壮大・ゆったりセレナード旋律
+const grandSerenadeMelody = [
     "E5", "G5", "C6", "B5", "A5", "G5", "F5", "E5",
     "D5", "F5", "A5", "G5", "F5", "E5", "D5", "C5",
     "A4", "C5", "E5", "D5", "C5", "B4", "A4", "G4",
     "C5", "E5", "G5", "F5", "E5", "D5", "B4", "C5"
 ];
 
-function play8bitNote(freq, type, duration, gainVal = 0.08) {
+function playSustainedNote(freq, type, duration, gainVal = 0.1) {
     if (!audioCtx || freq === 0) return;
     let osc = audioCtx.createOscillator();
     let gain = audioCtx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration * 0.95);
+    
+    // なめらかなアタック＆レガート（残響感）
+    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(gainVal, audioCtx.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     osc.start();
@@ -402,7 +406,7 @@ function playDrumNoise(duration) {
     let noise = audioCtx.createBufferSource();
     noise.buffer = buffer;
     let gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
     noise.connect(gain);
     gain.connect(audioCtx.destination);
@@ -412,44 +416,44 @@ function playDrumNoise(duration) {
 function startBGMByStage(stage) {
     if (bgmTimer) clearInterval(bgmTimer);
     
-    // 9000タップ〜 幻想的な深夜の雰囲気に適したロイヤルブルーへ変更
     if (stage >= 9) {
-        document.body.style.backgroundColor = "#0d1b2a";
+        document.body.style.backgroundColor = "#0b1325"; // 深い夜空のナイトブルー
     } else {
         document.body.style.backgroundColor = "#222";
     }
 
-    let speed = Math.max(120, 260 - stage * 15); 
+    // ★ Stage 9は 480ms（ゆったりテンポ）、それ以外は260ms〜120ms
+    let speed = (stage >= 9) ? 480 : Math.max(120, 260 - stage * 15); 
     let step = 0;
 
     bgmTimer = setInterval(() => {
         if (!audioCtx) return;
 
         if (stage >= 9) {
-            // === セレナード風演奏処理 ===
-            let noteStr = serenadeMelody[step % serenadeMelody.length];
+            // === 🎻 ゆったり超壮大セレナード演奏 ===
+            let noteStr = grandSerenadeMelody[step % grandSerenadeMelody.length];
             let freq = noteFreqs[noteStr] || 0;
 
-            // ① 主旋律：Triangle（三角波）でストリングス・フルートのような滑らかな旋律
-            play8bitNote(freq, 'triangle', (speed * 1.5) / 1000, 0.12);
+            // ① 主旋律：Triangle（伸びやかなストリングス/フルート風）
+            playSustainedNote(freq, 'triangle', 0.8, 0.14);
 
-            // ② ハーモニー：Sawtoothで少し後ろに引いた甘い3度下/6度下の和音
+            // ② 重厚な3度下ハーモニー
             if (freq > 0) {
-                play8bitNote(freq * 0.75, 'sawtooth', (speed * 1.2) / 1000, 0.03);
+                playSustainedNote(freq * 0.75, 'sawtooth', 0.7, 0.04);
             }
 
-            // ③ 重厚な低音（ベース線）
+            // ③ ド迫力の低音チェロ/ベース音（オクターブ下）
             if (step % 2 === 0) {
-                let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
-                play8bitNote(baseFreq, 'triangle', (speed * 2.2) / 1000, 0.15);
+                let baseFreq = freq ? freq / 2 : noteFreqs['C2'];
+                playSustainedNote(baseFreq, 'triangle', 1.2, 0.22);
             }
 
-            // ④ 繊細なリズム音（ティンパニ/シンバル風）
-            if (step % 4 === 3) {
-                playDrumNoise(0.06);
+            // ④ 静かに響く深みティンパニ風ノイズ
+            if (step % 4 === 0) {
+                playDrumNoise(0.12);
             }
         } else {
-            // === Stage 0 ~ 8 通常のBGM処理 ===
+            // === 通常BGM処理 ===
             let melodyIdx = 0;
             if (stage >= 3) melodyIdx = 1;
             if (stage >= 6) melodyIdx = 2;
@@ -458,11 +462,22 @@ function startBGMByStage(stage) {
             let noteStr = melody[step % melody.length];
             let freq = noteFreqs[noteStr] || 0;
 
-            play8bitNote(freq, 'square', speed / 1000, 0.06);
+            if (freq > 0) {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (speed/1000) * 0.95);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + (speed/1000));
+            }
 
             if (stage >= 2 && step % 2 === 0) {
                 let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
-                play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.08);
+                playSustainedNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.08);
             }
             if (stage >= 4 && step % 2 === 1) playDrumNoise(0.05);
         }
@@ -578,16 +593,16 @@ const milestoneMessages = {
     7500: "7500回：ひよこ「外の空気、美味しいですか？」",
     8000: "8000回：産声のウォーミングアップ開始！",
     8500: "8500回：殻の限界値まであと少し！",
-    9000: "9000回：世界が優雅に包まれ、BGMが壮大なセレナードへと変貌する！",
-    9100: "9100回：美しい旋律の中、無心で連打するシュールさ。",
-    9200: "9200回：情熱的な小夜曲が指の疲れを優しく癒やす（嘘）。",
-    9300: "9300回：伝説のひよこが優雅に目を覚ましつつある！",
-    9400: "9400回：殻に美しい亀裂が入り始めた！",
-    9500: "9500回：ラストスパート！極上のグランドフィナーレへ！",
-    9600: "9600回：あと400回！諦めるな！",
-    9700: "9700回：あと300回！輝く光が漏れ出している！",
-    9800: "9800回：あと200回！美しき命の脈動を感じろ！",
-    9900: "9900回：あと100タップ！奇跡の瞬間に息を呑め！"
+    9000: "9000回：時がゆっくりと流れ、超壮大なセレナードが世界を包み込む…！",
+    9100: "9100回：重厚でゆったりとした旋律が指の緊張をほぐす。",
+    9200: "9200回：激しい連打と優雅でゆっくりな旋律のギャップ。",
+    9300: "9300回：神聖なメロディの中、ひよこが目覚めの刻を待つ！",
+    9400: "9400回：殻に深く美しき亀裂が刻まれていく…！",
+    9500: "9500回：ラストスパート！極上のフィナーレへ！",
+    9600: "9600回：あと400回！静かなる情熱で叩け！",
+    9700: "9700回：あと300回！奇跡の輝きが溢れ出す！",
+    9800: "9800回：あと200回！美しき生命の鼓動を聴け！",
+    9900: "9900回：あと100タップ！至高の誕生へ！！"
 };
 
 function updateMilestoneMessage(prev, current) {
