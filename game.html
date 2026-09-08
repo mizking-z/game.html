@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>クソ連打！奇跡のクソ卵と10000回叩かれたひよこ</title>
+    <title>クソ連打！奇跡のたまご🥚</title>
     <style>
         body {
             background-color: #222;
@@ -21,7 +21,7 @@
             margin: 0 auto;
         }
         h1 {
-            font-size: 20px;
+            font-size: 22px;
             color: #ffeb3b;
             margin-bottom: 5px;
         }
@@ -32,14 +32,14 @@
         }
         #egg-container {
             position: relative;
-            height: 220px;
+            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
         }
         #egg {
-            font-size: 120px;
+            font-size: 110px;
             transition: transform 0.05s ease;
             display: inline-block;
         }
@@ -56,6 +56,23 @@
             align-items: center;
             justify-content: center;
             padding: 0 10px;
+        }
+        /* BGMレベル表示通知 */
+        #bgm-banner {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 235, 59, 0.9);
+            color: #000;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 50;
         }
         .modal {
             display: none;
@@ -85,14 +102,18 @@
         .rare-N { color: #ffffff; }
         
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 10px 18px;
+            font-size: 14px;
             background: #ff4081;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             margin-top: 10px;
+            font-weight: bold;
+        }
+        button:active {
+            opacity: 0.8;
         }
 
         #btn-area {
@@ -101,11 +122,6 @@
             justify-content: center;
             gap: 8px;
             flex-wrap: wrap;
-        }
-        .sub-btn {
-            font-size: 12px;
-            padding: 6px 12px;
-            border-radius: 4px;
         }
 
         #collection-summary {
@@ -139,23 +155,25 @@
         .zukan-unknown { color: #555; }
     </style>
 </head>
-<body>
+<body onclick="initAudioOnce()">
+
+<div id="bgm-banner">🎵 BGM LEVEL UP!</div>
 
 <div id="container">
-    <h1>クソ連打！奇跡のクソ卵と10000回叩かれたひよこ</h1>
+    <h1>クソ連打！奇跡のたまご🥚</h1>
     <div id="counter">TAP: <span id="count">0</span> / 10000</div>
     
     <div id="egg-container" onclick="tapEgg()">
         <div id="egg">🥚</div>
     </div>
     
-    <div id="message">無心で叩け…！</div>
+    <div id="message">画面を叩いて音を鳴らせ！</div>
 
-    <!-- 操作ボタンエリア -->
+    <!-- リセット＆デバッグボタン類 -->
     <div id="btn-area">
-        <button onclick="addCount(100)" class="sub-btn" style="background:#555;">[デバッグ] +100タップ</button>
-        <button onclick="resetCurrentGame()" class="sub-btn" style="background:#d97706;">🔄 カウントリセット</button>
-        <button onclick="clearAllSaveData()" class="sub-btn" style="background:#dc2626;">💥 データ全消去</button>
+        <button onclick="addCount(100)" style="background:#555;">[デバッグ] +100タップ</button>
+        <button onclick="resetCurrentGame()" style="background:#d97706;">🔄 タップ数をリセット</button>
+        <button onclick="clearAllSaveData()" style="background:#dc2626;">💥 全データリセット</button>
     </div>
 
     <div id="collection-summary">
@@ -263,35 +281,41 @@ function loadGameData() {
     updateMilestoneMessage(count - 1, count);
 }
 
-// カウントのみ0リセット
+// 1. タップ数のみリセット（確実に動作するように修正）
 function resetCurrentGame() {
-    if (confirm("現在のタップ数を0に戻しますか？（図鑑は保持されます）")) {
-        count = 0;
-        currentBgmStage = -1;
-        saveGameData();
-        document.getElementById("count").innerText = count;
-        document.getElementById("message").innerText = "無心で叩け…！";
-        document.body.style.backgroundColor = "#222";
-        if (audioCtx) updateBGMStage();
-    }
+    count = 0;
+    currentBgmStage = -1;
+    saveGameData();
+    document.getElementById("count").innerText = count;
+    document.getElementById("message").innerText = "カウントをリセットしました！";
+    document.body.style.backgroundColor = "#222";
+    if (audioCtx) updateBGMStage();
 }
 
-// 完全消去リセット
+// 2. 図鑑も含む全消去リセット
 function clearAllSaveData() {
-    if (confirm("図鑑を含めて全てのデータを削除しますか？")) {
-        localStorage.removeItem("kuso_egg_save");
-        location.reload();
-    }
+    localStorage.removeItem("kuso_egg_save");
+    count = 0;
+    collection.clear();
+    currentBgmStage = -1;
+    document.getElementById("count").innerText = 0;
+    document.getElementById("col-count").innerText = 0;
+    document.getElementById("message").innerText = "全データを初期化しました！";
+    document.body.style.backgroundColor = "#222";
+    if (audioCtx) updateBGMStage();
 }
 
-function initAudio() {
+// Web Audio APIの初期起動（画面タップでスタート）
+function initAudioOnce() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         updateBGMStage();
+    } else if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
     }
 }
 
-// 1000回ごとの明確なBGM切り替え処理
+// 1000回ごとのBGM切替
 function updateBGMStage() {
     if (!audioCtx) return;
 
@@ -301,7 +325,15 @@ function updateBGMStage() {
     if (newStage !== currentBgmStage) {
         currentBgmStage = newStage;
         startBGMByStage(currentBgmStage);
+        showBgmBanner(newStage);
     }
+}
+
+function showBgmBanner(stage) {
+    const banner = document.getElementById("bgm-banner");
+    banner.innerText = `🎵 BGM STAGE ${stage + 1} !`;
+    banner.style.opacity = "1";
+    setTimeout(() => { banner.style.opacity = "0"; }, 1500);
 }
 
 function startBGMByStage(stage) {
@@ -313,17 +345,17 @@ function startBGMByStage(stage) {
         document.body.style.backgroundColor = "#222";
     }
 
-    // 段階ごとに明確に音高(Hz)・音色(波形)・スピードを変更
+    // 1000回ごとの周波数(音高)・リズム・音色の定義
     const bgmConfigs = [
-        { interval: 500, notes: [130.81, 146.83, 164.81, 174.61], wave: 'sine' },     // 0~: 低音・おっとり
-        { interval: 450, notes: [196.00, 220.00, 246.94, 261.63], wave: 'triangle' }, // 1000~: 少し高め
-        { interval: 400, notes: [261.63, 293.66, 329.63, 349.23], wave: 'square' },   // 2000~: ピコピコ音
-        { interval: 350, notes: [329.63, 392.00, 440.00, 523.25], wave: 'square' },   // 3000~: テンポアップ
-        { interval: 300, notes: [392.00, 440.00, 523.25, 587.33], wave: 'sawtooth' }, // 4000~: ノコギリ波(激しい)
-        { interval: 260, notes: [523.25, 587.33, 659.25, 698.46], wave: 'sawtooth' }, // 5000~: ハイスピード
-        { interval: 220, notes: [659.25, 783.99, 880.00, 1046.50], wave: 'square' },  // 6000~: 超高音
-        { interval: 180, notes: [783.99, 880.00, 987.77, 1046.50], wave: 'triangle' },// 7000~: 激しく高速
-        { interval: 150, notes: [1046.50, 1174.66, 1318.51, 1396.91], wave: 'sawtooth' },// 8000~: 限界領域
+        { interval: 500, notes: [130, 146, 164, 174], wave: 'sine' },       // 0~999: 超低音・のんびり
+        { interval: 450, notes: [220, 246, 261, 293], wave: 'triangle' },   // 1000~: 低音
+        { interval: 400, notes: [329, 349, 392, 440], wave: 'square' },     // 2000~: 8bit風
+        { interval: 350, notes: [440, 493, 523, 587], wave: 'square' },     // 3000~: テンポアップ
+        { interval: 300, notes: [523, 587, 659, 698], wave: 'sawtooth' },   // 4000~: 鋸波（激しい）
+        { interval: 250, notes: [659, 698, 783, 880], wave: 'sawtooth' },   // 5000~: 高速
+        { interval: 200, notes: [783, 880, 987, 1046], wave: 'square' },    // 6000~: 超高速ピコピコ
+        { interval: 170, notes: [880, 987, 1046, 1174], wave: 'sawtooth' },  // 7000~: 限界領域
+        { interval: 140, notes: [1046, 1174, 1318, 1396], wave: 'sawtooth' },// 8000~: 怒涛のラッシュ
     ];
 
     let step = 0;
@@ -345,12 +377,12 @@ function startBGMByStage(stage) {
             step++;
         }, config.interval);
     } else {
-        // 9000回以上：オーケストラ風和音
+        // 9000回〜：オーケストラ風和音
         const chords = [
-            [261.63, 329.63, 392.00, 523.25],
-            [220.00, 261.63, 329.63, 440.00],
-            [174.61, 220.00, 261.63, 349.23],
-            [196.00, 246.94, 293.66, 392.00]
+            [261, 329, 392, 523],
+            [220, 261, 329, 440],
+            [174, 220, 261, 349],
+            [196, 246, 293, 392]
         ];
         bgmTimer = setInterval(() => {
             if (!audioCtx) return;
@@ -388,7 +420,7 @@ function playTapSound(freq = 400) {
 function playMilestoneSound() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
-    const notes = [523.25, 659.25, 783.99, 1046.50];
+    const notes = [523, 659, 783, 1046];
     notes.forEach((freq, index) => {
         let osc = audioCtx.createOscillator();
         let gain = audioCtx.createGain();
@@ -406,7 +438,7 @@ function playMilestoneSound() {
 function playFanfare() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
-    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+    const notes = [523, 659, 783, 1046, 1318, 1567];
     notes.forEach((freq, index) => {
         let osc = audioCtx.createOscillator();
         let gain = audioCtx.createGain();
@@ -422,7 +454,7 @@ function playFanfare() {
 }
 
 function tapEgg() {
-    initAudio();
+    initAudioOnce();
     addCount(1);
 }
 
@@ -458,27 +490,27 @@ const milestoneMessages = {
     700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
     800: "800回：まだ8%しか温まっていないという絶望。",
     900: "900回：もうすぐ1000！特に何もないけど！",
-    1000: "1000回：【BGM変化】自我が目覚めかけたが思いとどまった。",
+    1000: "1000回：【BGM LEVEL 2】自我が目覚めかけたが思いとどまった。",
     1100: "1100回：そろそろ指を休めても誰も責めない。",
     1200: "1200回：卵があなたの連打速度を採点している。",
     1300: "1300回：指先からかすかに摩擦熱を感じる。",
     1400: "1400回：特にドラマは起こらない。ひたすら連打だ。",
     1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
-    2000: "2000回：【BGM変化】指の疲労感＝命の重み。",
+    2000: "2000回：【BGM LEVEL 3】指の疲労感＝命の重み。",
     2500: "2500回：四分の一に到達。己との戦いである。",
-    3000: "3000回：【BGM変化】卵の中で何かが動画を見ている気配。",
+    3000: "3000回：【BGM LEVEL 4】卵の中で何かが動画を見ている気配。",
     3500: "3500回：卵「もう少し右上をお願いします」",
-    4000: "4000回：【BGM変化】指先から不思議な波動が出始める。",
+    4000: "4000回：【BGM LEVEL 5】指先から不思議な波動が出始める。",
     4500: "4500回：もうすぐ折り返し！無心で叩け！",
-    5000: "5000回：【BGM変化】折り返し地点！妙なプレッシャーが漂う。",
+    5000: "5000回：【BGM LEVEL 6】折り返し地点！妙なプレッシャーが漂う。",
     5500: "5500回：後半戦。あなたの指はもはや武器だ。",
-    6000: "6000回：【BGM変化】精神力とタップ力の勝負。",
+    6000: "6000回：【BGM LEVEL 7】精神力とタップ力の勝負。",
     6500: "6500回：卵の表面がわずかに発光している気がする。",
-    7000: "7000回：【BGM変化】卵殻内部でタンパク質の再配置完了。",
+    7000: "7000回：【BGM LEVEL 8】卵殻内部でタンパク質の再配置完了。",
     7500: "7500回：ひよこ「外の空気、美味しいですか？」",
-    8000: "8000回：【BGM変化】産声のウォーミングアップ開始！",
+    8000: "8000回：【BGM LEVEL 9】産声のウォーミングアップ開始！",
     8500: "8500回：殻の限界値まであと少し！",
-    9000: "9000回：【覚醒】世界が震え、BGMが神々しくなる！",
+    9000: "9000回：【覚醒 BGM MAX】世界が震え、音楽が神々しくなる！",
     9100: "9100回：壮大な音楽の中、無心で連打するシュールさ。",
     9200: "9200回：神々しいBGMが指の疲れを癒してくれる（嘘）。",
     9300: "9300回：伝説のひよこが目を覚ましつつある！",
@@ -511,7 +543,7 @@ function updateMilestoneMessage(prev, current) {
             msg.innerText = `${activeHundred}回達成：命の鼓動が激しく刻まれている…！`;
         }
     } else {
-        msg.innerText = "無心で叩け…！";
+        msg.innerText = "画面を叩いて音を鳴らせ！";
     }
 
     if (current >= 100) {
