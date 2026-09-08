@@ -16,20 +16,24 @@
             overflow-y: auto;
             transition: background-color 1.5s ease;
         }
+
         #container {
             max-width: 500px;
             margin: 0 auto;
         }
+
         h1 {
             font-size: 24px;
             color: #ffeb3b;
             margin-bottom: 10px;
         }
+
         #counter {
             font-size: 32px;
             font-weight: bold;
             margin: 10px 0;
         }
+
         #egg-container {
             position: relative;
             height: 200px;
@@ -51,7 +55,7 @@
             white-space: nowrap;
             text-shadow: 0 0 8px #ff9800;
             animation: telopBlink 1.2s infinite;
-            z-index: 2;
+            z-index: 5;
         }
 
         @keyframes telopBlink {
@@ -67,14 +71,253 @@
             display: none;
         }
 
+        /* 卵本体 */
         #egg {
             font-size: 110px;
             transition: transform 0.05s ease;
             display: inline-block;
+            position: relative;
+            z-index: 1;
         }
+
         #egg:active {
             transform: scale(0.9);
         }
+
+        /*
+         * ヒビ演出
+         * 1000回ごとに表示される
+         */
+        #egg-cracks {
+            position: absolute;
+            width: 110px;
+            height: 130px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .crack {
+            position: absolute;
+            width: 4px;
+            height: 0;
+            background: #222;
+            box-shadow: 0 0 2px #fff;
+            transform-origin: top center;
+            opacity: 0;
+            transition:
+                height 0.6s ease,
+                opacity 0.4s ease;
+        }
+
+        /* 1000回 */
+        #crack1 {
+            left: 53px;
+            top: 32px;
+            transform: rotate(15deg);
+        }
+
+        /* 2000回 */
+        #crack2 {
+            left: 53px;
+            top: 48px;
+            transform: rotate(-35deg);
+        }
+
+        /* 3000回 */
+        #crack3 {
+            left: 42px;
+            top: 60px;
+            transform: rotate(55deg);
+        }
+
+        /* 4000回 */
+        #crack4 {
+            left: 65px;
+            top: 62px;
+            transform: rotate(-65deg);
+        }
+
+        /* 5000回 */
+        #crack5 {
+            left: 50px;
+            top: 75px;
+            transform: rotate(20deg);
+        }
+
+        /* 6000回 */
+        #crack6 {
+            left: 37px;
+            top: 82px;
+            transform: rotate(-25deg);
+        }
+
+        /* 7000回 */
+        #crack7 {
+            left: 68px;
+            top: 83px;
+            transform: rotate(45deg);
+        }
+
+        /* 8000回 */
+        #crack8 {
+            left: 48px;
+            top: 90px;
+            transform: rotate(-70deg);
+        }
+
+        /* 9000回 */
+        #crack9 {
+            left: 58px;
+            top: 92px;
+            transform: rotate(75deg);
+        }
+
+        /* 10000回 */
+        #crack10 {
+            left: 55px;
+            top: 45px;
+            transform: rotate(5deg);
+        }
+
+        /* ヒビ表示段階 */
+        #egg-cracks.stage-1 #crack1,
+        #egg-cracks.stage-2 #crack1,
+        #egg-cracks.stage-3 #crack1,
+        #egg-cracks.stage-4 #crack1,
+        #egg-cracks.stage-5 #crack1,
+        #egg-cracks.stage-6 #crack1,
+        #egg-cracks.stage-7 #crack1,
+        #egg-cracks.stage-8 #crack1,
+        #egg-cracks.stage-9 #crack1,
+        #egg-cracks.stage-10 #crack1 {
+            height: 35px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-2 #crack2,
+        #egg-cracks.stage-3 #crack2,
+        #egg-cracks.stage-4 #crack2,
+        #egg-cracks.stage-5 #crack2,
+        #egg-cracks.stage-6 #crack2,
+        #egg-cracks.stage-7 #crack2,
+        #egg-cracks.stage-8 #crack2,
+        #egg-cracks.stage-9 #crack2,
+        #egg-cracks.stage-10 #crack2 {
+            height: 32px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-3 #crack3,
+        #egg-cracks.stage-4 #crack3,
+        #egg-cracks.stage-5 #crack3,
+        #egg-cracks.stage-6 #crack3,
+        #egg-cracks.stage-7 #crack3,
+        #egg-cracks.stage-8 #crack3,
+        #egg-cracks.stage-9 #crack3,
+        #egg-cracks.stage-10 #crack3 {
+            height: 38px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-4 #crack4,
+        #egg-cracks.stage-5 #crack4,
+        #egg-cracks.stage-6 #crack4,
+        #egg-cracks.stage-7 #crack4,
+        #egg-cracks.stage-8 #crack4,
+        #egg-cracks.stage-9 #crack4,
+        #egg-cracks.stage-10 #crack4 {
+            height: 35px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-5 #crack5,
+        #egg-cracks.stage-6 #crack5,
+        #egg-cracks.stage-7 #crack5,
+        #egg-cracks.stage-8 #crack5,
+        #egg-cracks.stage-9 #crack5,
+        #egg-cracks.stage-10 #crack5 {
+            height: 40px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-6 #crack6,
+        #egg-cracks.stage-7 #crack6,
+        #egg-cracks.stage-8 #crack6,
+        #egg-cracks.stage-9 #crack6,
+        #egg-cracks.stage-10 #crack6 {
+            height: 38px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-7 #crack7,
+        #egg-cracks.stage-8 #crack7,
+        #egg-cracks.stage-9 #crack7,
+        #egg-cracks.stage-10 #crack7 {
+            height: 42px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-8 #crack8,
+        #egg-cracks.stage-9 #crack8,
+        #egg-cracks.stage-10 #crack8 {
+            height: 45px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-9 #crack9,
+        #egg-cracks.stage-10 #crack9 {
+            height: 50px;
+            opacity: 1;
+        }
+
+        #egg-cracks.stage-10 #crack10 {
+            height: 70px;
+            opacity: 1;
+        }
+
+        /* 9000回以降は卵を少し揺らす */
+        #egg-container.cracking #egg {
+            animation: eggShake 0.12s infinite;
+        }
+
+        @keyframes eggShake {
+            0% {
+                transform: rotate(-2deg);
+            }
+            50% {
+                transform: rotate(2deg);
+            }
+            100% {
+                transform: rotate(-2deg);
+            }
+        }
+
+        /* 10000回直前の激しい演出 */
+        #egg-container.final-crack #egg {
+            animation: finalShake 0.08s infinite;
+        }
+
+        @keyframes finalShake {
+            0% {
+                transform: translateX(-3px) rotate(-2deg);
+            }
+            25% {
+                transform: translateX(3px) rotate(2deg);
+            }
+            50% {
+                transform: translateX(-3px) rotate(2deg);
+            }
+            75% {
+                transform: translateX(3px) rotate(-2deg);
+            }
+            100% {
+                transform: translateX(0) rotate(0deg);
+            }
+        }
+
         #message {
             min-height: 50px;
             color: #ffeb3b;
@@ -86,34 +329,63 @@
             justify-content: center;
             padding: 0 10px;
         }
+
         .modal {
             display: none;
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0.92);
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
         }
+
         .modal.active {
             display: flex;
             animation: popIn 0.3s ease-out;
         }
+
         @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
+
         #chick-icon {
             font-size: 130px;
             margin: 10px 0;
             filter: drop-shadow(0 0 20px #fff);
         }
-        .rare-GOD { color: #ff00ff; text-shadow: 0 0 15px #00ffff; }
-        .rare-SSR { color: #ffd700; text-shadow: 0 0 10px #ff0000; }
-        .rare-SR { color: #c0c0c0; text-shadow: 0 0 5px #00ffff; }
-        .rare-N { color: #ffffff; }
-        
+
+        .rare-GOD {
+            color: #ff00ff;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        .rare-SSR {
+            color: #ffd700;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .rare-SR {
+            color: #c0c0c0;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .rare-N {
+            color: #ffffff;
+        }
+
         button {
             padding: 10px 18px;
             font-size: 14px;
@@ -125,6 +397,7 @@
             margin-top: 10px;
             font-weight: bold;
         }
+
         button:active {
             opacity: 0.8;
         }
@@ -154,6 +427,7 @@
             line-height: 1.6;
             color: #ddd;
         }
+
         #game-description h3 {
             margin-top: 0;
             margin-bottom: 8px;
@@ -161,7 +435,7 @@
             font-size: 15px;
             text-align: center;
         }
-        
+
         #zukan-list {
             width: 85%;
             max-height: 55vh;
@@ -173,92 +447,273 @@
             text-align: left;
             margin: 10px 0 15px 0;
         }
+
         .zukan-item {
             display: flex;
             align-items: center;
             border-bottom: 1px solid #333;
             padding: 10px 0;
         }
-        .zukan-item .icon { font-size: 40px; margin-right: 15px; width: 50px; text-align: center; }
-        .zukan-item .info { flex-grow: 1; }
-        .zukan-item .no { font-size: 12px; color: #888; font-weight: bold; }
-        .zukan-item .name { font-weight: bold; font-size: 15px; margin: 2px 0; }
-        .zukan-item .count-tag { font-size: 12px; color: #ffeb3b; font-weight: bold; margin-left: 6px; }
-        .zukan-item .desc { font-size: 12px; color: #ccc; line-height: 1.3; }
-        .zukan-unknown { color: #555; }
+
+        .zukan-item .icon {
+            font-size: 40px;
+            margin-right: 15px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .zukan-item .info {
+            flex-grow: 1;
+        }
+
+        .zukan-item .no {
+            font-size: 12px;
+            color: #888;
+            font-weight: bold;
+        }
+
+        .zukan-item .name {
+            font-weight: bold;
+            font-size: 15px;
+            margin: 2px 0;
+        }
+
+        .zukan-item .count-tag {
+            font-size: 12px;
+            color: #ffeb3b;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        .zukan-item .desc {
+            font-size: 12px;
+            color: #ccc;
+            line-height: 1.3;
+        }
+
+        .zukan-unknown {
+            color: #555;
+        }
     </style>
 </head>
+
 <body onclick="initAudioOnce()">
 
 <div id="container">
+
     <h1>クソ連打！奇跡のたまご🥚</h1>
-    <div id="counter">TAP: <span id="count">0</span> / 10000</div>
-    
-    <div id="egg-container" onclick="tapEgg()">
-        <div id="start-telop">〜 卵をタップしよう 〜</div>
-        <div id="egg">🥚</div>
+
+    <div id="counter">
+        TAP: <span id="count">0</span> / 10000
     </div>
-    
-    <div id="message">画面を叩いて音を鳴らせ！</div>
+
+    <div id="egg-container" onclick="tapEgg()">
+
+        <div id="start-telop">
+            〜 卵をタップしよう 〜
+        </div>
+
+        <div id="egg">🥚</div>
+
+        <!-- ヒビ -->
+        <div id="egg-cracks">
+            <div class="crack" id="crack1"></div>
+            <div class="crack" id="crack2"></div>
+            <div class="crack" id="crack3"></div>
+            <div class="crack" id="crack4"></div>
+            <div class="crack" id="crack5"></div>
+            <div class="crack" id="crack6"></div>
+            <div class="crack" id="crack7"></div>
+            <div class="crack" id="crack8"></div>
+            <div class="crack" id="crack9"></div>
+            <div class="crack" id="crack10"></div>
+        </div>
+
+    </div>
+
+    <div id="message">
+        画面を叩いて音を鳴らせ！
+    </div>
 
     <!-- リセット＆チート機能ボタン類 -->
     <div id="btn-area">
-        <button onclick="addCount(100)" style="background:#555;">[チート機能！] +100タップ</button>
-        <button onclick="resetCurrentGame()" style="background:#d97706;">🔄 タップ数をリセット</button>
-        <button onclick="clearAllSaveData()" style="background:#dc2626;">💥 全データリセット</button>
+        <button onclick="addCount(100)" style="background:#555;">
+            [チート機能！] +100タップ
+        </button>
+
+        <button onclick="resetCurrentGame()" style="background:#d97706;">
+            🔄 タップ数をリセット
+        </button>
+
+        <button onclick="clearAllSaveData()" style="background:#dc2626;">
+            💥 全データリセット
+        </button>
     </div>
 
     <div id="collection-summary">
-        <h3>図鑑達成率: <span id="col-count">0</span> / 101</h3>
-        <button onclick="openZukan()">📖 ひよこ図鑑を見る</button>
+        <h3>
+            図鑑達成率:
+            <span id="col-count">0</span> / 101
+        </h3>
+
+        <button onclick="openZukan()">
+            📖 ひよこ図鑑を見る
+        </button>
     </div>
 
     <!-- ゲーム説明書き -->
     <div id="game-description">
         <h3>💡 あそびかた</h3>
+
         ・たまごを10,000回タップすると、中からひよこが生まれます！<br>
+        ・1,000回タップするごとに卵にヒビが入っていきます！<br>
         ・誕生したひよこは図鑑にコレクションされていきます。<br>
         ・同じひよこが被っても図鑑に所持数がカウントされるよ！<br>
         ・ひよこの種類は全101種類！100種類集めると特別な101番目が…？
     </div>
+
 </div>
 
 <!-- 誕生モーダル -->
 <div id="result-modal" class="modal">
-    <h1 style="color:#ff0; font-size: 32px; margin: 0;">🎉 生 誕 🎉</h1>
-    <div id="rarity-label" style="font-size: 22px; font-weight: bold; margin-top: 5px;"></div>
+
+    <h1 style="color:#ff0; font-size: 32px; margin: 0;">
+        🎉 生 誕 🎉
+    </h1>
+
+    <div id="rarity-label"
+         style="font-size: 22px; font-weight: bold; margin-top: 5px;">
+    </div>
+
     <div id="chick-icon">🐥</div>
-    <h2 id="chick-name" style="margin: 5px 0;">普通のひよこ</h2>
-    <div id="chick-owned-count" style="color: #ffeb3b; font-weight: bold; margin-bottom: 8px;"></div>
-    <p id="chick-desc" style="color: #ccc; max-width: 85%; font-size: 14px; line-height: 1.4;"></p>
-    <button id="next-egg-btn" onclick="resetGame()">次のクソ卵を温める</button>
+
+    <h2 id="chick-name" style="margin: 5px 0;">
+        普通のひよこ
+    </h2>
+
+    <div id="chick-owned-count"
+         style="color: #ffeb3b; font-weight: bold; margin-bottom: 8px;">
+    </div>
+
+    <p id="chick-desc"
+       style="color: #ccc; max-width: 85%; font-size: 14px; line-height: 1.4;">
+    </p>
+
+    <button id="next-egg-btn" onclick="resetGame()">
+        次のクソ卵を温める
+    </button>
+
 </div>
 
 <!-- 図鑑一覧モーダル -->
 <div id="zukan-modal" class="modal">
-    <h2 style="margin: 0; color: #ffeb3b;">🐥 ひよこ図鑑 🐥</h2>
-    <div id="zukan-status" style="margin-top: 5px; color: #aaa; font-weight: bold;">集めたひよこ: <span id="zukan-modal-count">0</span> / 101 種類</div>
+
+    <h2 style="margin: 0; color: #ffeb3b;">
+        🐥 ひよこ図鑑 🐥
+    </h2>
+
+    <div id="zukan-status"
+         style="margin-top: 5px; color: #aaa; font-weight: bold;">
+        集めたひよこ:
+        <span id="zukan-modal-count">0</span>
+        / 101 種類
+    </div>
+
     <div id="zukan-list"></div>
-    <button onclick="closeZukan()">閉じる</button>
+
+    <button onclick="closeZukan()">
+        閉じる
+    </button>
+
 </div>
 
 <script>
+
 let count = 0;
+
 const targetCount = 10000;
+
 let audioCtx = null;
 let bgmTimer = null;
 let currentBgmStage = -1;
 
 const totalChickCount = 101;
+
 const chickTypes = generateChickDatabase();
 
 let collectionCounts = {};
+
+/* =========================
+   ページ読み込み
+========================= */
 
 window.onload = function() {
     loadGameData();
 };
 
+
+/* =========================
+   ヒビ演出
+========================= */
+
+function updateEggCracks(currentCount) {
+
+    const cracks = document.getElementById("egg-cracks");
+    const eggContainer = document.getElementById("egg-container");
+
+    if (!cracks) return;
+
+    /*
+     * 1000回ごとに1段階
+     * 10000回で10段階
+     */
+    let stage = Math.floor(currentCount / 1000);
+
+    if (stage > 10) {
+        stage = 10;
+    }
+
+    /*
+     * いったんクラスを全部削除
+     */
+    for (let i = 1; i <= 10; i++) {
+        cracks.classList.remove(`stage-${i}`);
+    }
+
+    /*
+     * 現在のヒビ段階を適用
+     */
+    if (stage > 0) {
+        cracks.classList.add(`stage-${stage}`);
+    }
+
+    /*
+     * 9000回以上
+     */
+    if (stage >= 9 && currentCount < 10000) {
+        eggContainer.classList.add("cracking");
+    } else {
+        eggContainer.classList.remove("cracking");
+    }
+
+    /*
+     * 10000回
+     */
+    if (currentCount >= 10000) {
+        eggContainer.classList.remove("cracking");
+        eggContainer.classList.add("final-crack");
+    } else {
+        eggContainer.classList.remove("final-crack");
+    }
+}
+
+
+/* =========================
+   ひよこデータ
+========================= */
+
 function generateChickDatabase() {
+
     const rawData = [
         { id: 1, name: "普通のひよこ", rarity: "N", emoji: "🐥", desc: "どこにでもいるごく普通のひよこ。特に特徴はない。" },
         { id: 2, name: "早起きピヨ", rarity: "N", emoji: "🐥", desc: "毎朝4時に起きて筋トレをしているが体型は全く変わらない。" },
@@ -366,402 +821,1106 @@ function generateChickDatabase() {
     return rawData;
 }
 
-// 実際に所持しているひよこを正確に取得する関数
+
+/* =========================
+   図鑑
+========================= */
+
 function getCollectedTypeCount() {
-    return Object.keys(collectionCounts).filter(id => collectionCounts[id] > 0).length;
+    return Object.keys(collectionCounts)
+        .filter(id => collectionCounts[id] > 0)
+        .length;
 }
 
 function updateCollectionDisplay() {
+
     const collectedTypes = getCollectedTypeCount();
+
     document.getElementById("col-count").innerText = collectedTypes;
     document.getElementById("zukan-modal-count").innerText = collectedTypes;
 }
 
+
+/* =========================
+   セーブ
+========================= */
+
 function saveGameData() {
-    const saveData = { count: count, collectionCounts: collectionCounts };
-    localStorage.setItem("kuso_egg_save", JSON.stringify(saveData));
+
+    const saveData = {
+        count: count,
+        collectionCounts: collectionCounts
+    };
+
+    localStorage.setItem(
+        "kuso_egg_save",
+        JSON.stringify(saveData)
+    );
 }
+
+
+/* =========================
+   ロード
+========================= */
 
 function loadGameData() {
-    const dataStr = localStorage.getItem("kuso_egg_save");
+
+    const dataStr =
+        localStorage.getItem("kuso_egg_save");
+
     if (dataStr) {
+
         try {
+
             const data = JSON.parse(dataStr);
+
             count = data.count || 0;
+
             if (data.collectionCounts) {
-                collectionCounts = data.collectionCounts;
-            } else if (data.collection && Array.isArray(data.collection)) {
+
+                collectionCounts =
+                    data.collectionCounts;
+
+            } else if (
+                data.collection &&
+                Array.isArray(data.collection)
+            ) {
+
                 collectionCounts = {};
-                data.collection.forEach(id => { collectionCounts[id] = 1; });
+
+                data.collection.forEach(id => {
+                    collectionCounts[id] = 1;
+                });
             }
+
         } catch(e) {}
     }
-    
-    document.getElementById("count").innerText = count;
+
+    document.getElementById("count").innerText =
+        count;
+
     updateCollectionDisplay();
-    updateMilestoneMessage(count - 1, count);
+
+    /*
+     * セーブデータからも
+     * ヒビを復元
+     */
+    updateEggCracks(count);
+
+    updateMilestoneMessage(
+        count - 1,
+        count
+    );
 }
 
+
+/* =========================
+   リセット
+========================= */
+
 function stopBGM() {
+
     if (bgmTimer) {
+
         clearInterval(bgmTimer);
+
         bgmTimer = null;
     }
 }
 
+
 function resetCurrentGame() {
+
     count = 0;
+
     currentBgmStage = -1;
+
     saveGameData();
-    document.getElementById("count").innerText = count;
-    document.getElementById("message").innerText = "カウントをリセットしました！";
-    document.body.style.backgroundColor = "#222";
+
+    document.getElementById("count").innerText =
+        count;
+
+    document.getElementById("message").innerText =
+        "カウントをリセットしました！";
+
+    document.body.style.backgroundColor =
+        "#222";
+
+    updateEggCracks(0);
+
     stopBGM();
-    if (audioCtx) updateBGMStage();
+
+    if (audioCtx) {
+        updateBGMStage();
+    }
 }
+
 
 function clearAllSaveData() {
-    const result = confirm("本当にリセットしますか？");
+
+    const result =
+        confirm("本当にリセットしますか？");
+
     if (!result) return;
 
-    localStorage.removeItem("kuso_egg_save");
+    localStorage.removeItem(
+        "kuso_egg_save"
+    );
+
     count = 0;
+
     collectionCounts = {};
+
     currentBgmStage = -1;
-    document.getElementById("count").innerText = 0;
+
+    document.getElementById("count").innerText =
+        0;
+
     updateCollectionDisplay();
-    document.getElementById("message").innerText = "全データを初期化しました！";
-    document.body.style.backgroundColor = "#222";
+
+    document.getElementById("message").innerText =
+        "全データを初期化しました！";
+
+    document.body.style.backgroundColor =
+        "#222";
+
+    updateEggCracks(0);
+
     stopBGM();
-    if (audioCtx) updateBGMStage();
+
+    if (audioCtx) {
+        updateBGMStage();
+    }
 }
 
+
+/* =========================
+   オーディオ
+========================= */
+
 function initAudioOnce() {
+
     if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        audioCtx =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
         updateBGMStage();
-    } else if (audioCtx.state === 'suspended') {
+
+    } else if (
+        audioCtx.state === 'suspended'
+    ) {
+
         audioCtx.resume();
     }
 }
 
+
 function updateBGMStage() {
+
     if (!audioCtx) return;
 
-    let newStage = Math.floor(count / 1000);
-    if (newStage > 9) newStage = 9;
+    let newStage =
+        Math.floor(count / 1000);
+
+    if (newStage > 9)
+        newStage = 9;
 
     if (newStage !== currentBgmStage) {
-        currentBgmStage = newStage;
-        startBGMByStage(currentBgmStage);
+
+        currentBgmStage =
+            newStage;
+
+        startBGMByStage(
+            currentBgmStage
+        );
     }
 }
+
 
 const noteFreqs = {
-    'C2': 65.41,  'D2': 73.42,  'E2': 82.41,  'F2': 87.31,  'G2': 98.00,  'G#2': 103.83, 'A2': 110.00, 'B2': 123.47,
-    'C3': 130.81, 'D3': 146.83, 'Eb3': 155.56, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00,  'G#3': 207.65, 'A3': 220.00, 'B3': 246.94,
-    'C4': 261.63, 'D4': 293.66, 'Eb4': 311.13, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00,  'G#4': 415.30, 'A4': 440.00, 'B4': 493.88,
-    'C5': 523.25, 'D5': 587.33, 'Eb5': 622.25, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99,  'G#5': 830.61, 'A5': 880.00, 'B5': 987.77,
-    'C6': 1046.50, 'R': 0
+
+    'C2': 65.41,
+    'D2': 73.42,
+    'E2': 82.41,
+    'F2': 87.31,
+    'G2': 98.00,
+    'G#2': 103.83,
+    'A2': 110.00,
+    'B2': 123.47,
+
+    'C3': 130.81,
+    'D3': 146.83,
+    'Eb3': 155.56,
+    'E3': 164.81,
+    'F3': 174.61,
+    'G3': 196.00,
+    'G#3': 207.65,
+    'A3': 220.00,
+    'B3': 246.94,
+
+    'C4': 261.63,
+    'D4': 293.66,
+    'Eb4': 311.13,
+    'E4': 329.63,
+    'F4': 349.23,
+    'G4': 392.00,
+    'G#4': 415.30,
+    'A4': 440.00,
+    'B4': 493.88,
+
+    'C5': 523.25,
+    'D5': 587.33,
+    'Eb5': 622.25,
+    'E5': 659.25,
+    'F5': 698.46,
+    'G5': 783.99,
+    'G#5': 830.61,
+    'A5': 880.00,
+    'B5': 987.77,
+
+    'C6': 1046.50,
+
+    'R': 0
 };
 
+
 const bgmMelodies = [
-    ["C4","E4","G4","E4", "D4","F4","A4","F4", "E4","G4","B4","G4", "C5","G4","E4","C4"],
-    ["C4","C4","G4","G4", "A4","A4","G4","R",  "F4","F4","E4","E4", "D4","D4","C4","R"],
-    ["E4","G4","C5","E5", "D5","B4","G4","D4", "C5","E4","A4","C5", "B4","G4","E4","G4"]
+
+    [
+        "C4","E4","G4","E4",
+        "D4","F4","A4","F4",
+        "E4","G4","B4","G4",
+        "C5","G4","E4","C4"
+    ],
+
+    [
+        "C4","C4","G4","G4",
+        "A4","A4","G4","R",
+        "F4","F4","E4","E4",
+        "D4","D4","C4","R"
+    ],
+
+    [
+        "E4","G4","C5","E5",
+        "D5","B4","G4","D4",
+        "C5","E4","A4","C5",
+        "B4","G4","E4","G4"
+    ]
 ];
+
 
 const grandSerenadeMelody = [
-    "E5", "G5", "C6", "B5", "A5", "G5", "F5", "E5",
-    "D5", "F5", "A5", "G5", "F5", "E5", "D5", "C5",
-    "A4", "C5", "E5", "D5", "C5", "B4", "A4", "G4",
-    "C5", "E5", "G5", "F5", "E5", "D5", "B4", "C5"
+
+    "E5","G5","C6","B5",
+    "A5","G5","F5","E5",
+
+    "D5","F5","A5","G5",
+    "F5","E5","D5","C5",
+
+    "A4","C5","E5","D5",
+    "C5","B4","A4","G4",
+
+    "C5","E5","G5","F5",
+    "E5","D5","B4","C5"
 ];
 
-function playSustainedNote(freq, type, duration, gainVal = 0.1) {
-    if (!audioCtx || freq === 0) return;
-    let osc = audioCtx.createOscillator();
-    let gain = audioCtx.createGain();
+
+function playSustainedNote(
+    freq,
+    type,
+    duration,
+    gainVal = 0.1
+) {
+
+    if (!audioCtx || freq === 0)
+        return;
+
+    let osc =
+        audioCtx.createOscillator();
+
+    let gain =
+        audioCtx.createGain();
+
     osc.type = type;
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    
-    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(gainVal, audioCtx.currentTime + 0.1);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    
+
+    osc.frequency.setValueAtTime(
+        freq,
+        audioCtx.currentTime
+    );
+
+    gain.gain.setValueAtTime(
+        0.001,
+        audioCtx.currentTime
+    );
+
+    gain.gain.linearRampToValueAtTime(
+        gainVal,
+        audioCtx.currentTime + 0.1
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioCtx.currentTime + duration
+    );
+
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
+
+    gain.connect(
+        audioCtx.destination
+    );
+
     osc.start();
-    osc.stop(audioCtx.currentTime + duration);
+
+    osc.stop(
+        audioCtx.currentTime + duration
+    );
 }
 
+
 function playDrumNoise(duration) {
+
     if (!audioCtx) return;
-    let bufferSize = audioCtx.sampleRate * duration;
-    let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    let data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
+
+    let bufferSize =
+        audioCtx.sampleRate * duration;
+
+    let buffer =
+        audioCtx.createBuffer(
+            1,
+            bufferSize,
+            audioCtx.sampleRate
+        );
+
+    let data =
+        buffer.getChannelData(0);
+
+    for (
+        let i = 0;
+        i < bufferSize;
+        i++
+    ) {
+
+        data[i] =
+            Math.random() * 2 - 1;
     }
-    let noise = audioCtx.createBufferSource();
+
+    let noise =
+        audioCtx.createBufferSource();
+
     noise.buffer = buffer;
-    let gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+    let gain =
+        audioCtx.createGain();
+
+    gain.gain.setValueAtTime(
+        0.02,
+        audioCtx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioCtx.currentTime + duration
+    );
+
     noise.connect(gain);
-    gain.connect(audioCtx.destination);
+
+    gain.connect(
+        audioCtx.destination
+    );
+
     noise.start();
 }
 
+
 function startBGMByStage(stage) {
+
     stopBGM();
-    
+
     if (stage >= 9) {
-        document.body.style.backgroundColor = "#0b1325";
+
+        document.body.style.backgroundColor =
+            "#0b1325";
+
     } else {
-        document.body.style.backgroundColor = "#222";
+
+        document.body.style.backgroundColor =
+            "#222";
     }
 
-    let speed = (stage >= 9) ? 480 : Math.max(120, 260 - stage * 15); 
+    let speed =
+        (stage >= 9)
+            ? 480
+            : Math.max(
+                120,
+                260 - stage * 15
+            );
+
     let step = 0;
 
-    bgmTimer = setInterval(() => {
-        if (!audioCtx) return;
+    bgmTimer =
+        setInterval(() => {
 
-        if (stage >= 9) {
-            let noteStr = grandSerenadeMelody[step % grandSerenadeMelody.length];
-            let freq = noteFreqs[noteStr] || 0;
+            if (!audioCtx) return;
 
-            playSustainedNote(freq, 'triangle', 0.8, 0.14);
+            if (stage >= 9) {
 
-            if (freq > 0) {
-                playSustainedNote(freq * 0.75, 'sawtooth', 0.7, 0.04);
+                let noteStr =
+                    grandSerenadeMelody[
+                        step %
+                        grandSerenadeMelody.length
+                    ];
+
+                let freq =
+                    noteFreqs[noteStr] || 0;
+
+                playSustainedNote(
+                    freq,
+                    'triangle',
+                    0.8,
+                    0.14
+                );
+
+                if (freq > 0) {
+
+                    playSustainedNote(
+                        freq * 0.75,
+                        'sawtooth',
+                        0.7,
+                        0.04
+                    );
+                }
+
+                if (step % 2 === 0) {
+
+                    let baseFreq =
+                        freq
+                            ? freq / 2
+                            : noteFreqs['C2'];
+
+                    playSustainedNote(
+                        baseFreq,
+                        'triangle',
+                        1.2,
+                        0.22
+                    );
+                }
+
+                if (step % 4 === 0) {
+
+                    playDrumNoise(0.12);
+                }
+
+            } else {
+
+                let melodyIdx = 0;
+
+                if (stage >= 3)
+                    melodyIdx = 1;
+
+                if (stage >= 6)
+                    melodyIdx = 2;
+
+                const melody =
+                    bgmMelodies[melodyIdx];
+
+                let noteStr =
+                    melody[
+                        step % melody.length
+                    ];
+
+                let freq =
+                    noteFreqs[noteStr] || 0;
+
+                if (freq > 0) {
+
+                    let osc =
+                        audioCtx.createOscillator();
+
+                    let gain =
+                        audioCtx.createGain();
+
+                    osc.type = 'square';
+
+                    osc.frequency.setValueAtTime(
+                        freq,
+                        audioCtx.currentTime
+                    );
+
+                    gain.gain.setValueAtTime(
+                        0.06,
+                        audioCtx.currentTime
+                    );
+
+                    gain.gain.exponentialRampToValueAtTime(
+                        0.001,
+                        audioCtx.currentTime +
+                        (speed / 1000) * 0.95
+                    );
+
+                    osc.connect(gain);
+
+                    gain.connect(
+                        audioCtx.destination
+                    );
+
+                    osc.start();
+
+                    osc.stop(
+                        audioCtx.currentTime +
+                        speed / 1000
+                    );
+                }
+
+                if (
+                    stage >= 2 &&
+                    step % 2 === 0
+                ) {
+
+                    let baseFreq =
+                        freq
+                            ? freq / 2
+                            : noteFreqs['C3'];
+
+                    playSustainedNote(
+                        baseFreq,
+                        'triangle',
+                        (speed * 1.8) / 1000,
+                        0.08
+                    );
+                }
+
+                if (
+                    stage >= 4 &&
+                    step % 2 === 1
+                ) {
+
+                    playDrumNoise(0.05);
+                }
             }
 
-            if (step % 2 === 0) {
-                let baseFreq = freq ? freq / 2 : noteFreqs['C2'];
-                playSustainedNote(baseFreq, 'triangle', 1.2, 0.22);
-            }
+            step++;
 
-            if (step % 4 === 0) {
-                playDrumNoise(0.12);
-            }
-        } else {
-            let melodyIdx = 0;
-            if (stage >= 3) melodyIdx = 1;
-            if (stage >= 6) melodyIdx = 2;
-
-            const melody = bgmMelodies[melodyIdx];
-            let noteStr = melody[step % melody.length];
-            let freq = noteFreqs[noteStr] || 0;
-
-            if (freq > 0) {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (speed/1000) * 0.95);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + (speed/1000));
-            }
-
-            if (stage >= 2 && step % 2 === 0) {
-                let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
-                playSustainedNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.08);
-            }
-            if (stage >= 4 && step % 2 === 1) playDrumNoise(0.05);
-        }
-
-        step++;
-    }, speed);
+        }, speed);
 }
+
 
 function playTapSound(freq = 400) {
+
     if (!audioCtx) return;
-    let osc = audioCtx.createOscillator();
-    let gain = audioCtx.createGain();
+
+    let osc =
+        audioCtx.createOscillator();
+
+    let gain =
+        audioCtx.createGain();
+
     osc.type = 'square';
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+    osc.frequency.setValueAtTime(
+        freq,
+        audioCtx.currentTime
+    );
+
+    gain.gain.setValueAtTime(
+        0.06,
+        audioCtx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioCtx.currentTime + 0.05
+    );
+
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
+
+    gain.connect(
+        audioCtx.destination
+    );
+
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.05);
+
+    osc.stop(
+        audioCtx.currentTime + 0.05
+    );
 }
+
 
 function playMilestoneSound() {
+
     if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-    const notes = [523, 659, 783, 1046];
-    notes.forEach((freq, index) => {
-        let osc = audioCtx.createOscillator();
-        let gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, now + index * 0.07);
-        gain.gain.setValueAtTime(0.12, now + index * 0.07);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.07 + 0.2);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now + index * 0.07);
-        osc.stop(now + index * 0.07 + 0.22);
-    });
+
+    const now =
+        audioCtx.currentTime;
+
+    const notes =
+        [523, 659, 783, 1046];
+
+    notes.forEach(
+        (freq, index) => {
+
+            let osc =
+                audioCtx.createOscillator();
+
+            let gain =
+                audioCtx.createGain();
+
+            osc.type = 'triangle';
+
+            osc.frequency.setValueAtTime(
+                freq,
+                now + index * 0.07
+            );
+
+            gain.gain.setValueAtTime(
+                0.12,
+                now + index * 0.07
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                now + index * 0.07 + 0.2
+            );
+
+            osc.connect(gain);
+
+            gain.connect(
+                audioCtx.destination
+            );
+
+            osc.start(
+                now + index * 0.07
+            );
+
+            osc.stop(
+                now + index * 0.07 + 0.22
+            );
+        }
+    );
 }
+
 
 function playFanfare() {
+
     if (!audioCtx) return;
-    const now = audioCtx.currentTime;
-    const notes = [523, 659, 783, 1046, 1318, 1567];
-    notes.forEach((freq, index) => {
-        let osc = audioCtx.createOscillator();
-        let gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, now + index * 0.1);
-        gain.gain.setValueAtTime(0.2, now + index * 0.1);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.1 + 0.5);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now + index * 0.1);
-        osc.stop(now + index * 0.1 + 0.55);
-    });
+
+    const now =
+        audioCtx.currentTime;
+
+    const notes =
+        [523, 659, 783, 1046, 1318, 1567];
+
+    notes.forEach(
+        (freq, index) => {
+
+            let osc =
+                audioCtx.createOscillator();
+
+            let gain =
+                audioCtx.createGain();
+
+            osc.type = 'triangle';
+
+            osc.frequency.setValueAtTime(
+                freq,
+                now + index * 0.1
+            );
+
+            gain.gain.setValueAtTime(
+                0.2,
+                now + index * 0.1
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.001,
+                now + index * 0.1 + 0.5
+            );
+
+            osc.connect(gain);
+
+            gain.connect(
+                audioCtx.destination
+            );
+
+            osc.start(
+                now + index * 0.1
+            );
+
+            osc.stop(
+                now + index * 0.1 + 0.55
+            );
+        }
+    );
 }
 
+
+/* =========================
+   卵タップ
+========================= */
+
 function tapEgg() {
+
     initAudioOnce();
 
-    // 最初のタップで開始テロップを消す
-    const telop = document.getElementById("start-telop");
+    /*
+     * 最初のタップで
+     * 開始テロップを消す
+     */
+
+    const telop =
+        document.getElementById(
+            "start-telop"
+        );
+
     if (telop) {
-        telop.classList.add("hidden");
+
+        telop.classList.add(
+            "hidden"
+        );
     }
 
     addCount(1);
 }
 
+
+/* =========================
+   カウント追加
+========================= */
+
 function addCount(num) {
-    if (count >= targetCount) return;
+
+    if (count >= targetCount)
+        return;
 
     const prevCount = count;
+
     count += num;
-    if (count > targetCount) count = targetCount;
-    document.getElementById("count").innerText = count;
+
+    if (count > targetCount)
+        count = targetCount;
+
+    document.getElementById("count").innerText =
+        count;
+
+    /*
+     * ★ここでヒビを更新
+     */
+    updateEggCracks(count);
 
     saveGameData();
+
     updateBGMStage();
 
-    const isMilestone = updateMilestoneMessage(prevCount, count);
+    const isMilestone =
+        updateMilestoneMessage(
+            prevCount,
+            count
+        );
 
     if (isMilestone) {
+
         playMilestoneSound();
+
     } else {
-        playTapSound(300 + (count % 200));
+
+        playTapSound(
+            300 + (count % 200)
+        );
     }
 
     if (count >= targetCount) {
+
         hatchChick();
     }
 }
 
-function updateMilestoneMessage(prevCount, currentCount) {
+
+/* =========================
+   節目メッセージ
+========================= */
+
+function updateMilestoneMessage(
+    prevCount,
+    currentCount
+) {
+
     let milestoneHit = false;
-    for (let m = 100; m <= 10000; m += 100) {
-        if (prevCount < m && currentCount >= m) {
+
+    for (
+        let m = 100;
+        m <= 10000;
+        m += 100
+    ) {
+
+        if (
+            prevCount < m &&
+            currentCount >= m
+        ) {
+
             if (milestoneMessages[m]) {
-                document.getElementById("message").innerText = milestoneMessages[m];
+
+                document.getElementById(
+                    "message"
+                ).innerText =
+                    milestoneMessages[m];
+
                 milestoneHit = true;
             }
         }
     }
+
     return milestoneHit;
 }
 
+
+/* =========================
+   ひよこ誕生
+========================= */
+
 function hatchChick() {
+
     playFanfare();
-    
+
     let chosenChick = null;
-    const currentUniqueCount = getCollectedTypeCount();
 
-    if (currentUniqueCount >= 100 && !collectionCounts[101]) {
-        chosenChick = chickTypes.find(c => c.id === 101);
+    const currentUniqueCount =
+        getCollectedTypeCount();
+
+    if (
+        currentUniqueCount >= 100 &&
+        !collectionCounts[101]
+    ) {
+
+        chosenChick =
+            chickTypes.find(
+                c => c.id === 101
+            );
+
     } else {
-        const availablePool = chickTypes.filter(c => c.id !== 101);
-        const rand = Math.random() * 100;
+
+        const availablePool =
+            chickTypes.filter(
+                c => c.id !== 101
+            );
+
+        const rand =
+            Math.random() * 100;
+
         let rarityFilter = "N";
-        if (rand < 2) rarityFilter = "SSR";
-        else if (rand < 15) rarityFilter = "SR";
 
-        let filteredPool = availablePool.filter(c => c.rarity === rarityFilter);
-        if (filteredPool.length === 0) filteredPool = availablePool;
+        if (rand < 2)
+            rarityFilter = "SSR";
 
-        chosenChick = filteredPool[Math.floor(Math.random() * filteredPool.length)];
+        else if (rand < 15)
+            rarityFilter = "SR";
+
+        let filteredPool =
+            availablePool.filter(
+                c =>
+                    c.rarity ===
+                    rarityFilter
+            );
+
+        if (filteredPool.length === 0)
+            filteredPool = availablePool;
+
+        chosenChick =
+            filteredPool[
+                Math.floor(
+                    Math.random() *
+                    filteredPool.length
+                )
+            ];
     }
 
-    collectionCounts[chosenChick.id] = (collectionCounts[chosenChick.id] || 0) + 1;
+    collectionCounts[
+        chosenChick.id
+    ] =
+        (collectionCounts[
+            chosenChick.id
+        ] || 0) + 1;
+
     saveGameData();
 
     updateCollectionDisplay();
-    document.getElementById("rarity-label").innerText = `[${chosenChick.rarity}]`;
-    document.getElementById("rarity-label").className = `rare-${chosenChick.rarity}`;
-    document.getElementById("chick-icon").innerText = chosenChick.emoji;
-    document.getElementById("chick-name").innerText = chosenChick.name;
-    document.getElementById("chick-owned-count").innerText = `所持数: ${collectionCounts[chosenChick.id]} 匹`;
-    document.getElementById("chick-desc").innerText = chosenChick.desc;
 
-    const nextBtn = document.getElementById("next-egg-btn");
+    document.getElementById(
+        "rarity-label"
+    ).innerText =
+        `[${chosenChick.rarity}]`;
+
+    document.getElementById(
+        "rarity-label"
+    ).className =
+        `rare-${chosenChick.rarity}`;
+
+    document.getElementById(
+        "chick-icon"
+    ).innerText =
+        chosenChick.emoji;
+
+    document.getElementById(
+        "chick-name"
+    ).innerText =
+        chosenChick.name;
+
+    document.getElementById(
+        "chick-owned-count"
+    ).innerText =
+        `所持数: ${collectionCounts[chosenChick.id]} 匹`;
+
+    document.getElementById(
+        "chick-desc"
+    ).innerText =
+        chosenChick.desc;
+
+    const nextBtn =
+        document.getElementById(
+            "next-egg-btn"
+        );
+
     nextBtn.disabled = true;
-    setTimeout(() => { nextBtn.disabled = false; }, 500);
 
-    document.getElementById("result-modal").classList.add("active");
+    setTimeout(() => {
+        nextBtn.disabled = false;
+    }, 500);
+
+    document.getElementById(
+        "result-modal"
+    ).classList.add("active");
 }
 
+
+/* =========================
+   次の卵
+========================= */
+
 function resetGame() {
-    document.getElementById("result-modal").classList.remove("active");
+
+    document.getElementById(
+        "result-modal"
+    ).classList.remove("active");
+
     resetCurrentGame();
 }
 
+
+/* =========================
+   図鑑
+========================= */
+
 function openZukan() {
+
     updateCollectionDisplay();
-    const zukanListEl = document.getElementById("zukan-list");
+
+    const zukanListEl =
+        document.getElementById(
+            "zukan-list"
+        );
+
     zukanListEl.innerHTML = "";
 
-    chickTypes.forEach(chick => {
-        const isOwned = !!collectionCounts[chick.id] && collectionCounts[chick.id] > 0;
-        const item = document.createElement("div");
-        item.className = "zukan-item";
+    chickTypes.forEach(
+        chick => {
 
-        if (isOwned) {
-            item.innerHTML = `
-                <div class="icon">${chick.emoji}</div>
-                <div class="info">
-                    <div class="no">No.${chick.id} <span class="rare-${chick.rarity}">[${chick.rarity}]</span></div>
-                    <div class="name">${chick.name}<span class="count-tag">x${collectionCounts[chick.id]}</span></div>
-                    <div class="desc">${chick.desc}</div>
-                </div>
-            `;
-        } else {
-            item.innerHTML = `
-                <div class="icon zukan-unknown">❓</div>
-                <div class="info zukan-unknown">
-                    <div class="no">No.${chick.id} [???]</div>
-                    <div class="name">？？？？？</div>
-                    <div class="desc">まだ発見されていません</div>
-                </div>
-            `;
+            const isOwned =
+                !!collectionCounts[
+                    chick.id
+                ] &&
+                collectionCounts[
+                    chick.id
+                ] > 0;
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "zukan-item";
+
+            if (isOwned) {
+
+                item.innerHTML = `
+                    <div class="icon">
+                        ${chick.emoji}
+                    </div>
+
+                    <div class="info">
+
+                        <div class="no">
+                            No.${chick.id}
+                            <span class="rare-${chick.rarity}">
+                                [${chick.rarity}]
+                            </span>
+                        </div>
+
+                        <div class="name">
+                            ${chick.name}
+                            <span class="count-tag">
+                                x${collectionCounts[chick.id]}
+                            </span>
+                        </div>
+
+                        <div class="desc">
+                            ${chick.desc}
+                        </div>
+
+                    </div>
+                `;
+
+            } else {
+
+                item.innerHTML = `
+                    <div class="icon zukan-unknown">
+                        ❓
+                    </div>
+
+                    <div class="info zukan-unknown">
+
+                        <div class="no">
+                            No.${chick.id} [???]
+                        </div>
+
+                        <div class="name">
+                            ？？？？？
+                        </div>
+
+                        <div class="desc">
+                            まだ発見されていません
+                        </div>
+
+                    </div>
+                `;
+            }
+
+            zukanListEl.appendChild(item);
         }
-        zukanListEl.appendChild(item);
-    });
+    );
 
-    document.getElementById("zukan-modal").classList.add("active");
+    document.getElementById(
+        "zukan-modal"
+    ).classList.add("active");
 }
+
 
 function closeZukan() {
-    document.getElementById("zukan-modal").classList.remove("active");
+
+    document.getElementById(
+        "zukan-modal"
+    ).classList.remove("active");
 }
 
+
+/* =========================
+   節目メッセージ
+========================= */
+
 const milestoneMessages = {
+
     100: "100回：ヒビが入った…？いや、ホコリだった。",
     200: "200回：連打する指に微かな疑問を感じ始める。",
     300: "300回：卵の奥から小さく『無駄だよ』と聞こえた気がした。",
@@ -771,7 +1930,9 @@ const milestoneMessages = {
     700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
     800: "800回：まだ8%しか温まっていないという絶望。",
     900: "900回：もうすぐ1000！特に何もないけど！",
-    1000: "1000回：自我が目覚めかけたが思いとどまった。",
+
+    1000: "1000回：自我が目覚めかけたが思いとどまった。卵にもヒビが入った！",
+
     1100: "1100回：そろそろ指を休めても誰も責めない。",
     1200: "1200回：卵があなたの連打速度を採点している。",
     1300: "1300回：指先からかすかに摩擦熱を感じる。",
@@ -781,7 +1942,9 @@ const milestoneMessages = {
     1700: "1700回：中のひよこがあなたの連打リズムに合わせて踊っている。",
     1800: "1800回：スマホの画面がそろそろ温かくなってきた頃。",
     1900: "1900回：あと100回で2000！休まず叩け！",
-    2000: "2000回：指の疲労感＝命の重み。",
+
+    2000: "2000回：指の疲労感＝命の重み。ヒビがさらに広がった！",
+
     2100: "2100回：卵「もう少し優しく叩いてほしいピヨ」",
     2200: "2200回：爪が画面に当たるカチカチ音が部屋に響く。",
     2300: "2300回：連打のスピードが徐々に上がってきた！",
@@ -791,7 +1954,9 @@ const milestoneMessages = {
     2700: "2700回：連打の手が勝手に動き始める領域。",
     2800: "2800回：卵「中の居心地が良すぎて出たくない」",
     2900: "2900回：もうすぐ3000！指の限界を突破しろ！",
-    3000: "3000回：卵の中で何かが動画を見ている気配。",
+
+    3000: "3000回：卵の中で何かが動画を見ている気配。ヒビがさらに増えた！",
+
     3100: "3100回：無心。ただひたすらに無心。",
     3200: "3200回：指の皮が少し厚くなった気がする。",
     3300: "3300回：卵「そろそろ起きますかね…」",
@@ -801,7 +1966,9 @@ const milestoneMessages = {
     3700: "3700回：連打のリズムが現代音楽として成立し始める。",
     3800: "3800回：あなたの指はもはや連打マシンだ。",
     3900: "3900回：あと100回で4000！勢いを殺すな！",
-    4000: "4000回：指先から不思議な波動が出始める。",
+
+    4000: "4000回：指先から不思議な波動が出始める。卵もかなりヒビだらけだ！",
+
     4100: "4100回：卵の中でひよこがストレッチを始めた。",
     4200: "4200回：タップのしすぎで腕の筋肉がアピールしている。",
     4300: "4300回：卵「あと何回叩くつもりですか…？」",
@@ -811,7 +1978,9 @@ const milestoneMessages = {
     4700: "4700回：連打の振動で部屋の家具が少し揺れた気がする。",
     4800: "4800回：卵「この連打、悪くないぞ…」",
     4900: "4900回：あと100回で中間地点！気合を入れ直せ！",
-    5000: "5000回：折り返し地点！妙なプレッシャーが漂う。",
+
+    5000: "5000回：折り返し地点！卵はもうかなりボロボロだ。",
+
     5100: "5100回：後半戦突入！指の限界に挑め！",
     5200: "5200回：卵「外の世界って暑いですか？」",
     5300: "5300回：指の関節が自己主張を深めている。",
@@ -821,7 +1990,9 @@ const milestoneMessages = {
     5700: "5700回：連打の速度が音速を超えかけている（嘘）。",
     5800: "5800回：卵「そろそろ生まれる準備をしようかな…」",
     5900: "5900回：あと100回で6000！休まず進め！",
-    6000: "6000回：6割達成！卵からかすかな熱気を感じる。",
+
+    6000: "6000回：6割達成！卵からかすかな熱気を感じる。ヒビがさらに広がった！",
+
     6100: "6100回：連打によって画面に微小な空間の歪みが発生中。",
     6200: "6200回：卵「外の様子をチラ見しようか迷う」",
     6300: "6300回：あなたの指に謎のオーラが宿り始めている。",
@@ -831,7 +2002,9 @@ const milestoneMessages = {
     6700: "6700回：連打の音に近所のひよこが反応している。",
     6800: "6800回：指先が覚醒し、自動連打機能が発動しそうだ。",
     6900: "6900回：あと100回で7000！ゾーンに入れ！",
-    7000: "7000回達成！卵殻が神々しく光り始めた。",
+
+    7000: "7000回達成！卵殻が神々しく光り始めた。もうヒビだらけ！",
+
     7100: "7100回：卵「生まれてからのキャラ付けを考え中…」",
     7200: "7200回：あなたの連打魂が卵に直接注入されている。",
     7300: "7300回：卵の表面にうっすらと『感謝』の文字が浮かんできた。",
@@ -841,7 +2014,9 @@ const milestoneMessages = {
     7700: "7700回：ラッキーセブン！何かが起きる予感（何もない）。",
     7800: "7800回：指の感覚が完全に消失し、悟りの境界へ。",
     7900: "7900回：あと100回で8000！気合を注入しろ！",
+
     8000: "8000回：残り2000回！卵内部で生命の鼓動が激しくなる！",
+
     8100: "8100回：卵「こんなに連打されたのは生まれて初めてです」",
     8200: "8200回：連打の摩擦熱で画面が本格的に温かい。",
     8300: "8300回：中のひよこが最後の毛づくろいを始めた。",
@@ -851,7 +2026,9 @@ const milestoneMessages = {
     8700: "8700回：連打のリズムが伝説のファンファーレに聞こえてきた。",
     8800: "8800回：ゾロ目！神聖な连打のエネルギーが充満している。",
     8900: "8900回：あと100回で9000！ラストスパート目前！",
-    9000: "9000回：ついに9000！最終カウントダウン開始！",
+
+    9000: "9000回：ついに9000！卵が限界寸前！大きなヒビが走った！",
+
     9100: "9100回：卵「息を整えて…準備完了ピヨ！」",
     9200: "9200回：残り800回！指の全細胞を解き放て！",
     9300: "9300回：連打の衝撃で卵に大きなひび割れが刻まれる！",
@@ -861,8 +2038,11 @@ const milestoneMessages = {
     9700: "9700回：残り300回！指が千切れても叩き続けろ！",
     9800: "9800回：残り200回！殻が崩壊を始めた！",
     9900: "9900回：あと100回！奇跡の生誕へ向けて連打しろ！！",
+
     10000: "10000回：🎉 誕生の瞬間！おめでとう！！ 🎉"
 };
+
 </script>
+
 </body>
 </html>
