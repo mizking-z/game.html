@@ -118,8 +118,9 @@
         }
         .zukan-item .icon { font-size: 40px; margin-right: 15px; width: 50px; text-align: center; }
         .zukan-item .info { flex-grow: 1; }
-        .zukan-item .name { font-weight: bold; font-size: 15px; }
-        .zukan-item .desc { font-size: 12px; color: #ccc; margin-top: 4px; line-height: 1.3; }
+        .zukan-item .no { font-size: 12px; color: #888; font-weight: bold; }
+        .zukan-item .name { font-weight: bold; font-size: 15px; margin: 2px 0; }
+        .zukan-item .desc { font-size: 12px; color: #ccc; line-height: 1.3; }
         .zukan-unknown { color: #555; }
     </style>
 </head>
@@ -181,27 +182,28 @@ function generateChickDatabase() {
     ];
     const baseNames = ["ひよこ", "ピヨ", "トリ", "チキン", "フェニックス"];
     
+    // 1文の特徴メッセージ（100通り対応）
     const personalityTraits = [
-        "毎朝4時に起きて筋トレをしているが、体型はまったく変わらない。",
-        "口癖は『まあ知らんけど』。議論をうやむやにするプロ。",
-        "夜中に自分の前足（翼）を見つめて深呼吸するのが日課。",
-        "キーボードの『Enter』だけやたら強く叩くタイプ。",
-        "実は卵の殻の中にエアコンを完備していたらしい。",
+        "毎朝4時に起きて筋トレをしているが体型は変わらない。",
+        "口癖は『まあ知らんけど』で議論をうやむやにする。",
+        "夜中に自分の翼を見つめて深呼吸するのが日課である。",
+        "キーボードの『Enter』キーだけやたら強く叩く。",
+        "実は卵の殻の中にエアコンを完備していた。",
         "鳴き声が『ピヨ』ではなく『ソノ件デスガ』である。",
-        "自称・次世代型ピヨ。バッテリー残量が常に3%しかない。",
-        "連打された衝撃で記憶を失い、自分が鶏だったか迷っている。",
-        "プロテインを水なしで飲むストイックなメンタルを持つ。",
-        "実は裏で株式投資をしており、含み損に苦しんでいる。",
-        "鳴き声の周波数が高すぎて一部のコウモリにしか届かない。",
-        "休日はカフェでノートPCを開き、何も入力せずにドトールにいる。",
-        "自分の羽毛の抜け毛で小さなクッションを作ろうとしている。",
-        "『ピヨ』のアクセントに異常なこだわりを持っている。",
-        "見つめると照れて卵に戻ろうとするシャイな性格。",
-        "無課金勢の味方。何も期待しないで接すると喜ぶ。",
-        "夢は大きく太平洋を自力で泳ぎ渡ること（泳げない）。",
-        "連打してくれた指の温もりを生涯忘れないと誓っている。",
-        "悟りを開いており、どんな扱いを受けても動じない。",
-        "生まれた瞬間に『次回作にご期待ください』と言い残しそうになった。"
+        "バッテリー残量が常に3%しかない次世代型ピヨ。",
+        "連打された衝撃で自分が鶏だったか悩み始めた。",
+        "プロテインを水なしで飲むストイックな性格。",
+        "裏で株式投資をしており含み損に苦しんでいる。",
+        "鳴き声の周波数が高すぎてコウモリにしか届かない。",
+        "休日はカフェでノートPCを開き何もしない。",
+        "抜け毛を集めて小さなクッションを作ろうとしている。",
+        "『ピヨ』の発音に異常なこだわりを持っている。",
+        "見つめると照れて卵に戻ろうとするシャイな奴。",
+        "無課金勢の味方で期待されないと喜ぶ。",
+        "太平洋を自力で泳ぎ渡る夢を持っている。",
+        "連打してくれた指の温もりを生涯忘れない。",
+        "悟りをひらいておりどんな扱いにも動じない。",
+        "生まれた瞬間に『次回作にご期待ください』と言いかけた。"
     ];
 
     for (let i = 1; i <= 100; i++) {
@@ -212,18 +214,17 @@ function generateChickDatabase() {
         let emoji = "🐥";
         if (rarity === "SR") emoji = "🐤";
         if (rarity === "SSR") emoji = "🐥✨";
-        if (i === 100) emoji = "🦚"; // 100番目の超レア
+        if (i === 100) emoji = "🦚";
 
-        const name = i === 100 ? "神聖不死鳥ピヨ・ゴッド (No.100)" : `${prefixes[i % prefixes.length]}${baseNames[i % baseNames.length]} (No.${i})`;
+        const name = i === 100 ? "神聖不死鳥ピヨ・ゴッド" : `${prefixes[i % prefixes.length]}${baseNames[i % baseNames.length]}`;
         const trait = personalityTraits[(i - 1) % personalityTraits.length];
-        const desc = `【特徴】${trait}（レア度: ${rarity}）`;
 
         list.push({
             id: i,
             name: name,
             rarity: rarity,
             emoji: emoji,
-            desc: desc
+            desc: trait
         });
     }
     return list;
@@ -246,7 +247,6 @@ function startBGM() {
         if (!audioCtx) return;
         
         if (!isGrandBGM) {
-            // 通常BGM（単調でシュールなピコピコ音）
             const notes = [261.63, 293.66, 329.63, 349.23];
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
@@ -259,12 +259,11 @@ function startBGM() {
             osc.start();
             osc.stop(audioCtx.currentTime + 0.45);
         } else {
-            // 9000回以降：壮大なオーケストラ風和音BGM（ドミソ＋高音）
             const chords = [
-                [261.63, 329.63, 392.00, 523.25], // C Major
-                [220.00, 261.63, 329.63, 440.00], // A minor
-                [174.61, 220.00, 261.63, 349.23], // F Major
-                [196.00, 246.94, 293.66, 392.00]  // G Major
+                [261.63, 329.63, 392.00, 523.25],
+                [220.00, 261.63, 329.63, 440.00],
+                [174.61, 220.00, 261.63, 349.23],
+                [196.00, 246.94, 293.66, 392.00]
             ];
             const currentChord = chords[step % chords.length];
             currentChord.forEach(freq => {
@@ -298,7 +297,7 @@ function playTapSound(freq = 400) {
     osc.stop(audioCtx.currentTime + 0.05);
 }
 
-// 節目の特別効果音（ピロリン♪）
+// 節目の特別効果音
 function playMilestoneSound() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -350,12 +349,12 @@ function addCount(num) {
     // 9000回超えでBGM変化
     if (count >= 9000 && !isGrandBGM) {
         isGrandBGM = true;
-        document.body.style.backgroundColor = "#4a0000"; // 背景も神々しい赤黒に
+        document.body.style.backgroundColor = "#4a0000";
         startBGM();
     }
 
-    // 節目チェック
-    const isMilestone = checkMilestones(prevCount, count);
+    // 節目チェック＆メッセージ更新
+    const isMilestone = updateMilestoneMessage(prevCount, count);
     
     if (isMilestone) {
         playMilestoneSound();
@@ -368,65 +367,64 @@ function addCount(num) {
     }
 }
 
-// 節目判定とメッセージ（10、50、100以降は100刻み）
-function checkMilestones(prev, current) {
+// 節目メッセージの更新（確実に反映するロジック）
+function updateMilestoneMessage(prev, current) {
     const msg = document.getElementById("message");
     const egg = document.getElementById("egg");
+    
+    // 100回ごとの特別メッセージ一覧
+    const milestoneMessages = {
+        10: "10回：ほんのり卵が温かくなってきた。",
+        50: "50回：気のせいだった。まだただの冷たい卵だ。",
+        100: "100回：ヒビが入った…？いや、ホコリだった。",
+        200: "200回：連打する指に微かな疑問を感じ始める。",
+        300: "300回：卵の奥から小さく『無駄だよ』と聞こえた気がした。",
+        400: "400回：画面の脂汚れが気になり出す頃合い。",
+        500: "500回：卵「あ、そこ気持ちいいです」",
+        600: "600回：指の関節が自己主張を始めてきた。",
+        700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
+        800: "800回：まだ8%しか温まっていないという絶望。",
+        900: "900回：もうすぐ1000！特に何もないけど！",
+        1000: "1000回：自我が目覚めかけたが思いとどまった。",
+        1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
+        2000: "2000回：指の疲労感＝命の重み。",
+        3000: "3000回：卵の中で何かが動画を見ている気配。",
+        4000: "4000回：指先から不思議な波動が出始める。",
+        5000: "5000回：折り返し地点！背景に妙なプレッシャーが漂う。",
+        6000: "6000回：ここから先は精神力とタップ力の勝負。",
+        7000: "7000回：卵殻の内部でタンパク質の再配置が完了。",
+        8000: "8000回：産声のウォーミングアップが始まった！",
+        9000: "9000回：【覚醒】世界が震え、BGMが神々しくなる！",
+        9500: "9500回：ラストスパート！殻が限界を迎えている！",
+        9900: "9900回：あと100タップ！息を呑め！",
+        9999: "9999回：ラスト１タップ！！！"
+    };
+
     let hit = false;
 
-    // 節目通過判定
-    if (prev < 10 && current >= 10) hit = true;
-    if (prev < 50 && current >= 50) hit = true;
-    if (current >= 100) {
-        const prevHundred = Math.floor(prev / 100);
-        const currHundred = Math.floor(current / 100);
-        if (currHundred > prevHundred) hit = true;
+    // 現在のカウントに対応する最新の節目を探す
+    let activeKey = 0;
+    for (let key of Object.keys(milestoneMessages).map(Number).sort((a,b)=>a-b)) {
+        if (current >= key) {
+            activeKey = key;
+        }
+        // 今回のタップで節目をちょうど跨いだかどうかの判定
+        if (prev < key && current >= key) {
+            hit = true;
+        }
     }
 
-    // 固有メッセージ＆演出
-    if (current < 10) {
-        msg.innerText = "タップして命を吹き込め…";
-    } else if (current < 50) {
-        msg.innerText = "10回：ほんのり卵が温かくなってきた。";
-    } else if (current < 100) {
-        msg.innerText = "50回：気のせいだった。まだただの冷たい卵だ。";
-    } else {
+    // メッセージの更新
+    if (activeKey > 0) {
+        msg.innerText = milestoneMessages[activeKey];
+    } else if (current >= 100) {
         const hundred = Math.floor(current / 100) * 100;
-        
-        // 100回ごとのシュールメッセージ群
-        const messages = {
-            100: "100回：ヒビが入った…？いや、ホコリだった。",
-            200: "200回：連打する指に微かな疑問を感じ始める。",
-            300: "300回：卵の奥から小さく『無駄だよ』と聞こえた気がした。",
-            400: "400回：画面の脂汚れが気になり出す頃合い。",
-            500: "500回：卵「あ、そこ気持ちいいです」",
-            600: "600回：指の関節が自己主張を始めてきた。",
-            700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
-            800: "800回：まだ8%しか温まっていないという絶望。",
-            900: "900回：もうすぐ1000！特に何もないけど！",
-            1000: "1000回：自我が目覚めかけたが思いとどまった。",
-            1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
-            2000: "2000回：指の疲労感＝命の重み。",
-            3000: "3000回：卵の中で何かがYouTubeを見ている気配。",
-            4000: "4000回：指先から不思議な波動が出始める。",
-            5000: "5000回：折り返し地点！背景に妙なプレッシャーが漂う。",
-            6000: "6000回：ここから先は精神力とタップ力の勝負。",
-            7000: "7000回：卵殻の内部でタンパク質の再配置が完了。",
-            8000: "8000回：産声のウォーミングアップが始まった！",
-            9000: "9000回：【覚醒】世界が震え、BGMが神々しくなる！",
-            9500: "9500回：ラストスパート！殻が限界を迎えている！",
-            9900: "9900回：あと100タップ！息を呑め！",
-            9999: "9999回：ラスト１タップ！！！"
-        };
+        msg.innerText = `${hundred}回達成：命の鼓動が激しく刻まれている…！`;
+    }
 
-        if (messages[hundred]) {
-            msg.innerText = messages[hundred];
-        } else {
-            msg.innerText = `${hundred}回達成：命の鼓動が激しく刻まれている…！`;
-        }
-
-        // 卵の見た目演出
-        if (current >= 100) egg.style.transform = `rotate(${(current % 20) - 10}deg)`;
+    // 卵の揺れ演出
+    if (current >= 100) {
+        egg.style.transform = `rotate(${(current % 20) - 10}deg)`;
     }
 
     return hit;
@@ -460,7 +458,7 @@ function hatchChick() {
     document.getElementById("col-count").innerText = collection.size;
 }
 
-// 図鑑を表示
+// 図鑑を表示（No. / 名前 / 1文の特徴）
 function openZukan() {
     const list = document.getElementById("zukan-list");
     list.innerHTML = "";
@@ -474,6 +472,7 @@ function openZukan() {
             item.innerHTML = `
                 <div class="icon">${chick.emoji}</div>
                 <div class="info">
+                    <div class="no">No.${chick.id}</div>
                     <div class="name rare-${chick.rarity}">[${chick.rarity}] ${chick.name}</div>
                     <div class="desc">${chick.desc}</div>
                 </div>
@@ -482,7 +481,8 @@ function openZukan() {
             item.innerHTML = `
                 <div class="icon zukan-unknown">❓</div>
                 <div class="info zukan-unknown">
-                    <div class="name">No.${chick.id} 未発見のひよこ</div>
+                    <div class="no">No.${chick.id}</div>
+                    <div class="name">未発見のひよこ</div>
                     <div class="desc">10,000回タップして孵化させよう</div>
                 </div>
             `;
