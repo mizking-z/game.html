@@ -21,9 +21,9 @@
             margin: 0 auto;
         }
         h1 {
-            font-size: 22px;
+            font-size: 24px;
             color: #ffeb3b;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
         #counter {
             font-size: 32px;
@@ -281,7 +281,7 @@ function loadGameData() {
     updateMilestoneMessage(count - 1, count);
 }
 
-// 1. タップ数のみリセット（確実に動作するように修正）
+// 1. タップ数のみリセット
 function resetCurrentGame() {
     count = 0;
     currentBgmStage = -1;
@@ -345,17 +345,16 @@ function startBGMByStage(stage) {
         document.body.style.backgroundColor = "#222";
     }
 
-    // 1000回ごとの周波数(音高)・リズム・音色の定義
     const bgmConfigs = [
-        { interval: 500, notes: [130, 146, 164, 174], wave: 'sine' },       // 0~999: 超低音・のんびり
-        { interval: 450, notes: [220, 246, 261, 293], wave: 'triangle' },   // 1000~: 低音
-        { interval: 400, notes: [329, 349, 392, 440], wave: 'square' },     // 2000~: 8bit風
-        { interval: 350, notes: [440, 493, 523, 587], wave: 'square' },     // 3000~: テンポアップ
-        { interval: 300, notes: [523, 587, 659, 698], wave: 'sawtooth' },   // 4000~: 鋸波（激しい）
-        { interval: 250, notes: [659, 698, 783, 880], wave: 'sawtooth' },   // 5000~: 高速
-        { interval: 200, notes: [783, 880, 987, 1046], wave: 'square' },    // 6000~: 超高速ピコピコ
-        { interval: 170, notes: [880, 987, 1046, 1174], wave: 'sawtooth' },  // 7000~: 限界領域
-        { interval: 140, notes: [1046, 1174, 1318, 1396], wave: 'sawtooth' },// 8000~: 怒涛のラッシュ
+        { interval: 500, notes: [130, 146, 164, 174], wave: 'sine' },       // 0~999
+        { interval: 450, notes: [220, 246, 261, 293], wave: 'triangle' },   // 1000~
+        { interval: 400, notes: [329, 349, 392, 440], wave: 'square' },     // 2000~
+        { interval: 350, notes: [440, 493, 523, 587], wave: 'square' },     // 3000~
+        { interval: 300, notes: [523, 587, 659, 698], wave: 'sawtooth' },   // 4000~
+        { interval: 250, notes: [659, 698, 783, 880], wave: 'sawtooth' },   // 5000~
+        { interval: 200, notes: [783, 880, 987, 1046], wave: 'square' },    // 6000~
+        { interval: 170, notes: [880, 987, 1046, 1174], wave: 'sawtooth' },  // 7000~
+        { interval: 140, notes: [1046, 1174, 1318, 1396], wave: 'sawtooth' },// 8000~
     ];
 
     let step = 0;
@@ -377,7 +376,6 @@ function startBGMByStage(stage) {
             step++;
         }, config.interval);
     } else {
-        // 9000回〜：オーケストラ風和音
         const chords = [
             [261, 329, 392, 523],
             [220, 261, 329, 440],
@@ -623,7 +621,7 @@ function resetGame() {
     currentBgmStage = -1;
     saveGameData();
     document.getElementById("count").innerText = count;
-    document.getElementById("message").innerText = "無心で叩け…！";
+    document.getElementById("message").innerText = "画面を叩いて音を鳴らせ！";
     document.getElementById("result-modal").classList.remove("active");
     document.body.style.backgroundColor = "#222";
     updateBGMStage();
