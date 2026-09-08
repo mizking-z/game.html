@@ -179,7 +179,7 @@
     </div>
 
     <div id="collection-summary">
-        <h3>図鑑達成率: <span id="col-count">0</span>/101</h3>
+        <h3>図鑑達成率: <span id="col-count">0</span> / 101</h3>
         <button onclick="openZukan()">📖 ひよこ図鑑を見る</button>
     </div>
 
@@ -337,6 +337,17 @@ function generateChickDatabase() {
     return rawData;
 }
 
+// 実際に所持しているひよこの「種類数」を正確に取得する関数
+function getCollectedTypeCount() {
+    return Object.keys(collectionCounts).filter(id => collectionCounts[id] > 0).length;
+}
+
+function updateCollectionDisplay() {
+    const collectedTypes = getCollectedTypeCount();
+    document.getElementById("col-count").innerText = collectedTypes;
+    document.getElementById("zukan-modal-count").innerText = collectedTypes;
+}
+
 function saveGameData() {
     const saveData = { count: count, collectionCounts: collectionCounts };
     localStorage.setItem("kuso_egg_save", JSON.stringify(saveData));
@@ -358,7 +369,7 @@ function loadGameData() {
     }
     
     document.getElementById("count").innerText = count;
-    document.getElementById("col-count").innerText = Object.keys(collectionCounts).length;
+    updateCollectionDisplay();
     updateMilestoneMessage(count - 1, count);
 }
 
@@ -380,7 +391,6 @@ function resetCurrentGame() {
     if (audioCtx) updateBGMStage();
 }
 
-// 全データリセット（安全にBGMとデータを初期化するよう修正）
 function clearAllSaveData() {
     const result = confirm("本当にリセットしますか？");
     if (!result) return;
@@ -390,7 +400,7 @@ function clearAllSaveData() {
     collectionCounts = {};
     currentBgmStage = -1;
     document.getElementById("count").innerText = 0;
-    document.getElementById("col-count").innerText = 0;
+    updateCollectionDisplay();
     document.getElementById("message").innerText = "全データを初期化しました！";
     document.body.style.backgroundColor = "#222";
     stopBGM();
@@ -596,7 +606,7 @@ function tapEgg() {
 }
 
 function addCount(num) {
-    if (count >= targetCount) return; // 既に達成済みの場合はタップ無効
+    if (count >= targetCount) return;
 
     const prevCount = count;
     count += num;
@@ -636,7 +646,7 @@ function hatchChick() {
     playFanfare();
     
     let chosenChick = null;
-    const currentUniqueCount = Object.keys(collectionCounts).length;
+    const currentUniqueCount = getCollectedTypeCount();
 
     if (currentUniqueCount >= 100 && !collectionCounts[101]) {
         chosenChick = chickTypes.find(c => c.id === 101);
@@ -656,7 +666,7 @@ function hatchChick() {
     collectionCounts[chosenChick.id] = (collectionCounts[chosenChick.id] || 0) + 1;
     saveGameData();
 
-    document.getElementById("col-count").innerText = Object.keys(collectionCounts).length;
+    updateCollectionDisplay();
     document.getElementById("rarity-label").innerText = `[${chosenChick.rarity}]`;
     document.getElementById("rarity-label").className = `rare-${chosenChick.rarity}`;
     document.getElementById("chick-icon").innerText = chosenChick.emoji;
@@ -664,7 +674,6 @@ function hatchChick() {
     document.getElementById("chick-owned-count").innerText = `所持数: ${collectionCounts[chosenChick.id]} 匹`;
     document.getElementById("chick-desc").innerText = chosenChick.desc;
 
-    // 連打による誤閉じ防止（0.5秒間ボタンを無効化）
     const nextBtn = document.getElementById("next-egg-btn");
     nextBtn.disabled = true;
     setTimeout(() => { nextBtn.disabled = false; }, 500);
@@ -678,12 +687,12 @@ function resetGame() {
 }
 
 function openZukan() {
-    document.getElementById("zukan-modal-count").innerText = Object.keys(collectionCounts).length;
+    updateCollectionDisplay();
     const zukanListEl = document.getElementById("zukan-list");
     zukanListEl.innerHTML = "";
 
     chickTypes.forEach(chick => {
-        const isOwned = !!collectionCounts[chick.id];
+        const isOwned = !!collectionCounts[chick.id] && collectionCounts[chick.id] > 0;
         const item = document.createElement("div");
         item.className = "zukan-item";
 
@@ -769,54 +778,7 @@ const milestoneMessages = {
     5000: "5000回：折り返し地点！妙なプレッシャーが漂う。",
     5100: "5100回：後半戦突入！指の限界に挑め！",
     5200: "5200回：卵「外の世界って暑いですか？」",
-    5300: "5300回：連打音が心地よいヒーリングサウンドに聞こえてくる。",
-    5400: "5400回：卵の表面がうっすらと熱を帯びてきた！",
-    5500: "5500回：後半戦。あなたの指はもはや武器だ。",
-    5600: "5600回：卵の中でひよこがスマホをいじっている気配。",
-    5700: "5700回：一回一回のタップに魂が宿り始める。",
-    5800: "5800回：画面の指紋が歴史の重みを物語る。",
-    5900: "5900回：もうすぐ6000！覚悟を決めろ！",
-    6000: "6000回：精神力とタップ力の勝負。",
-    6100: "6100回：卵「もう少しで起きる気がします」",
-    6200: "6200回：指の動きが超音波の域に達しつつある。",
-    6300: "6300回：連打の衝撃で卵に微細な亀裂（幻覚）が見える。",
-    6400: "6400回：卵の中でひよこが羽の生え変わりを迎えている。",
-    6500: "6500回：卵の表面がわずかに発光している気がする。",
-    6600: "6600回：連打する手が残像を超えて透明になりかけた。",
-    6700: "6700回：卵「外の空気の美味しさを教えてください」",
-    6800: "6800回：ここまで来たら引き返す選択肢はない！",
-    6900: "6900回：あと100回で7000！指を止めんな！",
-    7000: "7000回：卵殻内部でタンパク質の再配置完了。",
-    7100: "7100回：卵の中でひよこが誕生の口上を練っている。",
-    7200: "7200回：連打の速度と重みが完全に一致した。",
-    7300: "7300回：卵「そろそろ帽子（殻）を脱ぐ準備を…」",
-    7400: "7400回：指先が黄金色に輝いている（ような気がする）。",
-    7500: "7500回：ひよこ「外の空気、美味しいですか？」",
-    7600: "7600回：画面を叩く音が神聖な儀式のようになってきた。",
-    7700: "7700回：幸運の7700！奇跡のカウントダウン！",
-    7800: "7800回：卵「産声の練習：ピ…ピヨッ！」",
-    7900: "7900回：もうすぐ8000！奇跡の扉が開く！",
-    8000: "8000回：産声のウォーミングアップ開始！",
-    8100: "8100回：卵「外の世界の準備はできていますか？」",
-    8200: "8200回：連打のスピードが次元を超え始めた。",
-    8300: "8300回：殻の向こうから力強い生命の羽ばたきが！",
-    8400: "8400回：画面越しにひよこの熱気を感じる！",
-    8500: "8500回：殻の限界値まであと少し！",
-    8600: "8600回：卵「この温もり…忘れませんピヨ」",
-    8700: "8700回：指の疲労が快感に変わる狂気の領域。",
-    8800: "8800回：殻のヒビが光を放ち始めている！",
-    8900: "8900回：あと100回で9000！世界が変わるぞ！",
-    9000: "9000回：時がゆっくりと流れ、超壮大なセレナードが世界を包み込む…！",
-    9100: "9100回：重厚でゆったりとした旋律が指の緊張をほぐす。",
-    9200: "9200回：激しい連打と優雅でゆっくりな旋律のギャップ。",
-    9300: "9300回：神聖なメロディに包まれながら指を動かす。",
-    9400: "9400回：卵「感動のクライマックスが近づいています」",
-    9500: "9500回：あと500回！ラストスパートだ！",
-    9600: "9600回：殻の中から溢れ出る神聖な光！",
-    9700: "9700回：奇跡の誕生まであと少し！",
-    9800: "9800回：卵「ありがとう、そしてさようなら（殻）」",
-    9900: "9900回：ラスト100回！全身全霊で叩け！！！",
-    10000: "10000回：🎉 ついに10,000回達成！ひよこ誕生！"
+    5300: "5300回：指の関節が自己主張を深めている。"
 };
 </script>
 </body>
