@@ -38,6 +38,35 @@
             align-items: center;
             cursor: pointer;
         }
+
+        /* 開始テロップ */
+        #start-telop {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffeb3b;
+            font-size: 18px;
+            font-weight: bold;
+            white-space: nowrap;
+            text-shadow: 0 0 8px #ff9800;
+            animation: telopBlink 1.2s infinite;
+            z-index: 2;
+        }
+
+        @keyframes telopBlink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.35;
+            }
+        }
+
+        #start-telop.hidden {
+            display: none;
+        }
+
         #egg {
             font-size: 110px;
             transition: transform 0.05s ease;
@@ -166,6 +195,7 @@
     <div id="counter">TAP: <span id="count">0</span> / 10000</div>
     
     <div id="egg-container" onclick="tapEgg()">
+        <div id="start-telop">〜 卵をタップしよう 〜</div>
         <div id="egg">🥚</div>
     </div>
     
@@ -601,6 +631,13 @@ function playFanfare() {
 
 function tapEgg() {
     initAudioOnce();
+
+    // 最初のタップで開始テロップを消す
+    const telop = document.getElementById("start-telop");
+    if (telop) {
+        telop.classList.add("hidden");
+    }
+
     addCount(1);
 }
 
@@ -794,7 +831,7 @@ const milestoneMessages = {
     6700: "6700回：連打の音に近所のひよこが反応している。",
     6800: "6800回：指先が覚醒し、自動連打機能が発動しそうだ。",
     6900: "6900回：あと100回で7000！ゾーンに入れ！",
-    7000: "7000回：7000回達成！卵殻が神々しく光り始めた。",
+    7000: "7000回達成！卵殻が神々しく光り始めた。",
     7100: "7100回：卵「生まれてからのキャラ付けを考え中…」",
     7200: "7200回：あなたの連打魂が卵に直接注入されている。",
     7300: "7300回：卵の表面にうっすらと『感謝』の文字が浮かんできた。",
