@@ -230,7 +230,6 @@ window.onload = function() {
 };
 
 function generateChickDatabase() {
-    // 1〜100全個体の完全ユニークデータ（重複なし）
     const rawData = [
         { id: 1, name: "普通のひよこ", rarity: "N", emoji: "🐥", desc: "どこにでもいるごく普通のひよこ。特に特徴はない。" },
         { id: 2, name: "早起きピヨ", rarity: "N", emoji: "🐥", desc: "毎朝4時に起きて筋トレをしているが体型は全く変わらない。" },
@@ -373,7 +372,11 @@ function resetCurrentGame() {
     if (audioCtx) updateBGMStage();
 }
 
+// 全データリセット（確認ダイアログ追加）
 function clearAllSaveData() {
+    const result = confirm("本当に関数を含むすべてのセーブデータをリセットしますか？\n（この操作は取り消せません）");
+    if (!result) return;
+
     localStorage.removeItem("kuso_egg_save");
     count = 0;
     collectionCounts = {};
@@ -605,7 +608,97 @@ function addCount(num) {
     }
 }
 
-// 🎯 100回刻みの全100個の完全ユニークメッセージリスト
+function updateMilestoneMessage(prevCount, currentCount) {
+    let milestoneHit = false;
+    for (let m = 100; m <= 10000; m += 100) {
+        if (prevCount < m && currentCount >= m) {
+            if (milestoneMessages[m]) {
+                document.getElementById("message").innerText = milestoneMessages[m];
+                milestoneHit = true;
+            }
+        }
+    }
+    return milestoneHit;
+}
+
+function hatchChick() {
+    playFanfare();
+    
+    let chosenChick = null;
+    const currentUniqueCount = Object.keys(collectionCounts).length;
+
+    if (currentUniqueCount >= 100 && !collectionCounts[101]) {
+        chosenChick = chickTypes.find(c => c.id === 101);
+    } else {
+        const availablePool = chickTypes.filter(c => c.id !== 101);
+        const rand = Math.random() * 100;
+        let rarityFilter = "N";
+        if (rand < 2) rarityFilter = "SSR";
+        else if (rand < 15) rarityFilter = "SR";
+
+        let filteredPool = availablePool.filter(c => c.rarity === rarityFilter);
+        if (filteredPool.length === 0) filteredPool = availablePool;
+
+        chosenChick = filteredPool[Math.floor(Math.random() * filteredPool.length)];
+    }
+
+    collectionCounts[chosenChick.id] = (collectionCounts[chosenChick.id] || 0) + 1;
+    saveGameData();
+
+    document.getElementById("rarity-label").innerText = `[${chosenChick.rarity}]`;
+    document.getElementById("rarity-label").className = `rare-${chosenChick.rarity}`;
+    document.getElementById("chick-icon").innerText = chosenChick.emoji;
+    document.getElementById("chick-name").innerText = chosenChick.name;
+    document.getElementById("chick-owned-count").innerText = `所持数: ${collectionCounts[chosenChick.id]} 匹`;
+    document.getElementById("chick-desc").innerText = chosenChick.desc;
+
+    document.getElementById("result-modal").classList.add("active");
+}
+
+function resetGame() {
+    document.getElementById("result-modal").classList.remove("active");
+    resetCurrentGame();
+}
+
+function openZukan() {
+    document.getElementById("zukan-modal-count").innerText = Object.keys(collectionCounts).length;
+    const zukanListEl = document.getElementById("zukan-list");
+    zukanListEl.innerHTML = "";
+
+    chickTypes.forEach(chick => {
+        const isOwned = !!collectionCounts[chick.id];
+        const item = document.createElement("div");
+        item.className = "zukan-item";
+
+        if (isOwned) {
+            item.innerHTML = `
+                <div class="icon">${chick.emoji}</div>
+                <div class="info">
+                    <div class="no">No.${chick.id} <span class="rare-${chick.rarity}">[${chick.rarity}]</span></div>
+                    <div class="name">${chick.name}<span class="count-tag">x${collectionCounts[chick.id]}</span></div>
+                    <div class="desc">${chick.desc}</div>
+                </div>
+            `;
+        } else {
+            item.innerHTML = `
+                <div class="icon zukan-unknown">❓</div>
+                <div class="info zukan-unknown">
+                    <div class="no">No.${chick.id} [???]</div>
+                    <div class="name">？？？？？</div>
+                    <div class="desc">まだ発見されていません</div>
+                </div>
+            `;
+        }
+        zukanListEl.appendChild(item);
+    });
+
+    document.getElementById("zukan-modal").classList.add("active");
+}
+
+function closeZukan() {
+    document.getElementById("zukan-modal").classList.remove("active");
+}
+
 const milestoneMessages = {
     100: "100回：ヒビが入った…？いや、ホコリだった。",
     200: "200回：連打する指に微かな疑問を感じ始める。",
@@ -699,148 +792,15 @@ const milestoneMessages = {
     9000: "9000回：時がゆっくりと流れ、超壮大なセレナードが世界を包み込む…！",
     9100: "9100回：重厚でゆったりとした旋律が指の緊張をほぐす。",
     9200: "9200回：激しい連打と優雅でゆっくりな旋律のギャップ。",
-    9300: "9300回：神聖なメロディの中、ひよこが目覚めの刻を待つ！",
-    9400: "9400回：殻に深く美しき亀裂が刻まれていく…！",
-    9500: "9500回：ラストスパート！極上のフィナーレへ！",
-    9600: "9600回：あと400回！静かなる情熱で叩け！",
-    9700: "9700回：あと300回！奇跡の輝きが溢れ出す！",
-    9800: "9800回：あと200回！美しき生命の鼓動を聴け！",
-    9900: "9900回：あと100タップ！至高の誕生へ！！"
+    9300: "9300回：神聖なメロディに包まれながら指を動かす。",
+    9400: "9400回：卵「感動のクライマックスが近づいています」",
+    9500: "9500回：あと500回！ラストスパートだ！",
+    9600: "9600回：殻の中から溢れ出る神聖な光！",
+    9700: "9700回：奇跡の誕生まであと少し！",
+    9800: "9800回：卵「ありがとう、そしてさようなら（殻）」",
+    9900: "9900回：ラスト100回！全身全霊で叩け！！！",
+    10000: "10000回：🎉 ついに10,000回達成！ひよこ誕生！"
 };
-
-function updateMilestoneMessage(prev, current) {
-    const msg = document.getElementById("message");
-    const egg = document.getElementById("egg");
-    let isHit = false;
-
-    const prevHundred = Math.floor(prev / 100);
-    const currHundred = Math.floor(current / 100);
-
-    if (currHundred > prevHundred) {
-        isHit = true;
-    }
-
-    const activeHundred = currHundred * 100;
-
-    if (activeHundred > 0) {
-        if (milestoneMessages[activeHundred]) {
-            msg.innerText = milestoneMessages[activeHundred];
-        } else {
-            msg.innerText = `${activeHundred}回達成：たまごが微かに動いた…！`;
-        }
-    } else {
-        msg.innerText = "画面を叩いて音を鳴らせ！";
-    }
-
-    if (current >= 100) {
-        egg.style.transform = `rotate(${(current % 20) - 10}deg)`;
-    }
-
-    return isHit;
-}
-
-function hatchChick() {
-    playFanfare();
-    
-    let result;
-
-    let normalCollectedCount = 0;
-    for (let i = 1; i <= 100; i++) {
-        if (collectionCounts[i] && collectionCounts[i] > 0) normalCollectedCount++;
-    }
-
-    if (normalCollectedCount >= 100 && !collectionCounts[101]) {
-        result = chickTypes.find(c => c.id === 101);
-    } else {
-        const rand = Math.random() * 100;
-        let pool = [];
-        if (rand < 5) pool = chickTypes.filter(c => c.rarity === "SSR" && c.id <= 100);
-        else if (rand < 30) pool = chickTypes.filter(c => c.rarity === "SR" && c.id <= 100);
-        else pool = chickTypes.filter(c => c.rarity === "N" && c.id <= 100);
-        
-        result = pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    if (!collectionCounts[result.id]) {
-        collectionCounts[result.id] = 1;
-    } else {
-        collectionCounts[result.id]++;
-    }
-
-    saveGameData();
-
-    const currentOwned = collectionCounts[result.id];
-
-    const modal = document.getElementById("result-modal");
-    const rarityLabel = document.getElementById("rarity-label");
-    rarityLabel.innerText = `【 ${result.rarity} 】`;
-    rarityLabel.className = `rare-${result.rarity}`;
-    
-    document.getElementById("chick-icon").innerText = result.emoji;
-    document.getElementById("chick-name").innerText = result.name;
-    document.getElementById("chick-owned-count").innerText = `（通算 ${currentOwned} 匹目！）`;
-    document.getElementById("chick-desc").innerText = result.desc;
-    
-    modal.classList.add("active");
-    document.getElementById("col-count").innerText = Object.keys(collectionCounts).length;
-}
-
-function openZukan() {
-    const list = document.getElementById("zukan-list");
-    list.innerHTML = "";
-
-    const discoveredCount = Object.keys(collectionCounts).length;
-    document.getElementById("zukan-modal-count").innerText = discoveredCount;
-
-    chickTypes.forEach(chick => {
-        const owned = collectionCounts[chick.id] || 0;
-        const item = document.createElement("div");
-        item.className = "zukan-item";
-
-        if (owned > 0) {
-            item.innerHTML = `
-                <div class="icon">${chick.emoji}</div>
-                <div class="info">
-                    <div class="no">No.${chick.id}</div>
-                    <div class="name rare-${chick.rarity}">
-                        [${chick.rarity}] ${chick.name}
-                        <span class="count-tag">（${owned}匹）</span>
-                    </div>
-                    <div class="desc">${chick.desc}</div>
-                </div>
-            `;
-        } else {
-            let reqText = chick.id === 101 ? "No.1〜100コンプリートで解放！" : "10,000回タップして孵化させよう";
-            item.innerHTML = `
-                <div class="icon zukan-unknown">❓</div>
-                <div class="info zukan-unknown">
-                    <div class="no">No.${chick.id}</div>
-                    <div class="name">未発見のひよこ</div>
-                    <div class="desc">${reqText}</div>
-                </div>
-            `;
-        }
-        list.appendChild(item);
-    });
-
-    document.getElementById("zukan-modal").classList.add("active");
-}
-
-function closeZukan() {
-    document.getElementById("zukan-modal").classList.remove("active");
-}
-
-function resetGame() {
-    count = 0;
-    currentBgmStage = -1;
-    saveGameData();
-    document.getElementById("count").innerText = count;
-    document.getElementById("message").innerText = "画面を叩いて音を鳴らせ！";
-    document.getElementById("result-modal").classList.remove("active");
-    document.body.style.backgroundColor = "#222";
-    updateBGMStage();
-}
 </script>
-
 </body>
 </html>
