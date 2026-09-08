@@ -372,9 +372,9 @@ function resetCurrentGame() {
     if (audioCtx) updateBGMStage();
 }
 
-// 全データリセット（確認ダイアログ追加）
+// 全データリセット（確認ダイアログの文言を変更）
 function clearAllSaveData() {
-    const result = confirm("本当に関数を含むすべてのセーブデータをリセットしますか？\n（この操作は取り消せません）");
+    const result = confirm("本当にリセットしますか？");
     if (!result) return;
 
     localStorage.removeItem("kuso_egg_save");
