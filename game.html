@@ -57,7 +57,6 @@
             justify-content: center;
             padding: 0 10px;
         }
-        /* モーダル共通スタイル */
         .modal {
             display: none;
             position: fixed;
@@ -96,14 +95,25 @@
             margin-top: 10px;
         }
 
-        /* 図鑑エリア */
+        #btn-area {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .sub-btn {
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+
         #collection-summary {
             margin-top: 15px;
             border-top: 1px solid #444;
             padding-top: 10px;
         }
         
-        /* 図鑑モーダル内のリスト */
         #zukan-list {
             width: 85%;
             max-height: 60vh;
@@ -141,10 +151,11 @@
     
     <div id="message">無心で叩け…！</div>
 
-    <!-- 操作用ボタン類 -->
-    <div style="margin-top: 5px;">
-        <button onclick="addCount(100)" style="background:#555; font-size:12px; padding:5px 10px;">[デバッグ] +100タップ</button>
-        <button onclick="clearSaveData()" style="background:#882222; font-size:12px; padding:5px 10px; margin-left: 5px;">全リセット</button>
+    <!-- 操作ボタンエリア -->
+    <div id="btn-area">
+        <button onclick="addCount(100)" class="sub-btn" style="background:#555;">[デバッグ] +100タップ</button>
+        <button onclick="resetCurrentGame()" class="sub-btn" style="background:#d97706;">🔄 カウントリセット</button>
+        <button onclick="clearAllSaveData()" class="sub-btn" style="background:#dc2626;">💥 データ全消去</button>
     </div>
 
     <div id="collection-summary">
@@ -153,7 +164,7 @@
     </div>
 </div>
 
-<!-- 誕生モーダル（10000回達成時） -->
+<!-- 誕生モーダル -->
 <div id="result-modal" class="modal">
     <h1 style="color:#ff0; font-size: 32px; margin: 0;">🎉 生 誕 🎉</h1>
     <div id="rarity-label" style="font-size: 22px; font-weight: bold; margin-top: 5px;"></div>
@@ -177,11 +188,9 @@ let audioCtx = null;
 let bgmTimer = null;
 let currentBgmStage = -1;
 
-// 100種類のひよこデータベース生成
 const chickTypes = generateChickDatabase();
 let collection = new Set();
 
-// ロード処理（ページ読み込み時）
 window.onload = function() {
     loadGameData();
 };
@@ -230,23 +239,13 @@ function generateChickDatabase() {
         const name = i === 100 ? "神聖不死鳥ピヨ・ゴッド" : `${prefixes[i % prefixes.length]}${baseNames[i % baseNames.length]}`;
         const trait = personalityTraits[(i - 1) % personalityTraits.length];
 
-        list.push({
-            id: i,
-            name: name,
-            rarity: rarity,
-            emoji: emoji,
-            desc: trait
-        });
+        list.push({ id: i, name: name, rarity: rarity, emoji: emoji, desc: trait });
     }
     return list;
 }
 
-// セーブ・ロード機能
 function saveGameData() {
-    const saveData = {
-        count: count,
-        collection: Array.from(collection)
-    };
+    const saveData = { count: count, collection: Array.from(collection) };
     localStorage.setItem("kuso_egg_save", JSON.stringify(saveData));
 }
 
@@ -257,23 +256,34 @@ function loadGameData() {
             const data = JSON.parse(dataStr);
             count = data.count || 0;
             collection = new Set(data.collection || []);
-        } catch(e) {
-            console.error("セーブデータの読み込み失敗", e);
-        }
+        } catch(e) {}
     }
     document.getElementById("count").innerText = count;
     document.getElementById("col-count").innerText = collection.size;
     updateMilestoneMessage(count - 1, count);
 }
 
-function clearSaveData() {
-    if (confirm("セーブデータを消去して最初からやり直しますか？")) {
+// カウントのみ0リセット
+function resetCurrentGame() {
+    if (confirm("現在のタップ数を0に戻しますか？（図鑑は保持されます）")) {
+        count = 0;
+        currentBgmStage = -1;
+        saveGameData();
+        document.getElementById("count").innerText = count;
+        document.getElementById("message").innerText = "無心で叩け…！";
+        document.body.style.backgroundColor = "#222";
+        if (audioCtx) updateBGMStage();
+    }
+}
+
+// 完全消去リセット
+function clearAllSaveData() {
+    if (confirm("図鑑を含めて全てのデータを削除しますか？")) {
         localStorage.removeItem("kuso_egg_save");
         location.reload();
     }
 }
 
-// Web Audio API
 function initAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -281,11 +291,10 @@ function initAudio() {
     }
 }
 
-// 1000回ごとのBGM制御ロジック
+// 1000回ごとの明確なBGM切り替え処理
 function updateBGMStage() {
     if (!audioCtx) return;
 
-    // 0~9000以上で10段階(0~9)のステージ計算
     let newStage = Math.floor(count / 1000);
     if (newStage > 9) newStage = 9;
 
@@ -298,24 +307,23 @@ function updateBGMStage() {
 function startBGMByStage(stage) {
     if (bgmTimer) clearInterval(bgmTimer);
     
-    // 背景色も9000回で変化
     if (stage >= 9) {
         document.body.style.backgroundColor = "#4a0000";
     } else {
         document.body.style.backgroundColor = "#222";
     }
 
-    // 1000回ごとのスケール・テンポデータ
+    // 段階ごとに明確に音高(Hz)・音色(波形)・スピードを変更
     const bgmConfigs = [
-        { interval: 500, notes: [261.63, 293.66, 329.63, 349.23], wave: 'triangle' }, // 0~999: 低めのんびり
-        { interval: 450, notes: [293.66, 329.63, 392.00, 440.00], wave: 'triangle' }, // 1000~: 少しテンポアップ
-        { interval: 400, notes: [329.63, 392.00, 440.00, 523.25], wave: 'square' },   // 2000~: ピコピコ感増
-        { interval: 350, notes: [392.00, 440.00, 523.25, 587.33], wave: 'square' },   // 3000~: 軽快
-        { interval: 300, notes: [440.00, 523.25, 587.33, 659.25], wave: 'sawtooth' }, // 4000~: 激しさアップ
-        { interval: 280, notes: [523.25, 587.33, 659.25, 783.99], wave: 'sawtooth' }, // 5000~: ハイスピード
-        { interval: 250, notes: [659.25, 783.99, 880.00, 1046.50], wave: 'square' },  // 6000~: 高音ピコピコ
-        { interval: 220, notes: [523.25, 659.25, 783.99, 1046.50], wave: 'sawtooth' },// 7000~: 疾走感
-        { interval: 200, notes: [587.33, 659.25, 880.00, 1174.66], wave: 'sawtooth' },// 8000~: クライマックス前夜
+        { interval: 500, notes: [130.81, 146.83, 164.81, 174.61], wave: 'sine' },     // 0~: 低音・おっとり
+        { interval: 450, notes: [196.00, 220.00, 246.94, 261.63], wave: 'triangle' }, // 1000~: 少し高め
+        { interval: 400, notes: [261.63, 293.66, 329.63, 349.23], wave: 'square' },   // 2000~: ピコピコ音
+        { interval: 350, notes: [329.63, 392.00, 440.00, 523.25], wave: 'square' },   // 3000~: テンポアップ
+        { interval: 300, notes: [392.00, 440.00, 523.25, 587.33], wave: 'sawtooth' }, // 4000~: ノコギリ波(激しい)
+        { interval: 260, notes: [523.25, 587.33, 659.25, 698.46], wave: 'sawtooth' }, // 5000~: ハイスピード
+        { interval: 220, notes: [659.25, 783.99, 880.00, 1046.50], wave: 'square' },  // 6000~: 超高音
+        { interval: 180, notes: [783.99, 880.00, 987.77, 1046.50], wave: 'triangle' },// 7000~: 激しく高速
+        { interval: 150, notes: [1046.50, 1174.66, 1318.51, 1396.91], wave: 'sawtooth' },// 8000~: 限界領域
     ];
 
     let step = 0;
@@ -328,7 +336,7 @@ function startBGMByStage(stage) {
             let gain = audioCtx.createGain();
             osc.type = config.wave;
             osc.frequency.setValueAtTime(config.notes[step % config.notes.length], audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (config.interval / 1000) * 0.8);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -337,7 +345,7 @@ function startBGMByStage(stage) {
             step++;
         }, config.interval);
     } else {
-        // 9000回超え：超壮大オーケストラ和音
+        // 9000回以上：オーケストラ風和音
         const chords = [
             [261.63, 329.63, 392.00, 523.25],
             [220.00, 261.63, 329.63, 440.00],
@@ -364,7 +372,6 @@ function startBGMByStage(stage) {
     }
 }
 
-// タップ音
 function playTapSound(freq = 400) {
     if (!audioCtx) return;
     let osc = audioCtx.createOscillator();
@@ -378,7 +385,6 @@ function playTapSound(freq = 400) {
     osc.stop(audioCtx.currentTime + 0.05);
 }
 
-// 節目効果音
 function playMilestoneSound() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -397,7 +403,6 @@ function playMilestoneSound() {
     });
 }
 
-// ファンファーレ
 function playFanfare() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -427,13 +432,9 @@ function addCount(num) {
     if (count > targetCount) count = targetCount;
     document.getElementById("count").innerText = count;
 
-    // セーブ保存
     saveGameData();
-
-    // 1000回刻みのBGM変更チェック
     updateBGMStage();
 
-    // メッセージの更新と節目判定
     const isMilestone = updateMilestoneMessage(prevCount, count);
 
     if (isMilestone) {
@@ -447,7 +448,6 @@ function addCount(num) {
     }
 }
 
-// 100回ごとのコメント辞書
 const milestoneMessages = {
     100: "100回：ヒビが入った…？いや、ホコリだった。",
     200: "200回：連打する指に微かな疑問を感じ始める。",
@@ -490,7 +490,6 @@ const milestoneMessages = {
     9900: "9900回：あと100タップ！息を呑め！"
 };
 
-// メッセージ更新処理
 function updateMilestoneMessage(prev, current) {
     const msg = document.getElementById("message");
     const egg = document.getElementById("egg");
@@ -522,7 +521,6 @@ function updateMilestoneMessage(prev, current) {
     return isHit;
 }
 
-// 誕生処理
 function hatchChick() {
     playFanfare();
     
@@ -535,7 +533,7 @@ function hatchChick() {
     const result = pool[Math.floor(Math.random() * pool.length)];
     collection.add(result.id);
 
-    saveGameData(); // 達成データも即セーブ
+    saveGameData();
 
     const modal = document.getElementById("result-modal");
     const rarityLabel = document.getElementById("rarity-label");
@@ -550,7 +548,6 @@ function hatchChick() {
     document.getElementById("col-count").innerText = collection.size;
 }
 
-// 図鑑表示
 function openZukan() {
     const list = document.getElementById("zukan-list");
     list.innerHTML = "";
