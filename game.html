@@ -136,8 +136,8 @@
     
     <div id="message">タップして命を吹き込め…</div>
 
-    <!-- デバッグ用：1000タップスキップボタン -->
-    <button onclick="addCount(1000)" style="background:#555; font-size:12px; padding:5px;">[デバッグ] +1000タップ</button>
+    <!-- デバッグ用：100タップスキップボタン -->
+    <button onclick="addCount(100)" style="background:#555; font-size:12px; padding:5px;">[デバッグ] +100タップ</button>
 
     <div id="collection-summary">
         <h3>図鑑達成率: <span id="col-count">0</span>/100</h3>
@@ -182,7 +182,6 @@ function generateChickDatabase() {
     ];
     const baseNames = ["ひよこ", "ピヨ", "トリ", "チキン", "フェニックス"];
     
-    // 1文の特徴メッセージ（100通り対応）
     const personalityTraits = [
         "毎朝4時に起きて筋トレをしているが体型は変わらない。",
         "口癖は『まあ知らんけど』で議論をうやむやにする。",
@@ -230,7 +229,7 @@ function generateChickDatabase() {
     return list;
 }
 
-// 簡易Web Audio API（音源）
+// Web Audio API
 function initAudio() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -238,7 +237,7 @@ function initAudio() {
     }
 }
 
-// BGM（通常ループ／9000回以降は壮大化）
+// BGM（通常／9000回超えで壮大化）
 function startBGM() {
     if (bgmTimer) clearInterval(bgmTimer);
     
@@ -283,7 +282,7 @@ function startBGM() {
     }, isGrandBGM ? 800 : 500);
 }
 
-// 通常タップ音
+// タップ音
 function playTapSound(freq = 400) {
     if (!audioCtx) return;
     let osc = audioCtx.createOscillator();
@@ -297,7 +296,7 @@ function playTapSound(freq = 400) {
     osc.stop(audioCtx.currentTime + 0.05);
 }
 
-// 節目の特別効果音
+// 節目効果音
 function playMilestoneSound() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -316,7 +315,7 @@ function playMilestoneSound() {
     });
 }
 
-// 生誕ファンファーレ
+// ファンファーレ
 function playFanfare() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
@@ -353,9 +352,9 @@ function addCount(num) {
         startBGM();
     }
 
-    // 節目チェック＆メッセージ更新
+    // メッセージの更新と節目判定
     const isMilestone = updateMilestoneMessage(prevCount, count);
-    
+
     if (isMilestone) {
         playMilestoneSound();
     } else {
@@ -367,74 +366,100 @@ function addCount(num) {
     }
 }
 
-// 節目メッセージの更新（確実に反映するロジック）
+// 10, 50, 100以降100刻みのコメント辞書
+const milestoneMessages = {
+    10: "10回：ほんのり卵が温かくなってきた。",
+    50: "50回：気のせいだった。まだただの冷たい卵だ。",
+    100: "100回：ヒビが入った…？いや、ホコリだった。",
+    200: "200回：連打する指に微かな疑問を感じ始める。",
+    300: "300回：卵の奥から小さく『無駄だよ』と聞こえた気がした。",
+    400: "400回：画面の脂汚れが気になり出す頃合い。",
+    500: "500回：卵「あ、そこ気持ちいいです」",
+    600: "600回：指の関節が自己主張を始めてきた。",
+    700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
+    800: "800回：まだ8%しか温まっていないという絶望。",
+    900: "900回：もうすぐ1000！特に何もないけど！",
+    1000: "1000回：自我が目覚めかけたが思いとどまった。",
+    1100: "1100回：そろそろ指を休めても誰も責めない。",
+    1200: "1200回：卵があなたの連打速度を採点している。",
+    1300: "1300回：指先からかすかに摩擦熱を感じる。",
+    1400: "1400回：特にドラマは起こらない。ひたすら連打だ。",
+    1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
+    2000: "2000回：指の疲労感＝命の重み。",
+    2500: "2500回：四分の一に到達。己との戦いである。",
+    3000: "3000回：卵の中で何かが動画を見ている気配。",
+    3500: "3500回：卵「もう少し右上をお願いします」",
+    4000: "4000回：指先から不思議な波動が出始める。",
+    4500: "4500回：もうすぐ折り返し！無心で叩け！",
+    5000: "5000回：折り返し地点！背景に妙なプレッシャーが漂う。",
+    5500: "5500回：後半戦。あなたの指はもはや武器だ。",
+    6000: "6000回：ここから先は精神力とタップ力の勝負。",
+    6500: "6500回：卵の表面がわずかに発光している気がする。",
+    7000: "7000回：卵殻の内部でタンパク質の再配置が完了。",
+    7500: "7500回：ひよこ「外の空気、美味しいですか？」",
+    8000: "8000回：産声のウォーミングアップが始まった！",
+    8500: "8500回：殻の限界値まであと少し！",
+    9000: "9000回：【覚醒】世界が震え、BGMが神々しくなる！",
+    9100: "9100回：壮大な音楽の中、無心で連打するシュールさ。",
+    9200: "9200回：神々しいBGMが指の疲れを癒してくれる（嘘）。",
+    9300: "9300回：伝説のひよこが目を覚ましつつある！",
+    9400: "9400回：殻に巨大な亀裂が入り始めた！",
+    9500: "9500回：ラストスパート！殻が限界を迎えている！",
+    9600: "9600回：あと400回！諦めるな！",
+    9700: "9700回：あと300回！光が漏れ出している！",
+    9800: "9800回：あと200回！命の脈動を感じろ！",
+    9900: "9900回：あと100タップ！息を呑め！",
+    9999: "9999回：ラスト１タップ！！！"
+};
+
+// メッセージ更新処理（100刻みの通過チェック）
 function updateMilestoneMessage(prev, current) {
     const msg = document.getElementById("message");
     const egg = document.getElementById("egg");
+    let isHit = false;
+
+    // 定義されている全境界線をチェック
+    const keys = Object.keys(milestoneMessages).map(Number).sort((a,b)=>a-b);
     
-    // 100回ごとの特別メッセージ一覧
-    const milestoneMessages = {
-        10: "10回：ほんのり卵が温かくなってきた。",
-        50: "50回：気のせいだった。まだただの冷たい卵だ。",
-        100: "100回：ヒビが入った…？いや、ホコリだった。",
-        200: "200回：連打する指に微かな疑問を感じ始める。",
-        300: "300回：卵の奥から小さく『無駄だよ』と聞こえた気がした。",
-        400: "400回：画面の脂汚れが気になり出す頃合い。",
-        500: "500回：卵「あ、そこ気持ちいいです」",
-        600: "600回：指の関節が自己主張を始めてきた。",
-        700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
-        800: "800回：まだ8%しか温まっていないという絶望。",
-        900: "900回：もうすぐ1000！特に何もないけど！",
-        1000: "1000回：自我が目覚めかけたが思いとどまった。",
-        1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
-        2000: "2000回：指の疲労感＝命の重み。",
-        3000: "3000回：卵の中で何かが動画を見ている気配。",
-        4000: "4000回：指先から不思議な波動が出始める。",
-        5000: "5000回：折り返し地点！背景に妙なプレッシャーが漂う。",
-        6000: "6000回：ここから先は精神力とタップ力の勝負。",
-        7000: "7000回：卵殻の内部でタンパク質の再配置が完了。",
-        8000: "8000回：産声のウォーミングアップが始まった！",
-        9000: "9000回：【覚醒】世界が震え、BGMが神々しくなる！",
-        9500: "9500回：ラストスパート！殻が限界を迎えている！",
-        9900: "9900回：あと100タップ！息を呑め！",
-        9999: "9999回：ラスト１タップ！！！"
-    };
-
-    let hit = false;
-
-    // 現在のカウントに対応する最新の節目を探す
-    let activeKey = 0;
-    for (let key of Object.keys(milestoneMessages).map(Number).sort((a,b)=>a-b)) {
-        if (current >= key) {
-            activeKey = key;
-        }
-        // 今回のタップで節目をちょうど跨いだかどうかの判定
+    for (let key of keys) {
+        // 今回の加算で新しい節目を踏んだか？
         if (prev < key && current >= key) {
-            hit = true;
+            isHit = true;
         }
     }
 
-    // メッセージの更新
-    if (activeKey > 0) {
-        msg.innerText = milestoneMessages[activeKey];
-    } else if (current >= 100) {
+    // 現在のカウント以下で最も大きい節目のメッセージを表示
+    let currentKey = 0;
+    for (let key of keys) {
+        if (current >= key) {
+            currentKey = key;
+        }
+    }
+
+    if (currentKey > 0) {
+        msg.innerText = milestoneMessages[currentKey];
+    } else {
+        msg.innerText = "タップして命を吹き込め…";
+    }
+
+    // 100回ごとに汎用でテキストを出す場合（未定義の数値補填）
+    if (!milestoneMessages[currentKey] && current >= 100) {
         const hundred = Math.floor(current / 100) * 100;
         msg.innerText = `${hundred}回達成：命の鼓動が激しく刻まれている…！`;
     }
 
-    // 卵の揺れ演出
+    // 卵の見た目回転演出
     if (current >= 100) {
         egg.style.transform = `rotate(${(current % 20) - 10}deg)`;
     }
 
-    return hit;
+    return isHit;
 }
 
 // 誕生処理
 function hatchChick() {
     playFanfare();
     
-    // ガチャ判定（SSR: 5%, SR: 25%, N: 70%）
     const rand = Math.random() * 100;
     let pool = [];
     if (rand < 5) pool = chickTypes.filter(c => c.rarity === "SSR");
@@ -444,7 +469,6 @@ function hatchChick() {
     const result = pool[Math.floor(Math.random() * pool.length)];
     collection.add(result.id);
 
-    // 誕生画面表示
     const modal = document.getElementById("result-modal");
     const rarityLabel = document.getElementById("rarity-label");
     rarityLabel.innerText = `【 ${result.rarity} 】`;
@@ -458,7 +482,7 @@ function hatchChick() {
     document.getElementById("col-count").innerText = collection.size;
 }
 
-// 図鑑を表示（No. / 名前 / 1文の特徴）
+// 図鑑表示
 function openZukan() {
     const list = document.getElementById("zukan-list");
     list.innerHTML = "";
