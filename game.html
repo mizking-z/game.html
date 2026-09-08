@@ -171,9 +171,9 @@
     
     <div id="message">画面を叩いて音を鳴らせ！</div>
 
-    <!-- リセット＆デバッグボタン類 -->
+    <!-- リセット＆チート機能ボタン類 -->
     <div id="btn-area">
-        <button onclick="addCount(100)" style="background:#555;">[デバッグ] +100タップ</button>
+        <button onclick="addCount(100)" style="background:#555;">[チート機能！] +100タップ</button>
         <button onclick="resetCurrentGame()" style="background:#d97706;">🔄 タップ数をリセット</button>
         <button onclick="clearAllSaveData()" style="background:#dc2626;">💥 全データリセット</button>
     </div>
@@ -319,7 +319,7 @@ function generateChickDatabase() {
         { id: 87, name: "絶対零度ピヨ", rarity: "SR", emoji: "🐤", desc: "触れたものを凍りつかせるクールな殺し屋。" },
         { id: 88, name: "タイムトラベラー", rarity: "SR", emoji: "🐤", desc: "明日のおやつを先に食べて怒られた過去を持つ。" },
         { id: 89, name: "音速のツバサ", rarity: "SR", emoji: "🐤", desc: "マッハ3で移動するため目視することが不可能。" },
-        { id: 90, name: "錬金術師ピヨ", rarity: "SR", emoji: "🐤", desc: "石ころをひよこの餌に変える術を習得した。" },
+        { id: 90, name: "錬金術師ピヨ", rarity: "SR", emoji: "🐤", desc: "石ころをひよこに変える術を習得した。" },
         { id: 91, name: "パラレルピヨ", rarity: "SR", emoji: "🐤", desc: "別世界線から迷い込んできたパラレル存在。" },
         { id: 92, name: "流星のトリ", rarity: "SR", emoji: "🐤", desc: "願い事をかなえてくれるが、一つにつき100円要求する。" },
         { id: 93, name: "古代遺跡ピヨ", rarity: "SR", emoji: "🐤", desc: "数千年前の壁画に描かれていた伝説のトリ。" },
@@ -336,7 +336,7 @@ function generateChickDatabase() {
     return rawData;
 }
 
-// 実際に所持しているひよこの「種類数」を正確に取得する関数
+// 実際に所持しているひよこを正確に取得する関数
 function getCollectedTypeCount() {
     return Object.keys(collectionCounts).filter(id => collectionCounts[id] > 0).length;
 }
