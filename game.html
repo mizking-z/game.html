@@ -11,9 +11,9 @@
             font-family: sans-serif;
             text-align: center;
             margin: 0;
-            padding: 20px;
+            padding: 20px 10px 40px 10px; /* 下部に少し余裕を持たせました */
             user-select: none;
-            overflow: hidden;
+            overflow-y: auto; /* 縦スクロールを有効化 */
             transition: background-color 1s ease;
         }
         #container {
@@ -47,7 +47,7 @@
             transform: scale(0.9);
         }
         #message {
-            height: 50px;
+            min-height: 50px;
             color: #ffeb3b;
             font-size: 16px;
             font-weight: bold;
@@ -108,21 +108,41 @@
         }
 
         #collection-summary {
-            margin-top: 15px;
+            margin-top: 20px;
             border-top: 1px solid #444;
-            padding-top: 10px;
+            padding-top: 15px;
+        }
+
+        /* ゲームの説明書きエリア */
+        #game-description {
+            margin-top: 25px;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+        #game-description h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #ffeb3b;
+            font-size: 15px;
+            text-align: center;
         }
         
         #zukan-list {
             width: 85%;
-            max-height: 60vh;
+            max-height: 55vh;
             overflow-y: auto;
             background: #111;
             border: 1px solid #444;
             border-radius: 8px;
             padding: 10px;
             text-align: left;
-            margin: 15px 0;
+            margin: 10px 0 15px 0;
         }
         .zukan-item {
             display: flex;
@@ -161,6 +181,15 @@
         <h3>図鑑達成率: <span id="col-count">0</span>/100</h3>
         <button onclick="openZukan()">📖 ひよこ図鑑を見る</button>
     </div>
+
+    <!-- ゲーム説明書き -->
+    <div id="game-description">
+        <h3>💡 あそびかた</h3>
+        ・たまごを10,000回タップすると、中からひよこが生まれます！<br>
+        ・誕生したひよこは図鑑にコレクションされていきます。<br>
+        ・ひよこの種類は全部で100種類！珍しいひよこ（SR / SSR）もいるぞ！<br>
+        ・タップ数に応じてBGMがどんどん変化していきます。コンプリートを目指して叩きまくろう！
+    </div>
 </div>
 
 <!-- 誕生モーダル -->
@@ -176,6 +205,7 @@
 <!-- 図鑑一覧モーダル -->
 <div id="zukan-modal" class="modal">
     <h2 style="margin: 0; color: #ffeb3b;">🐥 ひよこ図鑑 🐥</h2>
+    <div id="zukan-status" style="margin-top: 5px; color: #aaa; font-weight: bold;">集めたひよこ: <span id="zukan-modal-count">0</span> / 100 匹</div>
     <div id="zukan-list"></div>
     <button onclick="closeZukan()">閉じる</button>
 </div>
@@ -550,6 +580,9 @@ function hatchChick() {
 function openZukan() {
     const list = document.getElementById("zukan-list");
     list.innerHTML = "";
+
+    // 図鑑モーダル内の所持数を更新
+    document.getElementById("zukan-modal-count").innerText = collection.size;
 
     chickTypes.forEach(chick => {
         const isDiscovered = collection.has(chick.id);
