@@ -190,7 +190,7 @@
         ・誕生したひよこは図鑑にコレクションされていきます。<br>
         ・同じひよこが被っても図鑑に所持数がカウントされるよ！<br>
         ・ひよこの種類は全101種類！100種類集めると特別な101番目が…？<br>
-        ・9000タップからは超壮大なオーケストラ風ラストBGMに変化！コンプリートを目指そう！
+        ・9000タップからは壮大なセレナード（夜想曲）風BGMに変化！コンプリートを目指そう！
     </div>
 </div>
 
@@ -223,7 +223,6 @@ let currentBgmStage = -1;
 const totalChickCount = 101;
 const chickTypes = generateChickDatabase();
 
-// 所持数を保持するオブジェクト { id: count }
 let collectionCounts = {};
 
 window.onload = function() {
@@ -277,7 +276,6 @@ function generateChickDatabase() {
         list.push({ id: i, name: name, rarity: rarity, emoji: emoji, desc: trait });
     }
 
-    // 101番目：みずきちゃんひよこ（製作者）
     list.push({
         id: 101,
         name: "みずきちゃんひよこ",
@@ -300,15 +298,11 @@ function loadGameData() {
         try {
             const data = JSON.parse(dataStr);
             count = data.count || 0;
-            
-            // 旧データ(配列)と新データ(オブジェクト)の両方に対応
             if (data.collectionCounts) {
                 collectionCounts = data.collectionCounts;
             } else if (data.collection && Array.isArray(data.collection)) {
                 collectionCounts = {};
-                data.collection.forEach(id => {
-                    collectionCounts[id] = 1;
-                });
+                data.collection.forEach(id => { collectionCounts[id] = 1; });
             }
         } catch(e) {}
     }
@@ -375,11 +369,12 @@ const bgmMelodies = [
     ["E4","G4","C5","E5", "D5","B4","G4","D4", "C5","E4","A4","C5", "B4","G4","E4","G4"]
 ];
 
-const epicMelody = [
-    "C4", "Eb4", "G4", "C5", "B4", "G4", "Eb4", "G4",
-    "Ab4", "C5", "Eb5", "Ab5", "G5", "Eb5", "C5", "G4",
-    "F4", "Ab4", "C5", "F5", "Eb5", "C5", "Ab4", "C5",
-    "G4", "B4", "D5", "G5", "G5", "F5", "Eb5", "D5"
+// 🎻 9000タップ〜 壮大なセレナード（夜想曲）風メロディ
+const serenadeMelody = [
+    "E5", "G5", "C6", "B5", "A5", "G5", "F5", "E5",
+    "D5", "F5", "A5", "G5", "F5", "E5", "D5", "C5",
+    "A4", "C5", "E5", "D5", "C5", "B4", "A4", "G4",
+    "C5", "E5", "G5", "F5", "E5", "D5", "B4", "C5"
 ];
 
 function play8bitNote(freq, type, duration, gainVal = 0.08) {
@@ -407,7 +402,7 @@ function playDrumNoise(duration) {
     let noise = audioCtx.createBufferSource();
     noise.buffer = buffer;
     let gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
     noise.connect(gain);
     gain.connect(audioCtx.destination);
@@ -417,31 +412,44 @@ function playDrumNoise(duration) {
 function startBGMByStage(stage) {
     if (bgmTimer) clearInterval(bgmTimer);
     
+    // 9000タップ〜 幻想的な深夜の雰囲気に適したロイヤルブルーへ変更
     if (stage >= 9) {
-        document.body.style.backgroundColor = "#2b0000";
+        document.body.style.backgroundColor = "#0d1b2a";
     } else {
         document.body.style.backgroundColor = "#222";
     }
 
-    let speed = Math.max(110, 260 - stage * 15); 
+    let speed = Math.max(120, 260 - stage * 15); 
     let step = 0;
 
     bgmTimer = setInterval(() => {
         if (!audioCtx) return;
 
         if (stage >= 9) {
-            let noteStr = epicMelody[step % epicMelody.length];
+            // === セレナード風演奏処理 ===
+            let noteStr = serenadeMelody[step % serenadeMelody.length];
             let freq = noteFreqs[noteStr] || 0;
 
-            play8bitNote(freq, 'sawtooth', speed / 1000, 0.1);
-            if (freq > 0) play8bitNote(freq * 1.25, 'sawtooth', speed / 1000, 0.04);
+            // ① 主旋律：Triangle（三角波）でストリングス・フルートのような滑らかな旋律
+            play8bitNote(freq, 'triangle', (speed * 1.5) / 1000, 0.12);
 
-            if (step % 2 === 0) {
-                let baseFreq = freq ? freq / 2 : noteFreqs['C2'];
-                play8bitNote(baseFreq, 'triangle', (speed * 1.8) / 1000, 0.15);
+            // ② ハーモニー：Sawtoothで少し後ろに引いた甘い3度下/6度下の和音
+            if (freq > 0) {
+                play8bitNote(freq * 0.75, 'sawtooth', (speed * 1.2) / 1000, 0.03);
             }
-            if (step % 2 === 1) playDrumNoise(0.08);
+
+            // ③ 重厚な低音（ベース線）
+            if (step % 2 === 0) {
+                let baseFreq = freq ? freq / 2 : noteFreqs['C3'];
+                play8bitNote(baseFreq, 'triangle', (speed * 2.2) / 1000, 0.15);
+            }
+
+            // ④ 繊細なリズム音（ティンパニ/シンバル風）
+            if (step % 4 === 3) {
+                playDrumNoise(0.06);
+            }
         } else {
+            // === Stage 0 ~ 8 通常のBGM処理 ===
             let melodyIdx = 0;
             if (stage >= 3) melodyIdx = 1;
             if (stage >= 6) melodyIdx = 2;
@@ -570,16 +578,16 @@ const milestoneMessages = {
     7500: "7500回：ひよこ「外の空気、美味しいですか？」",
     8000: "8000回：産声のウォーミングアップ開始！",
     8500: "8500回：殻の限界値まであと少し！",
-    9000: "9000回：世界が震え、BGMが神々しいオーケストラへと変貌する！",
-    9100: "9100回：壮大な音楽の中、無心で連打するシュールさ。",
-    9200: "9200回：神々しいBGMが指の疲れを癒してくれる（嘘）。",
-    9300: "9300回：伝説のひよこが目を覚ましつつある！",
-    9400: "9400回：殻に巨大な亀裂が入り始めた！",
-    9500: "9500回：ラストスパート！殻が限界を迎えている！",
+    9000: "9000回：世界が優雅に包まれ、BGMが壮大なセレナードへと変貌する！",
+    9100: "9100回：美しい旋律の中、無心で連打するシュールさ。",
+    9200: "9200回：情熱的な小夜曲が指の疲れを優しく癒やす（嘘）。",
+    9300: "9300回：伝説のひよこが優雅に目を覚ましつつある！",
+    9400: "9400回：殻に美しい亀裂が入り始めた！",
+    9500: "9500回：ラストスパート！極上のグランドフィナーレへ！",
     9600: "9600回：あと400回！諦めるな！",
-    9700: "9700回：あと300回！光が漏れ出している！",
-    9800: "9800回：あと200回！命の脈動を感じろ！",
-    9900: "9900回：あと100タップ！息を呑め！"
+    9700: "9700回：あと300回！輝く光が漏れ出している！",
+    9800: "9800回：あと200回！美しき命の脈動を感じろ！",
+    9900: "9900回：あと100タップ！奇跡の瞬間に息を呑め！"
 };
 
 function updateMilestoneMessage(prev, current) {
@@ -618,13 +626,11 @@ function hatchChick() {
     
     let result;
 
-    // Normal（No.1〜100）の解放数を数える
     let normalCollectedCount = 0;
     for (let i = 1; i <= 100; i++) {
         if (collectionCounts[i] && collectionCounts[i] > 0) normalCollectedCount++;
     }
 
-    // 100種類コンプかつ101未持なら確定でみずきちゃんひよこ
     if (normalCollectedCount >= 100 && !collectionCounts[101]) {
         result = chickTypes.find(c => c.id === 101);
     } else {
@@ -637,7 +643,6 @@ function hatchChick() {
         result = pool[Math.floor(Math.random() * pool.length)];
     }
 
-    // カウントの加算
     if (!collectionCounts[result.id]) {
         collectionCounts[result.id] = 1;
     } else {
