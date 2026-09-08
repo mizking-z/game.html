@@ -57,22 +57,6 @@
             justify-content: center;
             padding: 0 10px;
         }
-        #bgm-banner {
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 235, 59, 0.9);
-            color: #000;
-            padding: 10px 20px;
-            font-weight: bold;
-            font-size: 20px;
-            border-radius: 20px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: 50;
-        }
         .modal {
             display: none;
             position: fixed;
@@ -155,8 +139,6 @@
     </style>
 </head>
 <body onclick="initAudioOnce()">
-
-<div id="bgm-banner">🎵 BGM LEVEL UP!</div>
 
 <div id="container">
     <h1>クソ連打！奇跡のたまご🥚</h1>
@@ -320,15 +302,7 @@ function updateBGMStage() {
     if (newStage !== currentBgmStage) {
         currentBgmStage = newStage;
         startBGMByStage(currentBgmStage);
-        showBgmBanner(newStage);
     }
-}
-
-function showBgmBanner(stage) {
-    const banner = document.getElementById("bgm-banner");
-    banner.innerText = `🎵 BGM STAGE ${stage + 1} !`;
-    banner.style.opacity = "1";
-    setTimeout(() => { banner.style.opacity = "0"; }, 1500);
 }
 
 function startBGMByStage(stage) {
@@ -362,7 +336,6 @@ function startBGMByStage(stage) {
             let gain = audioCtx.createGain();
             osc.type = config.wave;
             osc.frequency.setValueAtTime(config.notes[step % config.notes.length], audioCtx.currentTime);
-            // 音量を0.04から0.10へアップ
             gain.gain.setValueAtTime(0.10, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (config.interval / 1000) * 0.8);
             osc.connect(gain);
@@ -386,7 +359,6 @@ function startBGMByStage(stage) {
                 let gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                // 最終段階の和音も音量アップ (0.02 -> 0.05)
                 gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.7);
                 osc.connect(gain);
@@ -485,27 +457,27 @@ const milestoneMessages = {
     700: "700回：卵がわずかに左右に揺れた。気のせいかもしれない。",
     800: "800回：まだ8%しか温まっていないという絶望。",
     900: "900回：もうすぐ1000！特に何もないけど！",
-    1000: "1000回：【BGM LEVEL 2】自我が目覚めかけたが思いとどまった。",
+    1000: "1000回：自我が目覚めかけたが思いとどまった。",
     1100: "1100回：そろそろ指を休めても誰も責めない。",
     1200: "1200回：卵があなたの連打速度を採点している。",
     1300: "1300回：指先からかすかに摩擦熱を感じる。",
     1400: "1400回：特にドラマは起こらない。ひたすら連打だ。",
     1500: "1500回：連打のテンポにグルーヴ感が生まれ始める。",
-    2000: "2000回：【BGM LEVEL 3】指の疲労感＝命の重み。",
+    2000: "2000回：指の疲労感＝命の重み。",
     2500: "2500回：四分の一に到達。己との戦いである。",
-    3000: "3000回：【BGM LEVEL 4】卵の中で何かが動画を見ている気配。",
+    3000: "3000回：卵の中で何かが動画を見ている気配。",
     3500: "3500回：卵「もう少し右上をお願いします」",
-    4000: "4000回：【BGM LEVEL 5】指先から不思議な波動が出始める。",
+    4000: "4000回：指先から不思議な波動が出始める。",
     4500: "4500回：もうすぐ折り返し！無心で叩け！",
-    5000: "5000回：【BGM LEVEL 6】折り返し地点！妙なプレッシャーが漂う。",
+    5000: "5000回：折り返し地点！妙なプレッシャーが漂う。",
     5500: "5500回：後半戦。あなたの指はもはや武器だ。",
-    6000: "6000回：【BGM LEVEL 7】精神力とタップ力の勝負。",
+    6000: "6000回：精神力とタップ力の勝負。",
     6500: "6500回：卵の表面がわずかに発光している気がする。",
-    7000: "7000回：【BGM LEVEL 8】卵殻内部でタンパク質の再配置完了。",
+    7000: "7000回：卵殻内部でタンパク質の再配置完了。",
     7500: "7500回：ひよこ「外の空気、美味しいですか？」",
-    8000: "8000回：【BGM LEVEL 9】産声のウォーミングアップ開始！",
+    8000: "8000回：産声のウォーミングアップ開始！",
     8500: "8500回：殻の限界値まであと少し！",
-    9000: "9000回：【覚醒 BGM MAX】世界が震え、音楽が神々しくなる！",
+    9000: "9000回：世界が震え、音楽が神々しくなる！",
     9100: "9100回：壮大な音楽の中、無心で連打するシュールさ。",
     9200: "9200回：神々しいBGMが指の疲れを癒してくれる（嘘）。",
     9300: "9300回：伝説のひよこが目を覚ましつつある！",
